@@ -63,12 +63,23 @@ public class Main {
         // step 1
         Document document = new Document();
         // step 2
-        PdfWriter.getInstance(document, Files.newOutputStream(path));
+        PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(path));
         // step 3
         document.open();
         // step 4
         document.add(new Paragraph("Hello World!"));
+        drawShapes(writer);
         // step 5
         document.close();
+    }
+
+    private void drawShapes(PdfWriter writer) {
+        //Draws 2 lines
+        PdfHelper.line(100, 100, 200, 100, 1.5f, writer);
+        PdfHelper.line(100, 110, 200, 110, 1, writer);
+
+        //Draws 2 Circles
+        PdfHelper.circle(200, 100, 2.5f, true, writer); //Filled Circle
+        PdfHelper.circle(100, 100, 3.5f, false, writer); //Hollow circle
     }
 }
