@@ -29,7 +29,7 @@ public class MainTest {
     public void testCreatePdf() throws Exception {
 
         Path temp = Files.createTempFile(Main.FILENAME, Main.PDF_SUFFIX);
-        new Main().createPdf(temp);
+        new Main().createPdf(temp.toFile());
 
         // We will assume this test passes if the resulting File exists
         assertTrue(temp.toFile().exists());

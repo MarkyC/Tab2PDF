@@ -1,14 +1,15 @@
 package ca.yorku.cse2311.tab2pdf;
 
+import ca.yorku.cse2311.tab2pdf.util.FileUtils;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * First iText example: Hello World.
@@ -25,6 +26,96 @@ public class Main {
      */
     public static final String PDF_SUFFIX = ".pdf";
 
+    public static File inputFile;
+    public static File outputFile;
+
+    /**
+     * Prints program usage and exits
+     */
+    public static void printUsageExit() {
+
+        System.out.println("Usage: java -jar Tab2Pdf.jar [(-i|--input) <input_file>] [(-o|--output) <output_file>]");
+        System.out.println("Example: java -jar Tab2Pdf.jar -i someTab.txt -o somePdf.pdf");
+        System.exit(0);
+
+    }
+
+    public static void parseArgs(String[] args) {
+
+        for (int i = 0; i < args.length; i++) {
+
+            String arg = args[i];
+
+            switch (arg.charAt(0)) {
+
+                case '-':
+
+                    if ((1 < arg.length()) && ('-' == arg.charAt(1))) {
+                        // This is a double-dash option: --input or --output
+
+                        if ("-input".equals(arg.substring(1))) {   // Set the input file
+
+                            setInputFile(args[i + 1]);
+
+
+                        } else if ("-output".equals(arg.substring(1))) {
+
+                            setOutputFile(args[i + 1]);
+
+                        }
+
+                    } else {
+                        if ("i".equals(arg.substring(1))) {   // Set the input file
+
+                            setInputFile(args[i + 1]);
+
+
+                        } else if ("o".equals(arg.substring(1))) {
+
+                            setOutputFile(args[i + 1]);
+
+                        }
+                    }
+                    break;
+
+            }
+        }
+    }
+
+    public static void setInputFile(String arg) {
+
+        try {
+
+            inputFile = new File(arg);
+            FileUtils.testFileRead(inputFile);
+
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            System.out.println("No input file specified.");
+            printUsageExit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            printUsageExit();
+        }
+
+    }
+
+    public static void setOutputFile(String arg) {
+
+        try {
+
+            outputFile = new File(arg);
+            FileUtils.testFileReadWrite(outputFile);
+
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            System.out.println("No output file specified.");
+            printUsageExit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            printUsageExit();
+        }
+
+    }
+
     /**
      * Creates a PDF file that says Hello World and opens it
      *
@@ -32,16 +123,31 @@ public class Main {
      */
     public static void main(String[] args) {
 
+        if (0 == args.length) {
+
+            printUsageExit();
+        } else {
+
+            parseArgs(args);
+
+            if (null == inputFile) {
+                System.out.println("No input file specified");
+                printUsageExit();
+            }
+        }
+
         try {
 
-            // Create a temporary file to hold our hello world PDF
-            Path tempFile = Files.createTempFile(FILENAME, PDF_SUFFIX);
+            // we will allow the output file to be null. This means the user just wants to generate a temporary PDF
+            if (null == outputFile) {
+                outputFile = FileUtils.createTempFile(FILENAME, PDF_SUFFIX);
+            }
 
             // Run the example code
-            new Main().createPdf(tempFile);
+            new Main().createPdf(outputFile);
 
             // open the newly created PDF
-            Desktop.getDesktop().open(tempFile.toFile());
+            Desktop.getDesktop().open(outputFile);
 
         } catch (Exception e) {
 
@@ -54,16 +160,16 @@ public class Main {
     /**
      * Creates a PDF document.
      *
-     * @param path the path to the new PDF document
+     * @param file the File that will be the new PDF document
      * @throws DocumentException
      * @throws IOException
      */
-    public void createPdf(Path path)
+    public void createPdf(java.io.File file)
             throws DocumentException, IOException {
         // step 1
         Document document = new Document();
         // step 2
-        PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(path));
+        PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(file.toPath()));
         // step 3
         document.open();
         // step 4

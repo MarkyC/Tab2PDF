@@ -1,19 +1,9 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
+package ca.yorku.cse2311.tab2pdf;
 
-import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
 
 import java.awt.*;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -45,7 +35,7 @@ public class TitleAndAuthor {
     		 Path tempFile = Files.createTempFile(FILENAME, PDF_SUFFIX);
     		        
       	    // Run the example code
-           	 new TitleAndAuthor().createPdf(tempFile);
+                // new TitleAndAuthor().createPdf(tempFile);
 
             // open the newly created PDF
              Desktop.getDesktop().open(tempFile.toFile());
@@ -64,8 +54,8 @@ public class TitleAndAuthor {
      * @throws    DocumentException 
      * @throws    IOException 
      */
-    public void createPdf(String filename)
-	throws DocumentException, IOException {
+   /* public void createPdf(String filename)
+    throws DocumentException, IOException {
         // step 1
         Document document = new Document();
         // step 2
@@ -100,14 +90,14 @@ public class TitleAndAuthor {
         document.add(write_author);
         
         document.close();
-    }
+    }*/
     
     /**
      * Reads the text file stores the first 10 lines in an ArrayList.
      * @return    ArrayList filled with the lines in the text file.
      */
-    public static ArrayList<String> readFile(File f){
-    	// Opens and reads the file.
+   /* public static ArrayList<String> readFile(File f){
+        // Opens and reads the file.
     	FileReader reading = new FileReader(f);
 		BufferedReader in = new BufferedReader(reading);
 		
@@ -121,7 +111,7 @@ public class TitleAndAuthor {
 		}
 	    //Returns the ArrayList.
 	    return lines; 
-    }
+    }*/
     
    /**
     * Extracts the tile from the first line.
