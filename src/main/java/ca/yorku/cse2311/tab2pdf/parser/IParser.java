@@ -1,7 +1,5 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
-import ca.yorku.cse2311.tab2pdf.model.IMusicalNotation;
-
 import java.util.regex.Pattern;
 
 /**
@@ -12,7 +10,7 @@ import java.util.regex.Pattern;
  * @author Marco
  * @since 2015-01-13
  */
-public interface IParser<T extends IMusicalNotation> {
+public interface IParser<T> {
 
     public Pattern getPattern();
 
