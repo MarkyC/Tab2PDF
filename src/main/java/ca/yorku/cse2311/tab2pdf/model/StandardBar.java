@@ -1,14 +1,23 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
 /**
- * Created by Brody on 2015-01-12.
+ * StandardBar
+ *
+ * Represents a Standard Bar ('|') in Musical Notation. A Standard Bar separates Bars of music
+ * It's the leftmost thing in the image on this page: http://en.wikipedia.org/wiki/Bar_%28music%29
+ *
+ * @author Brody
+ * @since 2015-01-12
  */
-public class StandardBar implements IParseable {
+public class StandardBar implements IMusicalNotation {
 
-    public static final String PARSE_SYMBOL = "|";
-
-    public String getSymbol() {
-        return PARSE_SYMBOL;
+    @Override
+    public String toString() {
+        return "StandardBar{}";
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof StandardBar;
+    }
 }

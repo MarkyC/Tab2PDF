@@ -1,13 +1,22 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
 /**
- * Created by Marco on 1/12/2015.
+ * Space
+ *
+ * Represents a space ('-') in musical notation
+ *
+ * @author Marco
+ * @since 2015-01-12
  */
-public class Space implements IParseable {
+public class Space implements IMusicalNotation {
 
-    public static final String PARSE_SYMBOL = "-";
+    @Override
+    public String toString() {
+        return "Space{}";
+    }
 
-    public String getSymbol() {
-        return PARSE_SYMBOL;
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Space;    // All Spaces are the same for now
     }
 }
