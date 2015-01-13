@@ -29,6 +29,7 @@ public class TitleParserTest {
     public static final String[] INVALID_TITLES = {
             "TITLE="
             , "T=Remembering Rain"
+            , "SUBTITLE=Remembering Rain"
     };
 
     public TitleParser parser;

@@ -14,7 +14,7 @@ public class TitleParser extends AbstractParser<String> {
     /**
      * Look for TITLE=Some Title, or title=Something, or TiTle=Long Title Here One Or More Words
      */
-    public static final Pattern TOKEN_PATTERN = Pattern.compile("TITLE=(.+)", Pattern.CASE_INSENSITIVE);
+    public static final Pattern TOKEN_PATTERN = Pattern.compile("^TITLE=(.+)", Pattern.CASE_INSENSITIVE);
 
     @Override
     public Pattern getPattern() {
