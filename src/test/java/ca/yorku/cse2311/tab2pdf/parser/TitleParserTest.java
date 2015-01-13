@@ -63,7 +63,7 @@ public class TitleParserTest {
 
             String line = VALID_TITLES[i];          // grab the current line
             String title = parser.parse(line);      // parse it
-            assertEquals(CORRECT_TITLES[i], title);    // ensure it equals the Note in the corresponding CORRECT_TITLES index
+            assertEquals(CORRECT_TITLES[i], title); // ensure it equals the Title in the corresponding CORRECT_TITLES index
         }
     }
 }
