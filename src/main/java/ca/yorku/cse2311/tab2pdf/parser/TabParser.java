@@ -10,7 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Marco on 1/12/2015.
+ * TabParser
+ *
+ * Parser than can parse an entire Tab
+ *
+ * @author Marco
+ * @since 2015-01-13
  */
 public class TabParser {
 

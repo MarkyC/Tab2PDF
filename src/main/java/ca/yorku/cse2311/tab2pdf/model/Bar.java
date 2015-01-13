@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Marco on 1/12/2015.
+ * Bar
+ *
+ * Represents one bar of music
+ *
+ * @author Marco
+ * @since 2015-01-12
  */
 public class Bar {
 
-        /* TODO: A Bar should know how wide it is, so we don't print off the end of the page */
-
+    /* TODO: A Bar should know how wide it is, so we don't print off the end of the page */
 
     private final List<BarLine> lines = new ArrayList<>();
 
@@ -78,5 +82,33 @@ public class Bar {
         }
 
         lines.add(line);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Bar bar = (Bar) o;
+
+        if (numLines != bar.numLines) return false;
+        if (lines != null ? !lines.equals(bar.lines) : bar.lines != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = lines != null ? lines.hashCode() : 0;
+        result = 31 * result + numLines;
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Bar{" +
+                "lines=" + lines +
+                ", numLines=" + numLines +
+                '}';
     }
 }

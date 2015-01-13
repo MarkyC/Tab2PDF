@@ -1,7 +1,12 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
 /**
- * Created by Brody on 2015-01-12.
+ * Note
+ *
+ * Repesents a single musical note (ie: '3' or '8')
+ *
+ * @author Brody
+ * @since 2015-01-12
  */
 public class Note implements IMusicalNotation {
 

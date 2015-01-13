@@ -4,7 +4,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by Marco on 1/12/2015.
+ * BarLine
+ *
+ * Represents one line of a Bar (ie: one of the 6 guitar strings)
+ *
+ * @author Marco
+ * @since 2015-01-12
  */
 public class BarLine {
 
@@ -17,5 +22,29 @@ public class BarLine {
     public void addMusicalNotation(IMusicalNotation note) {
 
         line.add(note);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BarLine barLine = (BarLine) o;
+
+        if (line != null ? !line.equals(barLine.line) : barLine.line != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return line != null ? line.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "BarLine{" +
+                "line=" + line +
+                '}';
     }
 }

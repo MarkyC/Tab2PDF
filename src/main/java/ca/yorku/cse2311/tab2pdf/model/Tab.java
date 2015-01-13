@@ -4,7 +4,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by Marco on 1/12/2015.
+ * Tab
+ *
+ * Represents an entire piece of music in Tab format. A Tab is a series of Bars
+ *
+ * @author Marco
+ * @since 2015-01-12
  */
 public class Tab {
 

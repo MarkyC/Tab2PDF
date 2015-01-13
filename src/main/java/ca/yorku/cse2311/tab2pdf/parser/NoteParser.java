@@ -7,7 +7,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by Marco on 1/12/2015.
+ * NoteParser
+ *
+ * A Parser capable of parsing a musical note
+ *
+ * @author Marco
+ * @since 2015-01-13
  */
 public class NoteParser implements IParser<Note> {
 

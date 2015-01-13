@@ -1,7 +1,12 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
 /**
- * Created by Marco on 1/12/2015.
+ * Space
+ *
+ * Repesents a space ('-') in musical notation
+ *
+ * @author Marco
+ * @since 2015-01-12
  */
 public class Space implements IMusicalNotation {
 
