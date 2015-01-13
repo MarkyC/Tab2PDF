@@ -11,12 +11,18 @@ import static org.junit.Assert.fail;
 
 public class NoteParserTest {
 
+    /**
+     * None of these lines should parse into a Note
+     */
     public static final String[] INVALID_LINES = {
             "|-----1-----1-----1-----1-|-----1-----1-----1-----1-|"
             , "-1-----1-----1-----1-|-----1-----1-----1-----1-|"
             , "-----1-----1-----1-|-----1-----1-----1-----1-|"
     };
 
+    /**
+     * All of these lines should parse into a note
+     */
     public static final String[] VALID_LINES = {
             "1-----1-----1-----1-|-----1-----1-----1-----1-|"
             , "12----1-----1-----1-|-----1-----1-----1-----1-|"
@@ -31,6 +37,10 @@ public class NoteParserTest {
             , "0-----1-----1-----1-|-----1-----1-----1-----1-|"
     };
 
+    /**
+     * VALID_LINES[i] should equal VALID_NOTES[i].
+     * That means that each line in VALID_LINES should equal its corresponding Note in VALID_NOTES
+     */
     public static final Note[] VALID_NOTES = {
             new Note("1")
             , new Note("1")
@@ -56,7 +66,7 @@ public class NoteParserTest {
     public void testParseInvalidLines() {
 
         for (String line : INVALID_LINES) {
-            try {
+            try { // Go through each invalid line, hoping to throw an Exception, since they cannot be parsed
 
                 parser.parse(line);
 
@@ -71,15 +81,11 @@ public class NoteParserTest {
     @Test
     public void testParseValidLines() throws ParseException {
 
-        for (int i = 0; i < VALID_LINES.length; ++i) {
+        for (int i = 0; i < VALID_LINES.length; ++i) {  // Go through each valid line,
 
-            String line = VALID_LINES[i];
-
-
-            Note n = parser.parse(line);
-            System.out.println(n);
-            assertEquals(VALID_NOTES[i], n);
-
+            String line = VALID_LINES[i];   // grab the current line
+            Note n = parser.parse(line);    // parse it
+            assertEquals(VALID_NOTES[i], n);// ensure it equals the Note in the corresponding VALID_NOTES index
         }
     }
 
