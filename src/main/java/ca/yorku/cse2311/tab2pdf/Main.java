@@ -1,5 +1,6 @@
 package ca.yorku.cse2311.tab2pdf;
 
+import ca.yorku.cse2311.tab2pdf.parser.TabParser;
 import ca.yorku.cse2311.tab2pdf.util.FileUtils;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -164,8 +165,11 @@ public class Main {
      * @throws DocumentException
      * @throws IOException
      */
-    public void createPdf(java.io.File file)
-            throws DocumentException, IOException {
+    public void createPdf(File file) throws Exception {
+
+        // We'll clean this up later! I don't like the overuse of statics here, and everywhere in this file
+        java.util.List<String> lines = FileUtils.readFile(inputFile);
+
         // step 1
         Document document = new Document();
         // step 2
@@ -173,7 +177,9 @@ public class Main {
         // step 3
         document.open();
         // step 4
-        document.add(new Paragraph("Hello World!"));
+        document.add(new Paragraph("Hello World!"));                // Hello World!
+        document.add(new Paragraph(TabParser.getTitle(lines)));     // The Tab's Title
+        document.add(new Paragraph(TabParser.getSubtitle(lines)));  // The Tab's Subtitle
         drawShapes(writer);
         // step 5
         document.close();

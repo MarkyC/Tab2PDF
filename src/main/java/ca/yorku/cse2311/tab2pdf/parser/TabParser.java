@@ -31,6 +31,32 @@ public class TabParser {
         return (index + 1 > line.length());
     }
 
+    public static String getTitle(List<String> lines) throws Exception {
+
+        TitleParser parser = new TitleParser();
+
+        for (String line : lines) {
+            if (parser.canParse(line)) {
+                return parser.parse(line);
+            }
+        }
+
+        throw new Exception("No title found in file");
+    }
+
+    public static String getSubtitle(List<String> lines) throws Exception {
+
+        SubtitleParser parser = new SubtitleParser();
+
+        for (String line : lines) {
+            if (parser.canParse(line)) {
+                return parser.parse(line);
+            }
+        }
+
+        throw new Exception("No subtitle found in file");
+    }
+
     public Tab parse(List<String> lines) {
 
         Tab tab = new Tab();
