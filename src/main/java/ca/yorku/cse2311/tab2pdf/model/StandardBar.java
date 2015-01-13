@@ -15,4 +15,9 @@ public class StandardBar implements IMusicalNotation {
     public String toString() {
         return "StandardBar{}";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof StandardBar;
+    }
 }
