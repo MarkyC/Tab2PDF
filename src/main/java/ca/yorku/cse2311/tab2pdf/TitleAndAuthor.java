@@ -10,7 +10,10 @@ import java.util.ArrayList;
  
 /**
  * Gets the Title and the Author's name from the text file and puts it into a temp pdf.
+ *
+ * @deprecated See TitleParser and SubtitleParser, which handles this
  */
+@Deprecated
 public class TitleAndAuthor {
  
    /**
