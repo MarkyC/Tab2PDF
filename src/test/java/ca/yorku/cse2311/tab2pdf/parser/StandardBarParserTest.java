@@ -4,8 +4,6 @@ import ca.yorku.cse2311.tab2pdf.model.StandardBar;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.text.ParseException;
-
 import static org.junit.Assert.*;
 
 public class StandardBarParserTest {

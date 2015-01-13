@@ -2,7 +2,6 @@ package ca.yorku.cse2311.tab2pdf.parser;
 
 import ca.yorku.cse2311.tab2pdf.model.StandardBar;
 
-import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,29 +13,30 @@ import java.util.regex.Pattern;
  * @author Marco
  * @since 2015-01-13
  */
-public class StandardBarParser implements IParser<StandardBar> {
+public class StandardBarParser extends AbstractParser<StandardBar> {
 
     /**
      * Fancy regex for "a pipe at the beginning of the line, not followed by another pipe or a digit"
+     * TODO: Should the not followed by another pipe or a digit (?!\||\d) be here?
+     * I feel like the TabParser should apply a priority. Does the special case belong here or in TabParser?
      */
     public static final Pattern TOKEN_PATTERN = Pattern.compile("^(\\|)(?!\\||\\d)");
 
     @Override
+    public Pattern getPattern() {
+        return TOKEN_PATTERN;
+    }
+
+    @Override
     public StandardBar parse(String token) throws ParseException {
 
-        Matcher m = TOKEN_PATTERN.matcher(token);
+        Matcher m = getPattern().matcher(token);
 
         if (m.find()) {
 
             return new StandardBar();
         }
 
-        throw new ParseException(String.format("Could not parse '%s' with pattern '%s'", token, TOKEN_PATTERN), 0);
-
-    }
-
-    @Override
-    public boolean canParse(String token) {
-        return TOKEN_PATTERN.matcher(token).find();
+        throw new ParseException(token, getPattern());
     }
 }

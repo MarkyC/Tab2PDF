@@ -2,7 +2,7 @@ package ca.yorku.cse2311.tab2pdf.parser;
 
 import ca.yorku.cse2311.tab2pdf.model.IMusicalNotation;
 
-import java.text.ParseException;
+import java.util.regex.Pattern;
 
 /**
  * IParser
@@ -13,6 +13,8 @@ import java.text.ParseException;
  * @since 2015-01-13
  */
 public interface IParser<T extends IMusicalNotation> {
+
+    public Pattern getPattern();
 
     public T parse(String token) throws ParseException;
 
