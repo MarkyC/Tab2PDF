@@ -16,25 +16,45 @@ import com.itextpdf.text.pdf.PdfWriter;
 /**
  * First iText example: Hello World.
  */
-public class helloworldpdf {
+public class TitleAndAuthor {
  
+   /**
+     * The name of the PDF file we will create
+     */
+    public static final String FILENAME = "hello";
+
+   /**
+     * PDF file suffix (*.pdf)
+     */
+    public static final String PDF_SUFFIX = ".pdf";
+ 	
     /** Path to the resulting PDF file. */
     public static final String RESULT
         = "/Users/Deep/Desktop/hello.pdf";
  
     /**
-     * Creates a PDF file: hello.pdf
+     * Creates a PDF file: hello.pdf and opens it.
      * @param    args    no arguments needed
      */
-    public static void main(String[] args){
-    	try {
-    		 new helloworldpdf().createPdf(RESULT);
-         } catch (Exception e) {
+	public static void main(String[] args) {
 
-             // We fucked up somewhere
-             // This should probably be handled with a Thread.UncaughtExceptionHandler
-             e.printStackTrace();
-         }
+    	    try {
+	
+   		     // Create a temporary file to hold our hello world PDF
+    		 Path tempFile = Files.createTempFile(FILENAME, PDF_SUFFIX);
+    		        
+      	    // Run the example code
+           	 new Main().createPdf(tempFile);
+
+            // open the newly created PDF
+             Desktop.getDesktop().open(tempFile.toFile());
+
+        } catch (Exception e) {
+
+            // We fucked up somewhere
+            // This should probably be handled with a Thread.UncaughtExceptionHandler
+            e.printStackTrace();
+        }
     }
  
     /**
