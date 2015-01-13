@@ -16,6 +16,9 @@ import java.util.regex.Pattern;
  */
 public class NoteParser implements IParser<Note> {
 
+    /**
+     * Fancy regex for "an integer at the beginning of the line"
+     */
     public static final Pattern TOKEN_PATTERN = Pattern.compile("^(\\d)");
 
     @Override
