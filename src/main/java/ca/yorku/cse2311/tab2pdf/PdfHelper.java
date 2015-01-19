@@ -1,4 +1,4 @@
-//package ca.yorku.cse2311.tab2pdf;
+package ca.yorku.cse2311.tab2pdf;
 
 import com.itextpdf.text.pdf.GrayColor;
 import com.itextpdf.text.pdf.PdfContentByte;
