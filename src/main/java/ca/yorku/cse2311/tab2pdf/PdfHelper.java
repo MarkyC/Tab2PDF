@@ -1,4 +1,4 @@
-//package ca.yorku.cse2311.tab2pdf;
+package ca.yorku.cse2311.tab2pdf;
 
 import com.itextpdf.text.pdf.GrayColor;
 import com.itextpdf.text.pdf.PdfContentByte;
@@ -35,9 +35,9 @@ public class PdfHelper {
 	 * @param filled True if the circle is filled
 	 * @param writer Pdf writer for the document
 	 */
-	private static void circle(float x, float y, float radius, boolean filled, PdfWriter writer) {
-		
-		PdfContentByte canvas = writer.getDirectContent();
+    public static void circle(float x, float y, float radius, boolean filled, PdfWriter writer) {
+
+        PdfContentByte canvas = writer.getDirectContent();
 
 		canvas.saveState();
 		canvas.setColorStroke(GrayColor.BLACK);
@@ -62,9 +62,9 @@ public class PdfHelper {
 	 * @param width  Thickness of the line
 	 * @param writer Pdf writer for the document
 	 */
-	private static void line(float x1, float y1, float x2, float y2, float width, PdfWriter writer) {
-		
-		PdfContentByte canvas = writer.getDirectContent();
+    public static void line(float x1, float y1, float x2, float y2, float width, PdfWriter writer) {
+
+        PdfContentByte canvas = writer.getDirectContent();
 
 		canvas.saveState();
 		canvas.setColorStroke(GrayColor.BLACK);

@@ -1,3 +1,4 @@
+package ca.yorku.cse2311.tab2pdf;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+@Deprecated
 public class EECS2311 {
 
 	/**
