@@ -27,6 +27,17 @@ public class TabParser {
         MUSICAL_NOTES.add(new StandardBar());
     }
 
+    public static final List<AbstractParser> PARSERS = new ArrayList<>();
+
+    static {
+        PARSERS.add(new NoteParser());
+        PARSERS.add(new SpaceParser());
+        PARSERS.add(new StandardBarParser());
+        //PARSERS.add()
+
+    }
+
+
     public static boolean endOfLine(int index, String line) {
         return (index + 1 > line.length());
     }
