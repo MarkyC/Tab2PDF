@@ -38,7 +38,21 @@ public class DoubleBar implements IMusicalNotation {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof StandardBar;
+        if (!(obj instanceof DoubleBar))
+            return false;
+
+        DoubleBar doubleBar = (DoubleBar) obj;
+
+        if (doubleBar.repeat != this.repeat)
+            return false;
+
+        if (doubleBar.beginRepeat != this.beginRepeat)
+            return false;
+
+        if (doubleBar.endRepeat != this.endRepeat)
+            return false;
+
+        return true;
     }
 
 }
