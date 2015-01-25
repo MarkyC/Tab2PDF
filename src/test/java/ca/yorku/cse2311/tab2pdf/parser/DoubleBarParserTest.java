@@ -88,7 +88,7 @@ public class DoubleBarParserTest {
     public void testCanParseInvalidLines() {
 
         for (String line : INVALID_LINES) {
-            System.out.println(line + parser.canParse(line));
+            //System.out.println(line + parser.canParse(line));
             if (parser.canParse(line))
                 try {
                     System.out.println(parser.parse(line).toString());
