@@ -29,6 +29,44 @@ public class DoubleBar implements IMusicalNotation {
         this.endRepeat = endRepeat;
     }
 
+    public int getRepeat() {
+        return repeat;
+    }
+
+    /**
+     * @return Returns the value of beginRepeat
+     */
+    public boolean getBeginRepeat() {
+        return beginRepeat;
+    }
+
+    /**
+     * Latches the beginRepeat flag as true once set
+     *
+     * @param beginRepeat If the bar starts a repeat section
+     */
+    public void setBeginRepeat(boolean beginRepeat) {
+        if (beginRepeat)
+            this.beginRepeat = true;
+    }
+
+    /**
+     * @return Returns the value of endRepeat
+     */
+    public boolean getEndRepeat() {
+        return endRepeat;
+    }
+
+    /**
+     * Latches the endRepeat flag as true once set
+     *
+     * @param endRepeat If the bar ends a repeat section
+     */
+    public void setEndRepeat(boolean endRepeat) {
+        if (endRepeat)
+            this.endRepeat = true;
+    }
+
     @Override
     public String toString() {
         return String.format(
@@ -49,7 +87,7 @@ public class DoubleBar implements IMusicalNotation {
         if (doubleBar.beginRepeat != this.beginRepeat)
             return false;
 
-        if (doubleBar.endRepeat != this.endRepeat)
+        if (doubleBar.endRepeat != endRepeat)
             return false;
 
         return true;
