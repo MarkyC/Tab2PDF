@@ -1,7 +1,6 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
 import ca.yorku.cse2311.tab2pdf.model.DoubleBar;
-import ca.yorku.cse2311.tab2pdf.model.StandardBar;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +25,7 @@ public class DoubleBarParserTest {
     public static final String[] VALID_LINES = {
             "||*-----1-----1-----1-|-----1-----1-----1-----1-|"
             , "*||----1-----1-----1-|-----1-----1-----1-----1-|"
-            , "*|---1-----1-----1-|-----1-----1-----1-----1-|"
+            , "*|5*---1-----1-----1-|-----1-----1-----1-----1-|"
             , "*||*--1-----1-----1-|-----1-----1-----1-----1-|"
             , "|2-1-----1-----1-|-----1-----1-----1-----1-|"
             , "||-----------------------------"
@@ -35,17 +34,17 @@ public class DoubleBarParserTest {
     public static final DoubleBar[] VALID_RESPONSES = {
             new DoubleBar(1, true, false),
             new DoubleBar(1, false, true),
-            new DoubleBar(1, false, true),
+            new DoubleBar(5, true, true),
             new DoubleBar(1, true, true),
             new DoubleBar(2, false, false),
             new DoubleBar()
     };
 
-    private StandardBarParser parser;
+    private DoubleBarParser parser;
 
     @Before
     public void setUp() {
-        parser = new StandardBarParser();
+        parser = new DoubleBarParser();
     }
 
     @Test
@@ -67,10 +66,16 @@ public class DoubleBarParserTest {
     @Test
     public void testParseValidLines() throws ParseException {
 
-        for (String line : VALID_LINES) {   // Go through each valid line,
+        for (int i = 0; i < VALID_LINES.length; ++i) {  // Go through each valid line,
 
-            StandardBar s = parser.parse(line);   // parse it
-            assertEquals(new StandardBar(), s);   // ensure it equals the Note in the corresponding VALID_NOTES index
+            String line = VALID_LINES[i];          // grab the current line
+            try {
+                DoubleBar doubleBar = parser.parse(line);      // parse it
+                assertEquals(VALID_RESPONSES[i], doubleBar); // ensure it equals the Title in the corresponding CORRECT_TITLES index
+            } catch (NumberFormatException e) {
+                System.out.println(line);
+                e.printStackTrace();
+            }
         }
     }
 
@@ -78,7 +83,13 @@ public class DoubleBarParserTest {
     public void testCanParseInvalidLines() {
 
         for (String line : INVALID_LINES) {
-
+            System.out.println(line + parser.canParse(line));
+            if (parser.canParse(line))
+                try {
+                    System.out.println(parser.parse(line).toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             assertFalse(parser.canParse(line)); // NoteParser should not be able to parse any invalid lines
         }
     }

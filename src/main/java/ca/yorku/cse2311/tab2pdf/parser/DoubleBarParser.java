@@ -17,7 +17,7 @@ public class DoubleBarParser extends AbstractParser<DoubleBar> {
      * TODO: Should the not followed by another pipe or a digit (?!\||\d) be here?
      * I feel like the TabParser should apply a priority. Does the special case belong here or in TabParser?
      */
-    public static final Pattern TOKEN_PATTERN = Pattern.compile("(^(?<start>\\|(?<startR>\\||\\d*)\\*)|^(?<both>\\*\\|(?<bothR>\\||\\d*)\\*)|^(?<end>\\*\\|(?<endR>\\||\\d*))|^(?<double>\\|(?<doubleR>\\||\\d*)))(?<repeat>\\d*)");
+    public static final Pattern TOKEN_PATTERN = Pattern.compile("(^(?<start>^\\|(?<startR>\\||\\d*)\\*)|^(?<both>\\*\\|(?<bothR>\\||\\d*)\\*)|^(?<end>\\*\\|(?<endR>\\||\\d*))|^(?<double>^\\|(?<doubleR>\\||\\d*)))(?!\\||\\d)");
 
     @Override
     public Pattern getPattern() {
@@ -31,31 +31,35 @@ public class DoubleBarParser extends AbstractParser<DoubleBar> {
         int repeat = 1;
         String temp;
 
-        temp = m.group("repeat");
-        if (temp != null)
-            repeat = Integer.parseInt(temp);
 
         if (m.find()) {
-            if (m.group("start") != null) {
+
+            /*
+            temp = m.group("repeat");
+            if (! temp.equals(""))
+                repeat = Integer.parseInt(temp);
+            */
+
+            if (!(m.group("start") == null || m.group("start").equals(""))) {
                 temp = m.group("startR");
-                if (temp.equals("|"))
+                if (!temp.equals("|"))
                     repeat = Integer.parseInt(temp);
                 return new DoubleBar(repeat, true, false);
-            } else if (m.group("both") != null) {
+            } else if (!(m.group("both") == null || m.group("both").equals(""))) {
                 temp = m.group("bothR");
-                if (temp.equals("|"))
+                if (!temp.equals("|"))
                     repeat = Integer.parseInt(temp);
-                return new DoubleBar(repeat, true, false);
-            } else if (m.group("end") != null) {
+                return new DoubleBar(repeat, true, true);
+            } else if (!(m.group("end") == null || m.group("end").equals(""))) {
                 temp = m.group("endR");
-                if (temp.equals("|"))
+                if (!temp.equals("|"))
                     repeat = Integer.parseInt(temp);
-                return new DoubleBar(repeat, true, false);
-            } else if (m.group("double") != null) {
+                return new DoubleBar(repeat, false, true);
+            } else if (!(m.group("double") == null || m.group("double").equals(""))) {
                 temp = m.group("doubleR");
-                if (temp.equals("|"))
+                if (!temp.equals("|"))
                     repeat = Integer.parseInt(temp);
-                return new DoubleBar(repeat, true, false);
+                return new DoubleBar(repeat, false, false);
             }
         }
 
