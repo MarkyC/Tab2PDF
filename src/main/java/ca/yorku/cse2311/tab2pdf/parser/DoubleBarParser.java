@@ -13,11 +13,10 @@ import java.util.regex.Pattern;
 public class DoubleBarParser extends AbstractParser<DoubleBar> {
 
     /**
-     * Fancy regex for "a pipe at the beginning of the line, not followed by another pipe or a digit"
-     * TODO: Should the not followed by another pipe or a digit (?!\||\d) be here?
-     * I feel like the TabParser should apply a priority. Does the special case belong here or in TabParser?
+     * Fancy regex to recognise; ||*, *||*, *|| or || where any of the second pipes can be replaced with a number
+     * It follows a priority in the order listed
      */
-    public static final Pattern TOKEN_PATTERN = Pattern.compile("(^(?<start>^\\|(?<startR>\\||\\d*)\\*)|^(?<both>\\*\\|(?<bothR>\\||\\d*)\\*)|^(?<end>\\*\\|(?<endR>\\||\\d*))|^(?<double>^\\|(?<doubleR>\\||\\d*)))(?!\\||\\d)");
+    public static final Pattern TOKEN_PATTERN = Pattern.compile("(^(?<start>^\\|(?<startR>\\||\\d+)\\*)|^(?<both>\\*\\|(?<bothR>\\||\\d+)\\*)|^(?<end>\\*\\|(?<endR>\\||\\d+))|^(?<double>^\\|(?<doubleR>\\||\\d+)))(?!\\||\\d)");
 
     @Override
     public Pattern getPattern() {
@@ -33,12 +32,6 @@ public class DoubleBarParser extends AbstractParser<DoubleBar> {
 
 
         if (m.find()) {
-
-            /*
-            temp = m.group("repeat");
-            if (! temp.equals(""))
-                repeat = Integer.parseInt(temp);
-            */
 
             if (!(m.group("start") == null || m.group("start").equals(""))) {
                 temp = m.group("startR");

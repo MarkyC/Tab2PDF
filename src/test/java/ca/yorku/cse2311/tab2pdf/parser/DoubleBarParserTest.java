@@ -17,6 +17,7 @@ public class DoubleBarParserTest {
             , "-|----1-----1-----1-|-----1-----1-----1-----1-|"
             , "**||-----1-----1-----1-|-----1-----1-----1-----1-|"
             , "|||3-----1-----1-----1-|-----1-----1-----1-----1-|"
+            , "|-----1-----1-----1-|-----1-----1-----1-----1-|"
     };
 
     /**
@@ -53,8 +54,12 @@ public class DoubleBarParserTest {
         for (String line : INVALID_LINES) {
             try { // Go through each invalid line, hoping to throw an Exception, since they cannot be parsed
 
+                try {
                 parser.parse(line);
-
+                } catch (NumberFormatException e) {
+                    System.out.println(line);
+                    e.printStackTrace();
+                }
                 fail(); // Fail if we get here, since the lines are invalid, and should produce an Exception
 
             } catch (ParseException e) {
