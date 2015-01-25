@@ -13,8 +13,8 @@ public class SpacingParserTest {
      * None of these should be parsed
      */
     public static final String[] INVALID_LINES = {
-            "SPACEING=",
-            "SPACEING=A",
+            "SPACING=",
+            "SPACING=A",
             "|--",
             "0--|"
     };
@@ -23,20 +23,20 @@ public class SpacingParserTest {
      * All of these should be parsed
      */
     public static final String[] VALID_LINES = {
-            "SPACEING=1",
-            "SPACEING=2",
-            "SPACEING=2.11",
-            "SPACEING=2.5",
+            "SPACING=1",
+            "SPacING=2",
+            "SPACING=2.10 asd",
+            "SPACING=2.5",
     };
 
     /**
      * All of these should be parsed
      */
     public static final String[] CORRECT_SPACEINGS = {
-            "SPACEING=1",
-            "SPACEING=2",
-            "SPACEING=2.11",
-            "SPACEING=2.5",
+            "1",
+            "2",
+            "2.10",
+            "2.5",
     };
 
     private SpacingParser parser;
@@ -68,8 +68,8 @@ public class SpacingParserTest {
         for (int i = 0; i < VALID_LINES.length; ++i) {  // Go through each valid line,
 
             String line = VALID_LINES[i];          // grab the current line
-            String title = parser.parse(line);      // parse it
-            assertEquals(CORRECT_SPACEINGS[i], title); // ensure it equals the Title in the corresponding CORRECT_TITLES index
+            String spaceing = parser.parse(line);      // parse it
+            assertEquals(CORRECT_SPACEINGS[i], spaceing); // ensure it equals the Title in the corresponding CORRECT_TITLES index
         }
     }
 

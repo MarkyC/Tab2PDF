@@ -10,7 +10,7 @@ public class SpacingParser extends AbstractParser<String>  {
     /**
      * Look for SPACING=Some float
      */
-    public static final Pattern TOKEN_PATTERN = Pattern.compile("SPACING=([0-9]+\\.?[0-9]+)", Pattern.CASE_INSENSITIVE);
+    public static final Pattern TOKEN_PATTERN = Pattern.compile("SPACING=([0-9]*\\.?[0-9]+)", Pattern.CASE_INSENSITIVE);
 
     @Override
     public Pattern getPattern() {
