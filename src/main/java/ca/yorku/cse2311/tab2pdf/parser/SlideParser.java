@@ -6,14 +6,11 @@ import ca.yorku.cse2311.tab2pdf.model.Slide;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by Brody Atto on 25/01/2015.
- */
 public class SlideParser extends AbstractParser<Slide> {
     /**
      * Look for intiger\intiger
      */
-    public static final Pattern TOKEN_PATTERN = Pattern.compile("^(\\ds\\d)", Pattern.CASE_INSENSITIVE);
+    public static final Pattern TOKEN_PATTERN = Pattern.compile("^(\\d+)s(\\d+)", Pattern.CASE_INSENSITIVE);
 
     @Override
     public Pattern getPattern() {
@@ -26,7 +23,7 @@ public class SlideParser extends AbstractParser<Slide> {
 
         if (m.find()) {
 
-            return new Slide(m.group(1));
+            return new Slide(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)));
         }
 
         throw new ParseException(token, getPattern());

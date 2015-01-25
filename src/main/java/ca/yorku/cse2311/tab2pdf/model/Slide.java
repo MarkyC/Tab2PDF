@@ -4,14 +4,20 @@ package ca.yorku.cse2311.tab2pdf.model;
  * Created by Brody Atto on 25/01/2015.
  */
 public class Slide implements IMusicalNotation {
-    private final String slide;
+    private final int slideStart;
+    private final int slideEnd;
 
-    public Slide(String slide) {
-        this.slide = slide;
+    public Slide(int slideStart, int slideEnd) {
+        this.slideStart = slideStart;
+        this.slideEnd = slideEnd;
     }
 
-    public String getSlide() {
-        return slide;
+    public int getSlideStart() {
+        return slideStart;
+    }
+
+    public int getSlideEnd() {
+        return slideEnd;
     }
 
     @Override
@@ -19,22 +25,25 @@ public class Slide implements IMusicalNotation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Slide slide1 = (Slide) o;
+        Slide slide = (Slide) o;
 
-        if (slide != null ? !slide.equals(slide1.slide) : slide1.slide != null) return false;
+        if (slideEnd != slide.slideEnd) return false;
+        if (slideStart != slide.slideStart) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return slide != null ? slide.hashCode() : 0;
+        int result = slideStart;
+        result = 31 * result + slideEnd;
+        return result;
     }
 
     @Override
     public String toString() {
         return "Note{" +
-                "slide='" + slide + '\'' +
+                "slide='" + slideStart + "s" + slideEnd + '\'' +
                 '}';
     }
 }
