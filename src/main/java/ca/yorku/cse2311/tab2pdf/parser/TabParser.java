@@ -1,10 +1,6 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
-import ca.yorku.cse2311.tab2pdf.model.IMusicalNotation;
-import ca.yorku.cse2311.tab2pdf.model.Note;
-import ca.yorku.cse2311.tab2pdf.model.Space;
-import ca.yorku.cse2311.tab2pdf.model.StandardBar;
-import javafx.scene.control.Tab;
+import ca.yorku.cse2311.tab2pdf.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +22,17 @@ public class TabParser {
         MUSICAL_NOTES.add(new Space());
         MUSICAL_NOTES.add(new StandardBar());
     }
+
+    public static final List<AbstractParser> PARSERS = new ArrayList<>();
+
+    static {
+        PARSERS.add(new NoteParser());
+        PARSERS.add(new SpaceParser());
+        PARSERS.add(new StandardBarParser());
+        //PARSERS.add()
+
+    }
+
 
     public static boolean endOfLine(int index, String line) {
         return (index + 1 > line.length());
