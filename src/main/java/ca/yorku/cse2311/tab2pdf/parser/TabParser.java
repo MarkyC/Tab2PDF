@@ -1,10 +1,6 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
-import ca.yorku.cse2311.tab2pdf.model.IMusicalNotation;
-import ca.yorku.cse2311.tab2pdf.model.Note;
-import ca.yorku.cse2311.tab2pdf.model.Space;
-import ca.yorku.cse2311.tab2pdf.model.StandardBar;
-import javafx.scene.control.Tab;
+import ca.yorku.cse2311.tab2pdf.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
