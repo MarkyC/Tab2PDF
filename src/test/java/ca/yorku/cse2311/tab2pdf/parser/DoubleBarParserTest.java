@@ -54,13 +54,9 @@ public class DoubleBarParserTest {
         for (String line : INVALID_LINES) {
             try { // Go through each invalid line, hoping to throw an Exception, since they cannot be parsed
 
-                try {
                 parser.parse(line);
-                } catch (NumberFormatException e) {
-                    System.out.println(line);
-                    e.printStackTrace();
-                }
-                fail(); // Fail if we get here, since the lines are invalid, and should produce an Exception
+
+                fail("Was able to parse an invalid line"); // Fail if we get here, since the lines are invalid, and should produce an Exception
 
             } catch (ParseException e) {
                 /* This Exception should be triggered since we gave the parser invalid lines */
@@ -69,18 +65,14 @@ public class DoubleBarParserTest {
     }
 
     @Test
-    public void testParseValidLines() throws ParseException {
+    public void testParseValidLines() throws ParseException, NumberFormatException {
 
         for (int i = 0; i < VALID_LINES.length; ++i) {  // Go through each valid line,
 
             String line = VALID_LINES[i];          // grab the current line
-            try {
-                DoubleBar doubleBar = parser.parse(line);      // parse it
-                assertEquals(VALID_RESPONSES[i], doubleBar); // ensure it equals the Title in the corresponding CORRECT_TITLES index
-            } catch (NumberFormatException e) {
-                System.out.println(line);
-                e.printStackTrace();
-            }
+            DoubleBar doubleBar = parser.parse(line);      // parse it
+            assertEquals(VALID_RESPONSES[i], doubleBar); // ensure it equals the Title in the corresponding CORRECT_TITLES index
+
         }
     }
 
@@ -88,13 +80,6 @@ public class DoubleBarParserTest {
     public void testCanParseInvalidLines() {
 
         for (String line : INVALID_LINES) {
-            //System.out.println(line + parser.canParse(line));
-            if (parser.canParse(line))
-                try {
-                    System.out.println(parser.parse(line).toString());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
             assertFalse(parser.canParse(line)); // NoteParser should not be able to parse any invalid lines
         }
     }
