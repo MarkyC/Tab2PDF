@@ -13,7 +13,7 @@ public class StandardBar implements IMusicalNotation {
 
     @Override
     public String toString() {
-        return "StandardBar{}";
+        return "|";
     }
 
     @Override

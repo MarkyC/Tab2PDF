@@ -12,7 +12,7 @@ public class Space implements IMusicalNotation {
 
     @Override
     public String toString() {
-        return "Space{}";
+        return "-";
     }
 
     @Override

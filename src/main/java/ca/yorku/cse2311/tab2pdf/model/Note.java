@@ -39,8 +39,6 @@ public class Note implements IMusicalNotation {
 
     @Override
     public String toString() {
-        return "Note{" +
-                "note='" + note + '\'' +
-                '}';
+        return note;
     }
 }

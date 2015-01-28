@@ -35,8 +35,6 @@ public class SquareNote implements IMusicalNotation {
 
     @Override
     public String toString() {
-        return "Note{" +
-                "note='" + note + '\'' +
-                '}';
+        return "<" + note + ">";
     }
 }
