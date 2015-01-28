@@ -12,7 +12,6 @@ public class Dash implements ITabNotation {
 
     @Override
     public String toString() {
-
         return "-";
     }
 

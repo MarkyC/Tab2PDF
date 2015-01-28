@@ -13,7 +13,6 @@ public class Pipe implements ITabNotation {
 
     @Override
     public String toString() {
-
         return "|";
     }
 

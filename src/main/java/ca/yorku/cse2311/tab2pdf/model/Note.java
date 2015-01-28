@@ -39,7 +39,6 @@ public class Note implements ITabNotation {
 
     @Override
     public String toString() {
-
         return note;
     }
 }
