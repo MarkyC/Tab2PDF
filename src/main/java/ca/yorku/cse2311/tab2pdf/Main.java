@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import static ca.yorku.cse2311.tab2pdf.PdfHelper.*;
+
 /**
  * First iText example: Hello World.
  */
@@ -156,6 +158,7 @@ public class Main {
             // This should probably be handled with a Thread.UncaughtExceptionHandler
             e.printStackTrace();
         }
+
     }
 
     /**
@@ -177,21 +180,25 @@ public class Main {
         // step 3
         document.open();
         // step 4
-        document.add(new Paragraph("Hello World!"));                // Hello World!
+        //document.add(new Paragraph("Hello World!"));                // Hello World!
         document.add(new Paragraph(TabParser.getTitle(lines)));     // The Tab's Title
         document.add(new Paragraph(TabParser.getSubtitle(lines)));  // The Tab's Subtitle
         drawShapes(writer);
+
+        for (int i = 0; i < 9; i++)
+            stave(i, writer);
+
         // step 5
         document.close();
     }
 
     private void drawShapes(PdfWriter writer) {
-        //Draws 2 lines
-        PdfHelper.line(100, 100, 200, 100, 1.5f, writer);
-        PdfHelper.line(100, 110, 200, 110, 1, writer);
+        linesCircles(0, 50, writer);
+        circlesLines(0, 550, writer);
+        for(int i = 0; i <= 600 ; i += 100){
+            thinLine(1, i, writer);
+            thickLine(2, i, writer);
+        }
 
-        //Draws 2 Circles
-        PdfHelper.circle(200, 100, 2.5f, true, writer); //Filled Circle
-        PdfHelper.circle(100, 100, 3.5f, false, writer); //Hollow circle
     }
 }
