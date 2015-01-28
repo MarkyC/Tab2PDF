@@ -69,9 +69,24 @@ public class DoubleBar implements ITabNotation {
 
     @Override
     public String toString() {
-        return String.format(
-                "DoubleBar{repeat=%d, beginRepeat=%b, endRepeat=%b", repeat, beginRepeat, endRepeat
-        );
+        String temp = "";
+
+        if (endRepeat) {
+            temp += "*";
+        }
+        temp += "|";
+
+        if (repeat == 1) {
+            temp += "|";
+        } else {
+            temp += repeat;
+        }
+
+        if (beginRepeat) {
+            temp += "*";
+        }
+
+        return temp;
     }
 
     @Override
