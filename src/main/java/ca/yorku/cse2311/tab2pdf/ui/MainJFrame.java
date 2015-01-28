@@ -1,5 +1,7 @@
 package ca.yorku.cse2311.tab2pdf.ui;
 
+import ca.yorku.cse2311.tab2pdf.Arguments;
+
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
@@ -164,7 +166,7 @@ public class MainJFrame extends JFrame {
      *
      * @param title The title of the window
      */
-    public MainJFrame(String title) {
+    private MainJFrame(String title) {
 
         super(title);
 
@@ -187,16 +189,35 @@ public class MainJFrame extends JFrame {
         this.getContentPane().add(createPdfButtonPanel());
     }
 
+    private MainJFrame(String title, Arguments args) {
+
+        this(title);
+
+        inputFile = args.getInputFile();
+        outputFile = args.getOutputFile();
+
+        inputFilePath.setText((null != inputFile) ? inputFile.getAbsolutePath() : "");
+        outputFilePath.setText((null != outputFile) ? outputFile.getAbsolutePath() : "");
+    }
+
     /**
      * Creates and shows the main window of our application
      */
     public static void createAndShow() {
 
-        MainJFrame window = new MainJFrame(WINDOW_TITLE);  // create the window that holds our application
-        window.pack();                              // compress the window
-        window.setMinimumSize(WINDOW_MIN_SIZE);     // set min window size
+        createAndShow("Tab2PDF", new Arguments());
+    }
+
+    public static void createAndShow(String title, Arguments args) {
+
+        // see: http://docs.oracle.com/javase/tutorial/uiswing/components/toplevel.html
+        MainJFrame window = new MainJFrame(title, args);   // create the window that holds our application
+
+        // See here for more info: http://www.java2s.com/Tutorial/Java/0240__Swing/DisplayaJFrameinstance.htm
+        window.setSize(500, 300);   // TODO: remove hardcoded numbers here
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // exit the app when the JFrame closes
-        window.setVisible(true);                    // Show the window
+        window.setVisible(true);    // Show the window
+
     }
 
     public static void main(String[] args) {

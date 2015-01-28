@@ -1,12 +1,14 @@
 package ca.yorku.cse2311.tab2pdf;
 
 import ca.yorku.cse2311.tab2pdf.parser.TabParser;
+import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
 import ca.yorku.cse2311.tab2pdf.util.FileUtils;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -197,9 +199,14 @@ public class Main {
      */
     public static void main(String[] args) {
 
+        // Set Logging First!
         LOG.setLevel(Level.ALL);
-        Arguments arguments = new Arguments();
 
+        // Holds the command line arguments for this app
+        final Arguments arguments = new Arguments();
+
+        // if the user gave arguments via the command line when they started the app
+        // parse them for input (-i, --input) and output (-o, --output) Files
         if (0 != args.length) {
 
             try {
@@ -215,25 +222,18 @@ public class Main {
             }
         }
 
-        //MainJFrame window =
-
-        System.exit(0);
-
-         /*   printUsageExit();
-
-        } else {
-
-            try {
-
-            parseArgs(args);
-
-            if (null == inputFile) {
-                System.out.println("No input file specified");
-                printUsageExit();
+        // This starts our GUI
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                MainJFrame.createAndShow("Tab2PDF", arguments);
             }
-        }*/
+        });
 
+        // This creates a PDF in the background using the command line arguments. Our GUI is not wired up yet
         try {
+
+            inputFile = arguments.getInputFile();
+            outputFile = arguments.getOutputFile();
 
             // we will allow the output file to be null. This means the user just wants to generate a temporary PDF
             if (null == outputFile) {
