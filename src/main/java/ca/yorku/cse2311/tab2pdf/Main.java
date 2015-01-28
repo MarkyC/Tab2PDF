@@ -11,6 +11,8 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static ca.yorku.cse2311.tab2pdf.PdfHelper.*;
 
@@ -23,12 +25,11 @@ public class Main {
      * The name of the PDF file we will create
      */
     public static final String FILENAME = "hello";
-
     /**
      * PDF file suffix (*.pdf)
      */
     public static final String PDF_SUFFIX = ".pdf";
-
+    private final static Logger LOG = Logger.getLogger(Main.class.getName());
     public static File inputFile;
     public static File outputFile;
 
@@ -119,6 +120,76 @@ public class Main {
 
     }
 
+    private static String findInputFileInArgs(String[] args) throws Exception {
+        for (int i = 0; i < args.length; i++) {
+
+            String arg = args[i];
+
+            switch (arg.charAt(0)) {
+
+                case '-':
+
+                    if ((1 < arg.length()) && ('-' == arg.charAt(1))) {
+                        // This is a double-dash option: --input or --output
+
+                        if ("-input".equals(arg.substring(1))) {   // Set the input file
+
+                            if (args.length > i + 1) {
+                                return args[i + 1];
+                            }
+                        }
+
+                    } else {
+                        if ("i".equals(arg.substring(1))) {   // Set the input file
+
+                            if (args.length > i + 1) {
+                                return args[i + 1];
+                            }
+                        }
+                    }
+                    break;
+
+            }
+        }
+
+        throw new Exception("No input file found");
+    }
+
+    private static String findOutputFileInArgs(String[] args) throws Exception {
+        for (int i = 0; i < args.length; i++) {
+
+            String arg = args[i];
+
+            switch (arg.charAt(0)) {
+
+                case '-':
+
+                    if ((1 < arg.length()) && ('-' == arg.charAt(1))) {
+                        // This is a double-dash option: --input or --output
+
+                        if ("-output".equals(arg.substring(1))) {
+
+                            if (args.length > i + 1) {
+                                return args[i + 1];
+                            }
+                        }
+
+                    } else {
+                        if ("o".equals(arg.substring(1))) {
+
+                            if (args.length > i + 1) {
+                                return args[i + 1];
+                            }
+                        }
+                    }
+                    break;
+
+            }
+        }
+
+        throw new Exception("No output file found");
+    }
+
     /**
      * Creates a PDF file that says Hello World and opens it
      *
@@ -126,10 +197,31 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        if (0 == args.length) {
+        LOG.setLevel(Level.ALL);
+        Arguments arguments = new Arguments();
 
-            printUsageExit();
+        if (0 != args.length) {
+
+            try {
+                arguments.setInputFile(findInputFileInArgs(args));
+            } catch (Exception e) {
+                LOG.log(Level.WARNING, e.getMessage());
+            }
+
+            try {
+                arguments.setOutputFile(findOutputFileInArgs(args));
+            } catch (Exception e) {
+                LOG.log(Level.WARNING, e.getMessage());
+            }
+        }
+
+        System.exit(0);
+
+         /*   printUsageExit();
+
         } else {
+
+            try {
 
             parseArgs(args);
 
@@ -137,7 +229,7 @@ public class Main {
                 System.out.println("No input file specified");
                 printUsageExit();
             }
-        }
+        }*/
 
         try {
 
