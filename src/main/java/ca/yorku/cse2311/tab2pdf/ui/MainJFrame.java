@@ -114,16 +114,9 @@ public class MainJFrame extends JFrame {
         MainJFrame window = new MainJFrame(title);   // create the window that holds our application
 
         // See here for more info: http://www.java2s.com/Tutorial/Java/0240__Swing/DisplayaJFrameinstance.htm
-        window.setSize(500, 300);   // TODO: remove hardcoded numbers here
+        window.setSize(700, 500);   // TODO: remove hardcoded numbers here
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // exit the app when the JFrame closes
         window.setVisible(true);    // Show the window
-    }
-
-    public static void main(String[] args) {
-
-        // Temporary stub to test your code
-        // Right click this file and click Run As > Java Application
-        MainJFrame.createAndShow("Tab2PDF");
     }
 
     /**
