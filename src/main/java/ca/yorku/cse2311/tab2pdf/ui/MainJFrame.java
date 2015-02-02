@@ -59,17 +59,17 @@ public class MainJFrame extends JFrame {
     /**
      * Filters *.txt and *.text files
      */
-    private static final FileFilter TEXT_FILE_FILTER = new FileNameExtensionFilter("Text Files", "txt", "text");
+    private static final FileFilter TEXT_FILE_FILTER = new FileNameExtensionFilter("Text Files (*.txt, *.text)", "txt", "text");
 
     /**
      * Filters *.tab files
      */
-    private static final FileFilter TAB_FILE_FILTER = new FileNameExtensionFilter("Tab Files", "tab");
+    private static final FileFilter TAB_FILE_FILTER = new FileNameExtensionFilter("Tab Files (*.tab)", "tab");
 
     /**
      * Filters *.pdf files
      */
-    private static final FileFilter PDF_FILE_FILTER = new FileNameExtensionFilter("PDF Files", "pdf");
+    private static final FileFilter PDF_FILE_FILTER = new FileNameExtensionFilter("PDF Files (*.pdf)", "pdf");
 
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
 
