@@ -15,6 +15,7 @@ public class SubtitleParserTest {
             , "Subtitle=Jim Matheos"
             , "subtitlE=Jim Matheos"
             , "subtitle=Jim"
+            
     };
 
     public static final String[] CORRECT_SUBTITLES = {
@@ -67,4 +68,5 @@ public class SubtitleParserTest {
             assertEquals(CORRECT_SUBTITLES[i], title);  // ensure it equals the Subtitle in the corresponding CORRECT_SUBTITLES index
         }
     }
+    
 }

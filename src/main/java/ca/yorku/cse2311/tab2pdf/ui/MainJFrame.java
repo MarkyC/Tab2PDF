@@ -34,7 +34,7 @@ public class MainJFrame extends JFrame {
             System.out.println("Input Button Clicked: " + e.paramString());
 
             // TODO: open the JFileChooser here
-
+            //String s ;
             // TODO: (as a bonus...) restrict input to only *.txt files...
             // To do this, you will have to look up file filters
             // See: http://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html#filters
