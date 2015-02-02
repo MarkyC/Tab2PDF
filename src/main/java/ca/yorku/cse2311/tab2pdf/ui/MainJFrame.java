@@ -229,6 +229,7 @@ public class MainJFrame extends JFrame {
 
         // Setup button
         JButton browseButton = new JButton(BROWSE);
+        browseButton.setActionCommand("Browse For Input File");
         browseButton.addActionListener(INPUT_LISTENER);
 
         // Setup input file text field
@@ -260,6 +261,7 @@ public class MainJFrame extends JFrame {
 
         // Setup button
         JButton browseButton = new JButton(BROWSE);
+        browseButton.setActionCommand("Browse For Output File");
         browseButton.addActionListener(OUTPUT_LISTENER);
 
         // Setup input file text field
