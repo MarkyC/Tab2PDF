@@ -109,6 +109,7 @@ public class MainJFrame extends JFrame {
     // When the user clicks these buttons, a file chooser will open and allow them to select a file
     private JButton inputFileButton;
     private JButton outputFileButton;
+    private JButton createPdfButton;
 
     /**
      * Creates the main window of our application
@@ -179,7 +180,7 @@ public class MainJFrame extends JFrame {
 
         panel.add(inputFilePath);    // add the input file text field to the panel
         panel.add(inputFileButton);    // add the browse button to the panel
-
+        
         return panel;
     }
 
@@ -209,5 +210,13 @@ public class MainJFrame extends JFrame {
         panel.add(outputFileButton);    // add the browse button to the panel
 
         return panel;
+    }
+    private JPanel creatPdfButtonPanel(){
+    	JPanel panel = new JPanel();
+    	
+    	createPdfButton = new JButton("Create PDF");
+    	createPdfButton.addActionListener(createPdfActionListener);
+    	
+    	panel.add(createPdfButton);
     }
 }
