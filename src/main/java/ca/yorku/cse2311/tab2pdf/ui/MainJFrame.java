@@ -105,6 +105,29 @@ public class MainJFrame extends JFrame {
             // We can make this pretty later
         }
     };
+    private final ActionListener createPdfActionListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            System.out.println("Output Button Clicked: " + e.paramString());
+
+            // TODO: open the JFileChooser here
+            if (e.getSource() == createPdfButton) {
+                
+               
+            }
+            // TODO: (as a bonus...) restrict input to only *.txt files...
+            // To do this, you will have to look up file filters
+            // See: http://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html#filters
+
+            // TODO: set the text of outputFilePath to the path of the File that was chosen by the outputFileChooser
+            // I'm not sure what happens when this file doesn't exist.
+            // If you have to choose a file that exists, allow the outputFileChooser to choose a directory
+            // and name the output file to the same name as the input File, with a PDF extension
+            // So, if input File is moonlightsonata.txt, output file is moonlightsonata.txt.pdf
+            // We can make this pretty later
+        }
+    };
     // To use this, see: http://docs.oracle.com/javase/tutorial/uiswing/components/button.html
     // When the user clicks these buttons, a file chooser will open and allow them to select a file
     private JButton inputFileButton;
@@ -218,5 +241,12 @@ public class MainJFrame extends JFrame {
     	createPdfButton.addActionListener(createPdfActionListener);
     	
     	panel.add(createPdfButton);
+    	return panel;
     }
+    public static void main(String[] args) {
+    	
+    	        // Temporary stub to test your code
+    	        // Right click this file and click Run As > Java Application
+    	        MainJFrame.createAndShow("Tab2PDF");
+    	    }
 }
