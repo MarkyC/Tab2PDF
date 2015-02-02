@@ -76,7 +76,23 @@ public class MainJFrame extends JFrame {
             System.out.println("Output Button Clicked: " + e.paramString());
 
             // TODO: open the JFileChooser here
-
+            if (e.getSource() == outputFileButton) {
+                outputFileChooser = new JFileChooser();
+            	int returnVal = outputFileChooser.showOpenDialog(MainJFrame.this);
+            	try{
+            		 if (returnVal == JFileChooser.APPROVE_OPTION) {
+                         FileNameExtensionFilter filter = new FileNameExtensionFilter("PDF FILES", "pdf", "PDF");
+                         outputFileChooser.setFileFilter(filter);
+                         File file = outputFileChooser.getSelectedFile();
+                         outputFilePath.setText(file.getPath());
+                         //This is where a real application would open the file.
+                     } else {
+                     }
+            	}catch(NullPointerException f2){
+            		System.out.println("Only PDF files are acceptable output files.");
+            	}
+               
+            }
             // TODO: (as a bonus...) restrict input to only *.txt files...
             // To do this, you will have to look up file filters
             // See: http://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html#filters
@@ -87,7 +103,6 @@ public class MainJFrame extends JFrame {
             // and name the output file to the same name as the input File, with a PDF extension
             // So, if input File is moonlightsonata.txt, output file is moonlightsonata.txt.pdf
             // We can make this pretty later
-            outputFilePath.setText("TODO: set the text here to the path of the file that the PDF will be saved to, ex: ~/deep/moonlightsonata.txt.pdf");
         }
     };
     // To use this, see: http://docs.oracle.com/javase/tutorial/uiswing/components/button.html
