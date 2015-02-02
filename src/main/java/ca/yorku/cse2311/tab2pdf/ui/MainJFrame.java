@@ -1,138 +1,163 @@
 package ca.yorku.cse2311.tab2pdf.ui;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * MainJFrame
- * <p/>
- * Normally it's bad practice to extend JFrame ("prefer composition over inheritance"), but this is fine for now
+ * Handles the GUI of the application
  *
  * @author Marco
  * @since 2015-01-21
  */
 public class MainJFrame extends JFrame {
 
-    // to use this, see: http://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html
-    // When you create this with "new JFileChooser" the file chooser will open
-    private JFileChooser inputFileChooser;
-    private JFileChooser outputFileChooser;
+    public static final String BROWSE = "Browse";
 
-    // to use this, see: http://docs.oracle.com/javase/tutorial/uiswing/components/textfield.html
-    // This text field will display to the user the path of the file they selected
-    private JTextField inputFilePath;
+    public static final String EMPTY_FILE_PATH = "Type the file path, or select a file by clicking browse...";
+
+    public static final String CREATE_PDF = "Create PDF";
+
+    /**
+     * Border around the Input file panel
+     */
+    public static final TitledBorder INPUT_PANEL_BORDER = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Input File");
+
+    /**
+     * Border around the output file panel
+     */
+    public static final TitledBorder OUTPUT_PANEL_BORDER = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Output File");
+
+    /**
+     * Minimum width of inputFilePath/outputFilePath
+     */
+    public static final int FILE_FIELD_MIN_WIDTH = 400;
+
+    /**
+     * Max width of the input/output panels (file path text field + browse button)
+     */
+    public static final int FILE_PANEL_MAX_WIDTH = 800;
+
+    /**
+     * Minimum size of the window
+     */
+    public static final Dimension WINDOW_MIN_SIZE = new Dimension(400, 200);
+
+    /**
+     * Title of the GUI window
+     */
+    public static final String WINDOW_TITLE = "Tab2PDF";
+
+    /**
+     * Filters *.txt and *.text files
+     */
+    private static final FileFilter TEXT_FILE_FILTER = new FileNameExtensionFilter("Text Files", "txt", "text");
+
+    /**
+     * Filters *.tab files
+     */
+    private static final FileFilter TAB_FILE_FILTER = new FileNameExtensionFilter("Tab Files", "tab");
+
+    /**
+     * Filters *.pdf files
+     */
+    private static final FileFilter PDF_FILE_FILTER = new FileNameExtensionFilter("PDF Files", "pdf");
+
+    private final Logger LOG = Logger.getLogger(this.getClass().getName());
+
+    /**
+     * The Tab File we will be converting to PDF
+     */
+    private File inputFile;
+
+    /**
+     * The PDF File to save output to
+     */
+    private File outputFile;
+
+    /**
+     * This ActionListener will fire when the Create PDF button is clicked
+     */
+    private final ActionListener CREATE_PDF_LISTENER = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            LOG.log(Level.INFO, e.paramString());
+
+            JOptionPane.showMessageDialog(
+                    MainJFrame.this,
+                    "input=" + inputFile.getAbsolutePath()
+                            + "\noutput=" + outputFile.getAbsolutePath(),
+                    "Create PDF",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        }
+    };
+
+    /**
+     * Will show the path to the tab file
+     */
+    private JTextField inputFilePath = new JTextField(EMPTY_FILE_PATH);
+
     /**
      * This ActionListener will listen for clicks to the inputFileButton
      * It will open a file chooser when inputFileButton is clicked
      */
-    private final ActionListener inputActionListener = new ActionListener() {
+    private final ActionListener INPUT_LISTENER = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            System.out.println("Input Button Clicked: " + e.paramString());
+            LOG.log(Level.INFO, e.paramString());
 
-            // TODO: open the JFileChooser here
-            if (e.getSource() == inputFileButton) {
-                inputFileChooser = new JFileChooser();
-            	int returnVal = inputFileChooser.showOpenDialog(MainJFrame.this);
-            	try{
-            		if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT FILES", "txt", "text");
-                        inputFileChooser.setFileFilter(filter);
-                        File file = inputFileChooser.getSelectedFile();
-                        inputFilePath.setText(file.getPath());
-                        //This is where a real application would open the file.
-                        
-                    } else {
-                        
-                    }
-            	}catch( NullPointerException f1){
-            		System.out.println("Only text files are acceptable input files.");
-            	}
-                
+            // setup file chooser
+            JFileChooser fc = new JFileChooser();
+            fc.setFileFilter(TEXT_FILE_FILTER);           // Allow *.txt files (default)
+            fc.addChoosableFileFilter(TAB_FILE_FILTER);   // Allow *.tab files
+
+            // open the file chooser, showing the open dialog
+            if (JFileChooser.APPROVE_OPTION == fc.showOpenDialog(MainJFrame.this)) {
+
+                // Set the file path in the text field to that of the users chosen file
+                inputFilePath.setText(fc.getSelectedFile().getPath());
             }
-            // TODO: (as a bonus...) restrict input to only *.txt files...
-            // To do this, you will have to look up file filters
-            // See: http://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html#filters
-
-            // TODO: set the text of inputFilePath to the path of the File that was chosen by the inputFileChooser
         }
     };
-    
-    private JTextField outputFilePath;
+
+    /**
+     * Will show the path to the PDF file
+     */
+    private JTextField outputFilePath = new JTextField(EMPTY_FILE_PATH);
+
     /**
      * This ActionListener will listen for clicks to the outputFileButton
      * It will open a file chooser when outputFileButton is clicked
      */
-    private final ActionListener outputActionListener = new ActionListener() {
+    private final ActionListener OUTPUT_LISTENER = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            System.out.println("Output Button Clicked: " + e.paramString());
+            LOG.log(Level.INFO, e.paramString());
 
-            // TODO: open the JFileChooser here
-            if (e.getSource() == outputFileButton) {
-                outputFileChooser = new JFileChooser();
-            	int returnVal = outputFileChooser.showOpenDialog(MainJFrame.this);
-            	try{
-            		 if (returnVal == JFileChooser.APPROVE_OPTION) {
-                         FileNameExtensionFilter filter = new FileNameExtensionFilter("PDF FILES", "pdf", "PDF");
-                         outputFileChooser.setFileFilter(filter);
-                         File file = outputFileChooser.getSelectedFile();
-                         outputFilePath.setText(file.getPath());
-                         //This is where a real application would open the file.
-                     } else {
-                     }
-            	}catch(NullPointerException f2){
-            		System.out.println("Only PDF files are acceptable output files.");
-            	}
-               
+            // setup file chooser
+            JFileChooser fc = new JFileChooser();
+            fc.setFileFilter(PDF_FILE_FILTER);  // Allow *.pdf files (default)
+
+            // open the file chooser, showing the save dialog
+            if (JFileChooser.APPROVE_OPTION == fc.showSaveDialog(MainJFrame.this)) {
+
+                // Set the file path in the text field to that of the users chosen file
+                outputFilePath.setText(fc.getSelectedFile().getPath());
             }
-            // TODO: (as a bonus...) restrict input to only *.txt files...
-            // To do this, you will have to look up file filters
-            // See: http://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html#filters
-
-            // TODO: set the text of outputFilePath to the path of the File that was chosen by the outputFileChooser
-            // I'm not sure what happens when this file doesn't exist.
-            // If you have to choose a file that exists, allow the outputFileChooser to choose a directory
-            // and name the output file to the same name as the input File, with a PDF extension
-            // So, if input File is moonlightsonata.txt, output file is moonlightsonata.txt.pdf
-            // We can make this pretty later
         }
     };
-    private final ActionListener createPdfActionListener = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            System.out.println("Output Button Clicked: " + e.paramString());
-
-            // TODO: open the JFileChooser here
-            if (e.getSource() == createPdfButton) {
-                
-               
-            }
-            // TODO: (as a bonus...) restrict input to only *.txt files...
-            // To do this, you will have to look up file filters
-            // See: http://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html#filters
-
-            // TODO: set the text of outputFilePath to the path of the File that was chosen by the outputFileChooser
-            // I'm not sure what happens when this file doesn't exist.
-            // If you have to choose a file that exists, allow the outputFileChooser to choose a directory
-            // and name the output file to the same name as the input File, with a PDF extension
-            // So, if input File is moonlightsonata.txt, output file is moonlightsonata.txt.pdf
-            // We can make this pretty later
-        }
-    };
-    // To use this, see: http://docs.oracle.com/javase/tutorial/uiswing/components/button.html
-    // When the user clicks these buttons, a file chooser will open and allow them to select a file
-    private JButton inputFileButton;
-    private JButton outputFileButton;
-    private JButton createPdfButton;
 
     /**
      * Creates the main window of our application
@@ -155,29 +180,35 @@ public class MainJFrame extends JFrame {
         LayoutManager layout = new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS);
         this.setLayout(layout);
 
-
-        // EDIT BELOW THIS
-
-        // Add the file input and output panels to our window
-        // The default layout of JFrame's is BorderLayout
-        // see: http://docs.oracle.com/javase/tutorial/uiswing/layout/visual.html
-        this.getContentPane().add(createFileInputPanel(), BorderLayout.CENTER);
-        this.getContentPane().add(createFileOutputPanel(), BorderLayout.CENTER);
-        this.getContentPane().add(createPdfButtonPanel(), BorderLayout.CENTER);
+        this.getContentPane().add(createFileInputPanel());
+        this.getContentPane().add(Box.createGlue());
+        this.getContentPane().add(createFileOutputPanel());
+        this.getContentPane().add(Box.createGlue());
+        this.getContentPane().add(createPdfButtonPanel());
     }
 
     /**
      * Creates and shows the main window of our application
      */
-    public static void createAndShow(String title) {
+    public static void createAndShow() {
 
-        // see: http://docs.oracle.com/javase/tutorial/uiswing/components/toplevel.html
-        MainJFrame window = new MainJFrame(title);   // create the window that holds our application
-
-        // See here for more info: http://www.java2s.com/Tutorial/Java/0240__Swing/DisplayaJFrameinstance.htm
-        window.setSize(700, 500);   // TODO: remove hardcoded numbers here
+        MainJFrame window = new MainJFrame(WINDOW_TITLE);  // create the window that holds our application
+        window.pack();                              // compress the window
+        window.setMinimumSize(WINDOW_MIN_SIZE);     // set min window size
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // exit the app when the JFrame closes
-        window.setVisible(true);    // Show the window
+        window.setVisible(true);                    // Show the window
+    }
+
+    public static void main(String[] args) {
+
+        // Temporary stub to test GUI code
+        // Right click this file and click Run As > Java Application
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+
+                MainJFrame.createAndShow();
+            }
+        });
     }
 
     /**
@@ -187,24 +218,27 @@ public class MainJFrame extends JFrame {
      * @return A JPanel that will allow the user to select an input file
      */
     private JPanel createFileInputPanel() {
+
         JPanel panel = new JPanel();
 
-        // TODO: Add a Border to this Jpanel, with the title "Input File"
-        // See: http://docs.oracle.com/javase/tutorial/uiswing/components/border.html
-        // You will create a TitledBorder that uses EtchedBorder or LineBorder as its Border
-        // also see: http://docs.oracle.com/javase/8/docs/api/javax/swing/BorderFactory.html#createTitledBorder-javax.swing.border.Border-java.lang.String-
+        BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
+        panel.setLayout(layout);
 
-        // TODO: Make these hardcoded Strings/Integers constant
-        // like this (at the top of the file): private static final String BROWSE = "Browse";
-        inputFileButton = new JButton("Browse");
-        inputFileButton.addActionListener(inputActionListener);
-        inputFilePath = new JTextField("Select a file by clicking browse...");
+        // Add border to panel
+        panel.setBorder(INPUT_PANEL_BORDER);
 
-        // TODO: resize this stuff so that it looks nicer (see setPreferredSize())
+        // Setup button
+        JButton browseButton = new JButton(BROWSE);
+        browseButton.addActionListener(INPUT_LISTENER);
+
+        // Setup input file text field
+        inputFilePath.setMinimumSize(new Dimension(FILE_FIELD_MIN_WIDTH, inputFilePath.getHeight()));
 
         panel.add(inputFilePath);    // add the input file text field to the panel
-        panel.add(inputFileButton);    // add the browse button to the panel
-        
+        panel.add(browseButton);    // add the browse button to the panel
+
+        panel.setMaximumSize(new Dimension(FILE_PANEL_MAX_WIDTH, panel.getHeight()));
+
         return panel;
     }
 
@@ -215,39 +249,42 @@ public class MainJFrame extends JFrame {
      * @return A JPanel that will allow the user to select an input file
      */
     private JPanel createFileOutputPanel() {
+
         JPanel panel = new JPanel();
 
-        // TODO: Add a Border to this Jpanel, with the title "Output File"
-        // See: http://docs.oracle.com/javase/tutorial/uiswing/components/border.html
-        // You will create a TitledBorder that uses EtchedBorder or LineBorder as its Border
-        // also see: http://docs.oracle.com/javase/8/docs/api/javax/swing/BorderFactory.html#createTitledBorder-javax.swing.border.Border-java.lang.String-
+        BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
+        panel.setLayout(layout);
 
-        // TODO: Make these hardcoded Strings/Integers constant
-        // like this (at the top of the file): private static final String BROWSE = "Browse";
-        outputFileButton = new JButton("Browse");
-        outputFileButton.addActionListener(outputActionListener);
-        outputFilePath = new JTextField("Select a file by clicking browse...");
+        // Add border to panel
+        panel.setBorder(OUTPUT_PANEL_BORDER);
 
-        // TODO: resize this stuff so that it looks nicer (see setPreferredSize())
+        // Setup button
+        JButton browseButton = new JButton(BROWSE);
+        browseButton.addActionListener(OUTPUT_LISTENER);
 
-        panel.add(outputFilePath);    // add the output file text field to the panel
-        panel.add(outputFileButton);    // add the browse button to the panel
+        // Setup input file text field
+        outputFilePath.setMinimumSize(new Dimension(FILE_FIELD_MIN_WIDTH, outputFilePath.getHeight()));
+
+        panel.add(outputFilePath);  // add the output file text field to the panel
+        panel.add(browseButton);    // add the browse button to the panel
+
+        panel.setMaximumSize(new Dimension(FILE_PANEL_MAX_WIDTH, panel.getHeight()));
 
         return panel;
     }
-    private JPanel createPdfButtonPanel(){
-    	JPanel panel = new JPanel();
-    	
-    	createPdfButton = new JButton("Create PDF");
-    	createPdfButton.addActionListener(createPdfActionListener);
-    	
-    	panel.add(createPdfButton);
-    	return panel;
+
+    /**
+     * @return A JPanel with a Create PDF button
+     */
+    private JPanel createPdfButtonPanel() {
+
+        JPanel panel = new JPanel();
+
+        JButton createPdfButton = new JButton(CREATE_PDF);
+        createPdfButton.addActionListener(CREATE_PDF_LISTENER);
+
+        panel.add(createPdfButton);
+        return panel;
     }
-    public static void main(String[] args) {
-    	
-    	        // Temporary stub to test your code
-    	        // Right click this file and click Run As > Java Application
-    	        MainJFrame.createAndShow("Tab2PDF");
-    	    }
+
 }
