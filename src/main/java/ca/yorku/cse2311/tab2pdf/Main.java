@@ -232,16 +232,19 @@ public class Main {
         // This creates a PDF in the background using the command line arguments. Our GUI is not wired up yet
         try {
 
+            inputFile = arguments.getInputFile();
+            outputFile = arguments.getOutputFile();
+
             // we will allow the output file to be null. This means the user just wants to generate a temporary PDF
-            if (null == arguments.getOutputFile()) {
+            if (null == outputFile) {
                 outputFile = FileUtils.createTempFile(FILENAME, PDF_SUFFIX);
             }
 
             // Run the example code
-            new Main().createPdf(arguments.getOutputFile());
+            new Main().createPdf(outputFile);
 
             // open the newly created PDF
-            Desktop.getDesktop().open(arguments.getOutputFile());
+            Desktop.getDesktop().open(outputFile);
 
         } catch (Exception e) {
 
