@@ -163,6 +163,7 @@ public class MainJFrame extends JFrame {
         // see: http://docs.oracle.com/javase/tutorial/uiswing/layout/visual.html
         this.getContentPane().add(createFileInputPanel(), BorderLayout.CENTER);
         this.getContentPane().add(createFileOutputPanel(), BorderLayout.CENTER);
+        this.getContentPane().add(createPdfButtonPanel(), BorderLayout.CENTER);
     }
 
     /**
@@ -234,7 +235,7 @@ public class MainJFrame extends JFrame {
 
         return panel;
     }
-    private JPanel creatPdfButtonPanel(){
+    private JPanel createPdfButtonPanel(){
     	JPanel panel = new JPanel();
     	
     	createPdfButton = new JButton("Create PDF");
