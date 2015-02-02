@@ -1,9 +1,12 @@
 package ca.yorku.cse2311.tab2pdf.ui;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  * MainJFrame
@@ -34,15 +37,33 @@ public class MainJFrame extends JFrame {
             System.out.println("Input Button Clicked: " + e.paramString());
 
             // TODO: open the JFileChooser here
-            //String s ;
+            if (e.getSource() == inputFileButton) {
+                inputFileChooser = new JFileChooser();
+            	int returnVal = inputFileChooser.showOpenDialog(MainJFrame.this);
+            	try{
+            		if (returnVal == JFileChooser.APPROVE_OPTION) {
+                        FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT FILES", "txt", "text");
+                        inputFileChooser.setFileFilter(filter);
+                        File file = inputFileChooser.getSelectedFile();
+                        inputFilePath.setText(file.getPath());
+                        //This is where a real application would open the file.
+                        
+                    } else {
+                        
+                    }
+            	}catch( NullPointerException f1){
+            		System.out.println("Only text files are acceptable input files.");
+            	}
+                
+            }
             // TODO: (as a bonus...) restrict input to only *.txt files...
             // To do this, you will have to look up file filters
             // See: http://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html#filters
 
             // TODO: set the text of inputFilePath to the path of the File that was chosen by the inputFileChooser
-            inputFilePath.setText("TODO: set the text here to the path of the file that was opened, ex: ~/deep/samples/moonlightsonata.txt");
         }
     };
+    
     private JTextField outputFilePath;
     /**
      * This ActionListener will listen for clicks to the outputFileButton
