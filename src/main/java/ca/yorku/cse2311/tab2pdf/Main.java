@@ -19,7 +19,8 @@ import java.util.logging.Logger;
 import static ca.yorku.cse2311.tab2pdf.PdfHelper.*;
 
 /**
- * First iText example: Hello World.
+ * Main.java
+ * Entry Point of Our Application
  */
 public class Main {
 
@@ -212,13 +213,13 @@ public class Main {
             try {
                 arguments.setInputFile(findInputFileInArgs(args));
             } catch (Exception e) {
-                LOG.log(Level.WARNING, e.getMessage());
+                LOG.warning(e.getMessage());
             }
 
             try {
                 arguments.setOutputFile(findOutputFileInArgs(args));
             } catch (Exception e) {
-                LOG.log(Level.WARNING, e.getMessage());
+                LOG.warning(e.getMessage());
             }
         }
 
@@ -226,7 +227,14 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
 
-                MainJFrame.createAndShow("Tab2PDF", arguments);
+                try {
+                    MainJFrame.createAndShow("Tab2PDF", arguments);
+                } catch (Exception e) {
+
+                    // Our GUI messed up somehow, log it
+                    LOG.severe(e.getMessage());
+                }
+
             }
         });
 
