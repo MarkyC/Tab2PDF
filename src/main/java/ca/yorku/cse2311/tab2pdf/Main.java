@@ -225,26 +225,24 @@ public class Main {
         // This starts our GUI
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                MainJFrame.createAndShow("Tab2PDF", arguments);
+
+                MainJFrame.createAndShow(arguments);
             }
         });
 
         // This creates a PDF in the background using the command line arguments. Our GUI is not wired up yet
         try {
 
-            inputFile = arguments.getInputFile();
-            outputFile = arguments.getOutputFile();
-
             // we will allow the output file to be null. This means the user just wants to generate a temporary PDF
-            if (null == outputFile) {
+            if (null == arguments.getOutputFile()) {
                 outputFile = FileUtils.createTempFile(FILENAME, PDF_SUFFIX);
             }
 
             // Run the example code
-            new Main().createPdf(outputFile);
+            new Main().createPdf(arguments.getOutputFile());
 
             // open the newly created PDF
-            Desktop.getDesktop().open(outputFile);
+            Desktop.getDesktop().open(arguments.getOutputFile());
 
         } catch (Exception e) {
 
