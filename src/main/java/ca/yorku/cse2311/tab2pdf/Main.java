@@ -185,10 +185,14 @@ public class Main {
         document.add(new Paragraph(TabParser.getSubtitle(lines)));  // The Tab's Subtitle
         drawShapes(writer);
 
-        for (int i = 0; i < 9; i++)
-            stave(i, writer);
 
+        for (int i = 0; i < 9; i++) {
+            stave(i, writer);
+        }
+        blankSpace(0, 1, 100, writer);
         // step 5
+        PdfHelper.drawDigit(0, 1, 100, 1, writer);
+
         document.close();
     }
 
@@ -201,4 +205,6 @@ public class Main {
         }
 
     }
+
+
 }
