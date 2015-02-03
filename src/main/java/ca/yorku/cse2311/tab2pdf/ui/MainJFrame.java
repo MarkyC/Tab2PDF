@@ -205,18 +205,16 @@ public class MainJFrame extends JFrame {
      */
     public static void createAndShow() {
 
-        createAndShow("Tab2PDF", new Arguments());
+        createAndShow(WINDOW_TITLE, new Arguments());
     }
 
     public static void createAndShow(String title, Arguments args) {
 
-        // see: http://docs.oracle.com/javase/tutorial/uiswing/components/toplevel.html
         MainJFrame window = new MainJFrame(title, args);   // create the window that holds our application
-
-        // See here for more info: http://www.java2s.com/Tutorial/Java/0240__Swing/DisplayaJFrameinstance.htm
-        window.setSize(500, 300);   // TODO: remove hardcoded numbers here
+        window.pack();                          // compress contents
+        window.setMinimumSize(WINDOW_MIN_SIZE); // set minimum size
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // exit the app when the JFrame closes
-        window.setVisible(true);    // Show the window
+        window.setVisible(true);                // Show the window
 
     }
 
