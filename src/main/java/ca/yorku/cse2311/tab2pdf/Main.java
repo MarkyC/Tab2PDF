@@ -1,21 +1,26 @@
 package ca.yorku.cse2311.tab2pdf;
 
 import ca.yorku.cse2311.tab2pdf.parser.TabParser;
+import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
 import ca.yorku.cse2311.tab2pdf.util.FileUtils;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static ca.yorku.cse2311.tab2pdf.PdfHelper.*;
 
 /**
- * First iText example: Hello World.
+ * Main.java
+ * Entry Point of Our Application
  */
 public class Main {
 
@@ -23,12 +28,11 @@ public class Main {
      * The name of the PDF file we will create
      */
     public static final String FILENAME = "hello";
-
     /**
      * PDF file suffix (*.pdf)
      */
     public static final String PDF_SUFFIX = ".pdf";
-
+    private final static Logger LOG = Logger.getLogger(Main.class.getName());
     public static File inputFile;
     public static File outputFile;
 
@@ -119,6 +123,76 @@ public class Main {
 
     }
 
+    private static String findInputFileInArgs(String[] args) throws Exception {
+        for (int i = 0; i < args.length; i++) {
+
+            String arg = args[i];
+
+            switch (arg.charAt(0)) {
+
+                case '-':
+
+                    if ((1 < arg.length()) && ('-' == arg.charAt(1))) {
+                        // This is a double-dash option: --input or --output
+
+                        if ("-input".equals(arg.substring(1))) {   // Set the input file
+
+                            if (args.length > i + 1) {
+                                return args[i + 1];
+                            }
+                        }
+
+                    } else {
+                        if ("i".equals(arg.substring(1))) {   // Set the input file
+
+                            if (args.length > i + 1) {
+                                return args[i + 1];
+                            }
+                        }
+                    }
+                    break;
+
+            }
+        }
+
+        throw new Exception("No input file found");
+    }
+
+    private static String findOutputFileInArgs(String[] args) throws Exception {
+        for (int i = 0; i < args.length; i++) {
+
+            String arg = args[i];
+
+            switch (arg.charAt(0)) {
+
+                case '-':
+
+                    if ((1 < arg.length()) && ('-' == arg.charAt(1))) {
+                        // This is a double-dash option: --input or --output
+
+                        if ("-output".equals(arg.substring(1))) {
+
+                            if (args.length > i + 1) {
+                                return args[i + 1];
+                            }
+                        }
+
+                    } else {
+                        if ("o".equals(arg.substring(1))) {
+
+                            if (args.length > i + 1) {
+                                return args[i + 1];
+                            }
+                        }
+                    }
+                    break;
+
+            }
+        }
+
+        throw new Exception("No output file found");
+    }
+
     /**
      * Creates a PDF file that says Hello World and opens it
      *
@@ -126,31 +200,57 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        if (0 == args.length) {
+        // Set Logging First!
+        LOG.setLevel(Level.ALL);
 
-            printUsageExit();
-        } else {
+        // Holds the command line arguments for this app
+        final Arguments arguments = new Arguments();
 
-            parseArgs(args);
+        // if the user gave arguments via the command line when they started the app
+        // parse them for input (-i, --input) and output (-o, --output) Files
+        if (0 != args.length) {
 
-            if (null == inputFile) {
-                System.out.println("No input file specified");
-                printUsageExit();
+            try {
+                arguments.setInputFile(findInputFileInArgs(args));
+            } catch (Exception e) {
+                LOG.warning(e.getMessage());
+            }
+
+            try {
+                arguments.setOutputFile(findOutputFileInArgs(args));
+            } catch (Exception e) {
+                LOG.warning(e.getMessage());
             }
         }
 
+        // This starts our GUI
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+
+                try {
+                    MainJFrame.createAndShow("Tab2PDF", arguments);
+                } catch (Exception e) {
+
+                    // Our GUI messed up somehow, log it
+                    LOG.severe(e.getMessage());
+                }
+
+            }
+        });
+
+        // This creates a PDF in the background using the command line arguments. Our GUI is not wired up yet
         try {
 
             // we will allow the output file to be null. This means the user just wants to generate a temporary PDF
-            if (null == outputFile) {
+            if (null == arguments.getOutputFile()) {
                 outputFile = FileUtils.createTempFile(FILENAME, PDF_SUFFIX);
             }
 
             // Run the example code
-            new Main().createPdf(outputFile);
+            new Main().createPdf(arguments.getOutputFile());
 
             // open the newly created PDF
-            Desktop.getDesktop().open(outputFile);
+            Desktop.getDesktop().open(arguments.getOutputFile());
 
         } catch (Exception e) {
 
