@@ -1,12 +1,12 @@
 package ca.yorku.cse2311.tab2pdf;
 
+import java.io.IOException;
+
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.GrayColor;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.BaseFont;
-import java.io.IOException;
-import java.util.logging.Logger;
 
 /**
  * The class implements a set of methods to draw a stave, thin/thick lines, circles,
@@ -31,10 +31,9 @@ public class PdfHelper {
 	private static final int STAVE_WIDTH = LINE_SPACE * 5;
 
 	/**
-	 * Width of one digit in pixels
-	 * Might be needed in future
+	 * Size of the digits in stave
 	 */
-	//private static final int DIGIT_WIDTH = LINE_SPACE * 2;
+	private static final int DIGIT_SIZE = (int)(LINE_SPACE * 1.5);
 
 	/**
 	 * Draws a circle at the specified coordinates.
@@ -220,7 +219,7 @@ public class PdfHelper {
 	 * @param writer		Pdf writer for the document
 	 * @return yCoordinate	the Y coordinate of the blank space; used in drawDigit method
 	 */
-	public static int blankSpace(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+	private static int blankSpace(int staveNumber, int lineNumber, int xCoordinate, int digitWidth, PdfWriter writer) {
 
 		int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * PdfHelper.LINE_SPACE;
 
@@ -231,8 +230,9 @@ public class PdfHelper {
 
 		canvas.setLineWidth(5);
 
-		canvas.moveTo(xCoordinate - LINE_SPACE, yCoordinate);
-		canvas.lineTo(xCoordinate + LINE_SPACE, yCoordinate);
+		canvas.moveTo(xCoordinate - digitWidth, yCoordinate);
+		canvas.lineTo(xCoordinate + digitWidth + 1, yCoordinate);
+		//System.out.println(digitWidth);
 
 		canvas.stroke();
 
@@ -248,36 +248,28 @@ public class PdfHelper {
 	 * @param xCoordinate	the X coordinate of the middle of the combination
 	 * @param digit			the digit to be printed
 	 * @param writer		Pdf writer for the document
+	 * @throws IOException
+	 * @throws DocumentException
 	 */
-	public static void drawDigit(int staveNumber, int lineNumber, int xCoordinate, int digit, PdfWriter writer) {
-		//Clears a space for the digit and determines the Y coordinate of the digit to be printed
-	int yCoordinate = blankSpace(staveNumber, lineNumber, xCoordinate, writer);
-
-	try {
-		PdfContentByte canvas = writer.getDirectContent();
+	public static void drawDigit(int staveNumber, int lineNumber, int xCoordinate, int digit, PdfWriter writer) throws DocumentException, IOException {
 
 		BaseFont font = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1257, BaseFont.EMBEDDED);
+		//Distance from the middle of the digit to the digit border
+		int digitRadius = (int)font.getWidthPoint(' ', DIGIT_SIZE);
+		//Clears a space for the digit and determines the Y coordinate of the digit to be printed
+		int yCoordinate = blankSpace(staveNumber, lineNumber, xCoordinate, digitRadius, writer);
+		PdfContentByte canvas = writer.getDirectContent();
+
 		canvas.saveState();
 		canvas.beginText();
-		canvas.moveText(xCoordinate - 1.5f, yCoordinate);
-		canvas.setFontAndSize(font, 8);
+		canvas.moveText(xCoordinate - digitRadius, yCoordinate - digitRadius - 1);
+		canvas.setFontAndSize(font, DIGIT_SIZE);
 		canvas.showText(Integer.toString(digit));
 		canvas.endText();
-
 		canvas.restoreState();
 
 	}
 
-	catch (Exception e) {
-	}
-
-	}
 
 
-
-
-
-	}
-
-
-
+}
