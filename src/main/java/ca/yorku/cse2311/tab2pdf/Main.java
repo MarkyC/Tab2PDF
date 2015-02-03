@@ -226,7 +226,7 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
 
-                MainJFrame.createAndShow(arguments);
+                MainJFrame.createAndShow("Tab2PDF", arguments);
             }
         });
 
