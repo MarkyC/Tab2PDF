@@ -1,9 +1,9 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
 /**
- * StandardBar
+ * Pipe
  *
- * Represents a Standard Bar ('|') in Musical Notation. A Standard Bar separates Bars of music
+ * Represents a Pipe ('|') in Musical Notation. A Pipe separates Standard Bars of music
  * It's the leftmost thing in the image on this page: http://en.wikipedia.org/wiki/Bar_%28music%29
  *
  * @author Brody
@@ -14,7 +14,7 @@ public class Pipe implements IMusicalNotation {
     @Override
     public String toString() {
 
-        return "Pipe{}";
+        return "|";
     }
 
     @Override

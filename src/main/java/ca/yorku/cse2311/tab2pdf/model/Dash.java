@@ -1,7 +1,7 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
 /**
- * Space
+ * Dash
  *
  * Represents a dash ('-') in musical notation
  *
@@ -13,7 +13,7 @@ public class Dash implements IMusicalNotation {
     @Override
     public String toString() {
 
-        return "Dash{}";
+        return "-";
     }
 
     @Override
