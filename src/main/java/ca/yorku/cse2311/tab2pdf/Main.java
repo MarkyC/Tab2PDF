@@ -1,21 +1,11 @@
 package ca.yorku.cse2311.tab2pdf;
 
-import ca.yorku.cse2311.tab2pdf.parser.TabParser;
 import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
 import ca.yorku.cse2311.tab2pdf.util.FileUtils;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static ca.yorku.cse2311.tab2pdf.PdfHelper.*;
 
 /**
  * Main.java
@@ -165,54 +155,4 @@ public class Main {
             }
         });
     }
-
-    /**
-     * Creates a PDF document.
-     *
-     * @param in  the File that will be the new guitar tab
-     * @param out the File that will be the new PDF document
-     * @throws DocumentException
-     * @throws IOException
-     */
-    public void createPdf(File in, File out) throws Exception {
-
-        // We'll clean this up later! I don't like the overuse of statics here, and everywhere in this file
-        java.util.List<String> lines = FileUtils.readFile(in);
-
-        // step 1
-        Document document = new Document();
-        // step 2
-        PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(out.toPath()));
-        // step 3
-        document.open();
-        // step 4
-        //document.add(new Paragraph("Hello World!"));                // Hello World!
-        document.add(new Paragraph(TabParser.getTitle(lines).getTitle()));     // The Tab's Title
-        document.add(new Paragraph(TabParser.getSubtitle(lines).getSubtitle()));  // The Tab's Subtitle
-        drawShapes(writer);
-
-
-        for (int i = 0; i < 9; i++) {
-            stave(i, writer);
-            PdfHelper.drawDigit(3, 1, 100 * i, i, writer);
-        }
-        //blankSpace(0, 1, 100, writer);
-        // step 5
-        PdfHelper.drawDigit(0, 1, 100, 1, writer);
-
-        document.close();
-    }
-
-    private void drawShapes(PdfWriter writer) {
-
-        linesCircles(0, 50, writer);
-        circlesLines(0, 550, writer);
-        for (int i = 0; i <= 600; i += 100) {
-            thinLine(1, i, writer);
-            thickLine(2, i, writer);
-        }
-
-    }
-
-
 }
