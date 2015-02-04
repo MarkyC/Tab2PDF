@@ -9,7 +9,6 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -163,30 +162,8 @@ public class Main {
                     // Our GUI messed up somehow, log it
                     LOG.severe(e.getMessage());
                 }
-
             }
         });
-
-        // This creates a PDF in the background using the command line arguments. Our GUI is not wired up yet
-        try {
-
-            LOG.info(TabParser.parse(FileUtils.readFile(arguments.getInputFile())).toString());
-            System.out.println(TabParser.parse(FileUtils.readFile(arguments.getInputFile())).toString());
-
-
-            // Run the example code
-            new Main().createPdf(arguments.getInputFile(), arguments.getOutputFile());
-
-            // open the newly created PDF
-            Desktop.getDesktop().open(arguments.getOutputFile());
-
-        } catch (Exception e) {
-
-            // We fucked up somewhere
-            // This should probably be handled with a Thread.UncaughtExceptionHandler
-            e.printStackTrace();
-        }
-
     }
 
     /**
