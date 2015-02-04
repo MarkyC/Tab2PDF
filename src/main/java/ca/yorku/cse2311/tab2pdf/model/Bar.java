@@ -24,7 +24,7 @@ public class Bar {
      */
     public Bar() {
 
-        this.numLines = 6;
+        this(6);
     }
 
     /**

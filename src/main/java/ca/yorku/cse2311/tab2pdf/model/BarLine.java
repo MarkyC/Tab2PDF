@@ -1,6 +1,6 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,13 +13,23 @@ import java.util.List;
  */
 public class BarLine {
 
-    private List<ITabNotation> line = new LinkedList<>();
+    private List<ITabNotation> line;
+
+    public BarLine() {
+
+        this(new ArrayList<ITabNotation>());
+    }
+
+    public BarLine(List<ITabNotation> line) {
+
+        this.line = line;
+    }
 
     public List<ITabNotation> getLine() {
         return line;
     }
 
-    public void addMusicalNotation(ITabNotation note) {
+    public void addNote(ITabNotation note) {
 
         line.add(note);
     }
