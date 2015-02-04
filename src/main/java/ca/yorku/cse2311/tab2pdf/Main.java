@@ -10,7 +10,6 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -182,7 +181,7 @@ public class Main {
             // new Main().createPdf(arguments.getInputFile(), arguments.getOutputFile());
 
             // open the newly created PDF
-            Desktop.getDesktop().open(arguments.getOutputFile());
+            //Desktop.getDesktop().open(arguments.getOutputFile());
 
         } catch (Exception e) {
 
