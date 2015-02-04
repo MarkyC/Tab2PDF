@@ -1,6 +1,12 @@
 package ca.yorku.cse2311.tab2pdf.ui;
 
 import ca.yorku.cse2311.tab2pdf.Arguments;
+import ca.yorku.cse2311.tab2pdf.model.*;
+import ca.yorku.cse2311.tab2pdf.parser.TabParser;
+import ca.yorku.cse2311.tab2pdf.util.FileUtils;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -10,8 +16,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.nio.file.Files;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static ca.yorku.cse2311.tab2pdf.PdfHelper.*;
 
 /**
  * MainJFrame
@@ -76,16 +85,6 @@ public class MainJFrame extends JFrame {
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
 
     /**
-     * The Tab File we will be converting to PDF
-     */
-    private File inputFile;
-
-    /**
-     * The PDF File to save output to
-     */
-    private File outputFile;
-
-    /**
      * This ActionListener will fire when the Create PDF button is clicked
      */
     private final ActionListener CREATE_PDF_LISTENER = new ActionListener() {
@@ -94,15 +93,75 @@ public class MainJFrame extends JFrame {
 
             LOG.log(Level.INFO, e.paramString());
 
-            JOptionPane.showMessageDialog(
-                    MainJFrame.this,
-                    "input=" + inputFile.getAbsolutePath()
-                            + "\noutput=" + outputFile.getAbsolutePath(),
-                    "Create PDF",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    try {
+                        Tab tab = TabParser.parse(FileUtils.readFile(getInputFile()));
+                        createPdf(tab, getOutputFile());
+                        Desktop.getDesktop().open(getOutputFile());
+
+                    } catch (Exception e) {
+                        LOG.severe(e.getMessage());
+                    }
+                }
+
+                public void createPdf(Tab tab, File out) throws Exception {
+
+                    // step 1
+                    Document document = new Document();
+                    // step 2
+                    PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(out.toPath()));
+                    // step 3
+                    document.open();
+                    // step 4
+                    //document.add(new Paragraph("Hello World!"));                // Hello World!
+                    document.add(new Paragraph(tab.getTitle().getTitle()));     // The Tab's Title
+                    document.add(new Paragraph(tab.getSubtitle().getSubtitle()));  // The Tab's Subtitle
+
+                    stave(1, writer);
+
+                    for (Bar bar : tab.getBars()) {
+                        for (int i = 0; i < bar.getLines().size(); ++i) {
+
+                            int lineNumber = i + 1;
+                            BarLine line = bar.getLine(i);
+                            int xPos = 50;
+                            for (ITabNotation note : line.getLine()) {
+
+                                // TODO: What design pattern to use here?
+                                if (note instanceof Pipe) {
+                                    thinLine(1, xPos, writer);
+                                    xPos += 10;
+                                } else if (note instanceof Dash) {
+                                    xPos += 10;
+                                } else if (note instanceof Note) {
+                                    int actualNote = Integer.parseInt(((Note) note).getNote());
+                                    drawDigit(1, lineNumber, xPos, actualNote, writer);
+                                    xPos += 10;
+                                } else {
+                                    LOG.warning("Could not draw symbol " + note.getClass().getSimpleName());
+                                }
+                            }
+
+                        }
+                    }
+                    document.close();
+                }
+            }).start();
         }
     };
+
+    /**
+     * The Tab File we will be converting to PDF
+     */
+    private File inputFile;
+
+    /**
+     * The PDF File to save output to
+     */
+    private File outputFile;
 
     /**
      * Will show the path to the tab file
@@ -205,18 +264,16 @@ public class MainJFrame extends JFrame {
      */
     public static void createAndShow() {
 
-        createAndShow("Tab2PDF", new Arguments());
+        createAndShow(WINDOW_TITLE, new Arguments());
     }
 
     public static void createAndShow(String title, Arguments args) {
 
-        // see: http://docs.oracle.com/javase/tutorial/uiswing/components/toplevel.html
         MainJFrame window = new MainJFrame(title, args);   // create the window that holds our application
-
-        // See here for more info: http://www.java2s.com/Tutorial/Java/0240__Swing/DisplayaJFrameinstance.htm
-        window.setSize(500, 300);   // TODO: remove hardcoded numbers here
+        window.pack();                          // compress contents
+        window.setMinimumSize(WINDOW_MIN_SIZE); // set minimum size
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // exit the app when the JFrame closes
-        window.setVisible(true);    // Show the window
+        window.setVisible(true);                // Show the window
 
     }
 
@@ -230,6 +287,26 @@ public class MainJFrame extends JFrame {
                 MainJFrame.createAndShow();
             }
         });
+    }
+
+    public File getInputFile() {
+
+        return inputFile;
+    }
+
+    public void setInputFile(File inputFile) {
+
+        this.inputFile = inputFile;
+    }
+
+    public File getOutputFile() {
+
+        return outputFile;
+    }
+
+    public void setOutputFile(File outputFile) {
+
+        this.outputFile = outputFile;
     }
 
     /**

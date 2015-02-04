@@ -24,7 +24,7 @@ public class Bar {
      */
     public Bar() {
 
-        this.numLines = 6;
+        this(6);
     }
 
     /**
@@ -38,6 +38,16 @@ public class Bar {
 
         this.numLines = numLines;
 
+    }
+
+    public List<BarLine> getLines() {
+
+        return lines;
+    }
+
+    public boolean isEmpty() {
+
+        return lines.isEmpty();
     }
 
     /**
@@ -106,9 +116,7 @@ public class Bar {
 
     @Override
     public String toString() {
-        return "Bar{" +
-                "lines=" + lines +
-                ", numLines=" + numLines +
-                '}';
+
+        return lines.toString();
     }
 }

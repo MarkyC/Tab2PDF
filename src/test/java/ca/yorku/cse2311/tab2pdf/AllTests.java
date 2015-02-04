@@ -13,9 +13,9 @@ import org.junit.runners.Suite;
         , DoubleBarParserTest.class
         , NoteParserTest.class
         , SlideParserTest.class
-        , SpaceParserTest.class
+        , DashParserTest.class
         , SpacingParserTest.class
-        , StandardBarParserTest.class
+        , PipeParserTest.class
         , SubtitleParserTest.class
         , TitleParserTest.class
         , MainTest.class

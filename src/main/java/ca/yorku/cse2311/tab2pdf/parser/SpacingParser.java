@@ -1,12 +1,20 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
+import ca.yorku.cse2311.tab2pdf.model.Spacing;
+import ca.yorku.cse2311.tab2pdf.parser.exception.ParseException;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by Brody Atto on 21/01/2015.
+ * SpacingParser
+ *
+ * Parses
+ *
+ * @author Brody Atto, Marco Cirillo
+ * @since 2015-02-03
  */
-public class SpacingParser extends AbstractParser<String>  {
+public class SpacingParser extends AbstractParser<Spacing> {
     /**
      * Look for SPACING=Some float
      */
@@ -18,12 +26,12 @@ public class SpacingParser extends AbstractParser<String>  {
     }
 
     @Override
-    public String parse(String token) throws ParseException {
+    public Spacing parse(String token) throws ParseException {
         Matcher m = getPattern().matcher(token);
 
         if (m.find()) {
 
-            return m.group(1);
+            return new Spacing(m.group(1));
         }
 
         throw new ParseException(token, getPattern());

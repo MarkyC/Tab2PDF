@@ -1,5 +1,6 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
+import ca.yorku.cse2311.tab2pdf.parser.exception.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -68,7 +69,7 @@ public class SpacingParserTest {
         for (int i = 0; i < VALID_LINES.length; ++i) {  // Go through each valid line,
 
             String line = VALID_LINES[i];          // grab the current line
-            String spaceing = parser.parse(line);      // parse it
+            String spaceing = parser.parse(line).getSpacing();      // parse it
             assertEquals(CORRECT_SPACEINGS[i], spaceing); // ensure it equals the Title in the corresponding CORRECT_TITLES index
         }
     }

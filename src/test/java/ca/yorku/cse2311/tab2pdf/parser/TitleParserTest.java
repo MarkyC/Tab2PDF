@@ -1,5 +1,6 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
+import ca.yorku.cse2311.tab2pdf.parser.exception.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -62,7 +63,7 @@ public class TitleParserTest {
         for (int i = 0; i < VALID_TITLES.length; ++i) {  // Go through each valid line,
 
             String line = VALID_TITLES[i];          // grab the current line
-            String title = parser.parse(line);      // parse it
+            String title = parser.parse(line).getTitle();      // parse it
             assertEquals(CORRECT_TITLES[i], title); // ensure it equals the Title in the corresponding CORRECT_TITLES index
         }
     }
