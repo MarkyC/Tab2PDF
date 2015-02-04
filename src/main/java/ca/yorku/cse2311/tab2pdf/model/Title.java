@@ -12,6 +12,11 @@ public class Title implements ITabNotation {
 
     private final String title;
 
+    public Title() {
+
+        this("No Title");
+    }
+
     public Title(String title) {
 
         this.title = title;

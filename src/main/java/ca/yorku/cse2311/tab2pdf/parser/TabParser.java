@@ -44,44 +44,114 @@ public class TabParser {
         return (index + 1 > line.length());
     }
 
-    public static String getTitle(List<String> lines) throws Exception {
+    public static boolean isTitleLine(String line) {
+
+        return new TitleParser().canParse(line);
+    }
+
+    public static boolean isSubtitleLine(String line) {
+
+        return new SubtitleParser().canParse(line);
+    }
+
+    public static boolean isSpacingLine(String line) {
+
+        return new SpacingParser().canParse(line);
+    }
+
+    public static Title getTitle(List<String> lines) {
 
         TitleParser parser = new TitleParser();
 
         for (String line : lines) {
             if (parser.canParse(line)) {
-                return parser.parse(line).getTitle();
+                try {
+                    return parser.parse(line);
+                } catch (ParseException e) {
+                    LOG.warning(e.getMessage());
+                }
             }
         }
 
-        throw new Exception("No title found in file");
+        // If no title was found, give it the default title
+        return new Title();
     }
 
-    public static String getSubtitle(List<String> lines) throws Exception {
+    public static Subtitle getSubtitle(List<String> lines) {
 
         SubtitleParser parser = new SubtitleParser();
 
         for (String line : lines) {
             if (parser.canParse(line)) {
-                return parser.parse(line).getSubtitle();
+                try {
+                    return parser.parse(line);
+                } catch (ParseException e) {
+                    LOG.warning(e.getMessage());
+                }
             }
         }
 
-        throw new Exception("No subtitle found in file");
+        // no subtitle found, give it the default subtitle
+        return new Subtitle();
     }
 
-    public Tab parse(List<String> lines) throws Exception {
+    public static Spacing getSpacing(List<String> lines) {
 
-        Tab tab = new Tab();
+        SpacingParser parser = new SpacingParser();
 
         for (String line : lines) {
-
-            parseLine(line);
-
-            // Youtube break.
+            if (parser.canParse(line)) {
+                try {
+                    return parser.parse(line);
+                } catch (ParseException e) {
+                    LOG.warning(e.getMessage());
+                }
+            }
         }
 
-        return null;
+        // no Spacing found, give it the default Spacing
+        return new Spacing();
+    }
+
+    public static Tab parse(List<String> lines) {
+
+        Tab tab = new Tab(getTitle(lines), getSubtitle(lines), getSpacing(lines));
+        Bar bar = new Bar();
+
+        for (int i = 0; i < lines.size(); ++i) {
+
+            String line = lines.get(i);
+
+            // Skip lines that are title or spacing lines
+            if (isTitleLine(line) || isSubtitleLine(line) || isSpacingLine(line)) {
+                LOG.info("Skipping title/subtitle/spacing line: " + line);
+                continue;
+            }
+
+            // A blank line begins a new Bar
+            if (line.isEmpty()) {
+                if (!bar.isEmpty()) {
+                    LOG.info("Adding Bar: " + bar.toString());
+                    tab.addBar(bar);    // Add current bar if its not empty
+                }
+
+                bar = new Bar();        // Make a new Bar for the next lines
+                continue;               // Skip this line since its blank
+            }
+
+
+            try {
+                BarLine barLine = new BarLine(parseLine(line));
+                LOG.info("Adding Bar Line: " + barLine.toString());
+                bar.addLine(barLine);
+
+            } catch (ParseException e) {
+                LOG.warning(e.getMessage());
+                LOG.warning("Discarding line: " + line);
+            }
+        }
+
+        return tab;
     }
 
     /**
@@ -98,7 +168,7 @@ public class TabParser {
      * @param line A single line of ascii guitar tablature
      * @return A List of the tabs representation in ITabNotation objects
      */
-    public List<ITabNotation> parseLine(String line) throws ParseException {
+    public static List<ITabNotation> parseLine(String line) throws ParseException {
 
         List<ITabNotation> result = new ArrayList<>(line.length());
 
@@ -129,7 +199,7 @@ public class TabParser {
         return result;
     }
 
-    public ITabNotation parseSymbol(String line) throws CouldNotParseSymbolException, ParseException {
+    public static ITabNotation parseSymbol(String line) throws CouldNotParseSymbolException, ParseException {
 
         for (IParser parser : PARSERS) {
             if (parser.canParse(line)) {

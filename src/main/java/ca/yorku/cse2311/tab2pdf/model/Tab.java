@@ -23,12 +23,12 @@ public class Tab {
 
     public Tab() {
 
-        this(new Title("No Title"));
+        this(new Title());
     }
 
     public Tab(Title title) {
 
-        this(title, new Subtitle("No Subtitle"));
+        this(title, new Subtitle());
     }
 
     public Tab(Title title, Subtitle subtitle) {
@@ -61,5 +61,11 @@ public class Tab {
     public void addBar(Bar bar) {
 
         bars.add(bar);
+    }
+
+    @Override
+    public String toString() {
+
+        return bars.toString();
     }
 }

@@ -12,6 +12,11 @@ public class Subtitle implements ITabNotation {
 
     private final String subtitle;
 
+    public Subtitle() {
+
+        this("No Subtitle");
+    }
+
     public Subtitle(String subtitle) {
 
         this.subtitle = subtitle;

@@ -53,8 +53,7 @@ public class BarLine {
 
     @Override
     public String toString() {
-        return "BarLine{" +
-                "line=" + line +
-                '}';
+
+        return line.toString();
     }
 }

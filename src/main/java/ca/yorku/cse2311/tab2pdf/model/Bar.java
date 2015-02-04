@@ -40,6 +40,16 @@ public class Bar {
 
     }
 
+    public List<BarLine> getLines() {
+
+        return lines;
+    }
+
+    public boolean isEmpty() {
+
+        return lines.isEmpty();
+    }
+
     /**
      * Returns the number of lines this bar has
      *
@@ -106,9 +116,7 @@ public class Bar {
 
     @Override
     public String toString() {
-        return "Bar{" +
-                "lines=" + lines +
-                ", numLines=" + numLines +
-                '}';
+
+        return lines.toString();
     }
 }

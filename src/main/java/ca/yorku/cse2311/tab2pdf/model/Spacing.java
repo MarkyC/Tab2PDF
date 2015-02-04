@@ -12,6 +12,11 @@ public class Spacing implements ITabNotation {
 
     private final String spacing;
 
+    public Spacing() {
+
+        this("auto");
+    }
+
     public Spacing(String spacing) {
 
         this.spacing = spacing;
