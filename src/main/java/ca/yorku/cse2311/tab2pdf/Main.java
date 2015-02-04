@@ -170,6 +170,9 @@ public class Main {
         // This creates a PDF in the background using the command line arguments. Our GUI is not wired up yet
         try {
 
+            LOG.info(TabParser.parse(FileUtils.readFile(arguments.getInputFile())).toString());
+            System.out.println(TabParser.parse(FileUtils.readFile(arguments.getInputFile())).toString());
+
 
             // Run the example code
             new Main().createPdf(arguments.getInputFile(), arguments.getOutputFile());
@@ -207,8 +210,8 @@ public class Main {
         document.open();
         // step 4
         //document.add(new Paragraph("Hello World!"));                // Hello World!
-        document.add(new Paragraph(TabParser.getTitle(lines)));     // The Tab's Title
-        document.add(new Paragraph(TabParser.getSubtitle(lines)));  // The Tab's Subtitle
+        document.add(new Paragraph(TabParser.getTitle(lines).getTitle()));     // The Tab's Title
+        document.add(new Paragraph(TabParser.getSubtitle(lines).getSubtitle()));  // The Tab's Subtitle
         drawShapes(writer);
 
 
