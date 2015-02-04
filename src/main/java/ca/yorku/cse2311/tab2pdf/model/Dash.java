@@ -8,7 +8,7 @@ package ca.yorku.cse2311.tab2pdf.model;
  * @author Marco
  * @since 2015-01-12
  */
-public class Dash implements IMusicalNotation {
+public class Dash implements ITabNotation {
 
     @Override
     public String toString() {

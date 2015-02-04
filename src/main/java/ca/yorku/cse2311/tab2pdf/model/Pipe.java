@@ -9,7 +9,7 @@ package ca.yorku.cse2311.tab2pdf.model;
  * @author Brody
  * @since 2015-01-12
  */
-public class Pipe implements IMusicalNotation {
+public class Pipe implements ITabNotation {
 
     @Override
     public String toString() {

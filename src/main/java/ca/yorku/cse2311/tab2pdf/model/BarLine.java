@@ -13,13 +13,13 @@ import java.util.List;
  */
 public class BarLine {
 
-    private List<IMusicalNotation> line = new LinkedList<>();
+    private List<ITabNotation> line = new LinkedList<>();
 
-    public List<IMusicalNotation> getLine() {
+    public List<ITabNotation> getLine() {
         return line;
     }
 
-    public void addMusicalNotation(IMusicalNotation note) {
+    public void addMusicalNotation(ITabNotation note) {
 
         line.add(note);
     }

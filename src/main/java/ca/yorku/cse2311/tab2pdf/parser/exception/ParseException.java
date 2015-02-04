@@ -1,4 +1,4 @@
-package ca.yorku.cse2311.tab2pdf.parser;
+package ca.yorku.cse2311.tab2pdf.parser.exception;
 
 import java.util.regex.Pattern;
 
