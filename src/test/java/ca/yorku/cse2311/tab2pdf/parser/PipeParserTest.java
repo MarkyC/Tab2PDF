@@ -1,12 +1,12 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
-import ca.yorku.cse2311.tab2pdf.model.StandardBar;
+import ca.yorku.cse2311.tab2pdf.model.Pipe;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class StandardBarParserTest {
+public class PipeParserTest {
 
     /**
      * None of these lines should parse into a Space
@@ -31,11 +31,12 @@ public class StandardBarParserTest {
             , "|-----------------------------"
     };
 
-    private StandardBarParser parser;
+    private PipeParser parser;
 
     @Before
     public void setUp() {
-        parser = new StandardBarParser();
+
+        parser = new PipeParser();
     }
 
     @Test
@@ -59,8 +60,8 @@ public class StandardBarParserTest {
 
         for (String line : VALID_LINES) {   // Go through each valid line,
 
-            StandardBar s = parser.parse(line);   // parse it
-            assertEquals(new StandardBar(), s);   // ensure it equals the Note in the corresponding VALID_NOTES index
+            Pipe s = parser.parse(line);   // parse it
+            assertEquals(new Pipe(), s);   // ensure it equals the Note in the corresponding VALID_NOTES index
         }
     }
 

@@ -1,19 +1,19 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
-import ca.yorku.cse2311.tab2pdf.model.Space;
+import ca.yorku.cse2311.tab2pdf.model.Dash;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * SpaceParser
+ * DashParser
  * <p/>
- * A Parser capable of parsing a musical note
+ * A Parser capable of parsing a dash ('-')
  *
  * @author Marco
  * @since 2015-01-13
  */
-public class SpaceParser extends AbstractParser<Space> {
+public class DashParser extends AbstractParser<Dash> {
 
     /**
      * Fancy regex for "a dash at the beginning of the line"
@@ -26,13 +26,13 @@ public class SpaceParser extends AbstractParser<Space> {
     }
 
     @Override
-    public Space parse(String token) throws ParseException {
+    public Dash parse(String token) throws ParseException {
 
         Matcher m = getPattern().matcher(token);
 
         if (m.find()) {
 
-            return new Space();
+            return new Dash();
         }
 
         throw new ParseException(token, getPattern());

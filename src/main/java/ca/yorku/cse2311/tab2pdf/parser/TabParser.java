@@ -19,16 +19,16 @@ public class TabParser {
 
     static {
         MUSICAL_NOTES.add(new Note(""));
-        MUSICAL_NOTES.add(new Space());
-        MUSICAL_NOTES.add(new StandardBar());
+        MUSICAL_NOTES.add(new Dash());
+        MUSICAL_NOTES.add(new Pipe());
     }
 
     public static final List<AbstractParser> PARSERS = new ArrayList<>();
 
     static {
         PARSERS.add(new NoteParser());
-        PARSERS.add(new SpaceParser());
-        PARSERS.add(new StandardBarParser());
+        PARSERS.add(new DashParser());
+        PARSERS.add(new PipeParser());
         //PARSERS.add()
 
     }

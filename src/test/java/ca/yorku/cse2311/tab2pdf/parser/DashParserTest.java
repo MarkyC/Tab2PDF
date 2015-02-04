@@ -1,12 +1,12 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
-import ca.yorku.cse2311.tab2pdf.model.Space;
+import ca.yorku.cse2311.tab2pdf.model.Dash;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class SpaceParserTest {
+public class DashParserTest {
 
     /**
      * None of these lines should parse into a Space
@@ -30,11 +30,12 @@ public class SpaceParserTest {
             , "-----------------------------"
     };
 
-    private SpaceParser parser;
+    private DashParser parser;
 
     @Before
     public void setUp() {
-        parser = new SpaceParser();
+
+        parser = new DashParser();
     }
 
     @Test
@@ -58,8 +59,8 @@ public class SpaceParserTest {
 
         for (String line : VALID_LINES) {   // Go through each valid line,
 
-            Space s = parser.parse(line);   // parse it
-            assertEquals(new Space(), s);   // ensure it equals the Note in the corresponding VALID_NOTES index
+            Dash s = parser.parse(line);   // parse it
+            assertEquals(new Dash(), s);   // ensure it equals the Note in the corresponding VALID_NOTES index
         }
     }
 

@@ -9,15 +9,17 @@ package ca.yorku.cse2311.tab2pdf.model;
  * @author Brody
  * @since 2015-01-12
  */
-public class StandardBar implements IMusicalNotation {
+public class Pipe implements IMusicalNotation {
 
     @Override
     public String toString() {
-        return "StandardBar{}";
+
+        return "Pipe{}";
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof StandardBar;
+
+        return obj instanceof Pipe;
     }
 }

@@ -1,19 +1,19 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
-import ca.yorku.cse2311.tab2pdf.model.StandardBar;
+import ca.yorku.cse2311.tab2pdf.model.Pipe;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * StandardBarParser
+ * PipeParser
  * <p/>
- * A Parser capable of parsing a musical note
+ * A Parser capable of parsing a | (pipe)
  *
  * @author Marco
  * @since 2015-01-13
  */
-public class StandardBarParser extends AbstractParser<StandardBar> {
+public class PipeParser extends AbstractParser<Pipe> {
 
     /**
      * Fancy regex for "a pipe at the beginning of the line, not followed by another pipe or a digit"
@@ -28,13 +28,13 @@ public class StandardBarParser extends AbstractParser<StandardBar> {
     }
 
     @Override
-    public StandardBar parse(String token) throws ParseException {
+    public Pipe parse(String token) throws ParseException {
 
         Matcher m = getPattern().matcher(token);
 
         if (m.find()) {
 
-            return new StandardBar();
+            return new Pipe();
         }
 
         throw new ParseException(token, getPattern());
