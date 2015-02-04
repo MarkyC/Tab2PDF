@@ -1,22 +1,24 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
 /**
- * Space
+ * Dash
  *
- * Represents a space ('-') in musical notation
+ * Represents a dash ('-') in musical notation
  *
  * @author Marco
  * @since 2015-01-12
  */
-public class Space implements IMusicalNotation {
+public class Dash implements ITabNotation {
 
     @Override
     public String toString() {
-        return "Space{}";
+
+        return "-";
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Space;    // All Spaces are the same for now
+
+        return obj instanceof Dash;    // All Spaces are the same for now
     }
 }

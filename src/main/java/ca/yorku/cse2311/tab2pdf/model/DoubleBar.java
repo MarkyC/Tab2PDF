@@ -5,7 +5,7 @@ package ca.yorku.cse2311.tab2pdf.model;
  * <p/>
  * This class represents all variants of the double bar.
  */
-public class DoubleBar implements IMusicalNotation {
+public class DoubleBar implements ITabNotation {
 
     private int repeat;
 

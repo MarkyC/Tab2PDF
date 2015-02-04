@@ -8,7 +8,7 @@ package ca.yorku.cse2311.tab2pdf.model;
  * @author Brody
  * @since 2015-01-12
  */
-public class Note implements IMusicalNotation {
+public class Note implements ITabNotation {
 
     private final String note;
 
@@ -39,8 +39,7 @@ public class Note implements IMusicalNotation {
 
     @Override
     public String toString() {
-        return "Note{" +
-                "note='" + note + '\'' +
-                '}';
+
+        return note;
     }
 }

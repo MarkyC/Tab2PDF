@@ -1,40 +1,43 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
-import ca.yorku.cse2311.tab2pdf.model.Space;
+import ca.yorku.cse2311.tab2pdf.model.Pipe;
+import ca.yorku.cse2311.tab2pdf.parser.exception.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class SpaceParserTest {
+public class PipeParserTest {
 
     /**
      * None of these lines should parse into a Space
      */
     public static final String[] INVALID_LINES = {
-            "|-----1-----1-----1-----1-|-----1-----1-----1-----1-|"
+            "-----1-----1-----1-----1-|-----1-----1-----1-----1-|"
             , "1-----1-----1-----1-|-----1-----1-----1-----1-|"
+            , "-|----1-----1-----1-|-----1-----1-----1-----1-|"
             , "||-----1-----1-----1-|-----1-----1-----1-----1-|"
-            , "_-----1-----1-----1-|-----1-----1-----1-----1-|"
+            , "|3-----1-----1-----1-|-----1-----1-----1-----1-|"
     };
 
     /**
      * All of these lines should parse into a space
      */
     public static final String[] VALID_LINES = {
-            "-----1-----1-----1-|-----1-----1-----1-----1-|"
-            , "----1-----1-----1-|-----1-----1-----1-----1-|"
-            , "---1-----1-----1-|-----1-----1-----1-----1-|"
-            , "--1-----1-----1-|-----1-----1-----1-----1-|"
-            , "-1-----1-----1-|-----1-----1-----1-----1-|"
-            , "-----------------------------"
+            "|-----1-----1-----1-|-----1-----1-----1-----1-|"
+            , "|----1-----1-----1-|-----1-----1-----1-----1-|"
+            , "|---1-----1-----1-|-----1-----1-----1-----1-|"
+            , "|--1-----1-----1-|-----1-----1-----1-----1-|"
+            , "|-1-----1-----1-|-----1-----1-----1-----1-|"
+            , "|-----------------------------"
     };
 
-    private SpaceParser parser;
+    private PipeParser parser;
 
     @Before
     public void setUp() {
-        parser = new SpaceParser();
+
+        parser = new PipeParser();
     }
 
     @Test
@@ -58,8 +61,8 @@ public class SpaceParserTest {
 
         for (String line : VALID_LINES) {   // Go through each valid line,
 
-            Space s = parser.parse(line);   // parse it
-            assertEquals(new Space(), s);   // ensure it equals the Note in the corresponding VALID_NOTES index
+            Pipe s = parser.parse(line);   // parse it
+            assertEquals(new Pipe(), s);   // ensure it equals the Note in the corresponding VALID_NOTES index
         }
     }
 

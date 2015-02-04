@@ -1,41 +1,42 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
-import ca.yorku.cse2311.tab2pdf.model.StandardBar;
+import ca.yorku.cse2311.tab2pdf.model.Dash;
+import ca.yorku.cse2311.tab2pdf.parser.exception.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class StandardBarParserTest {
+public class DashParserTest {
 
     /**
      * None of these lines should parse into a Space
      */
     public static final String[] INVALID_LINES = {
-            "-----1-----1-----1-----1-|-----1-----1-----1-----1-|"
+            "|-----1-----1-----1-----1-|-----1-----1-----1-----1-|"
             , "1-----1-----1-----1-|-----1-----1-----1-----1-|"
-            , "-|----1-----1-----1-|-----1-----1-----1-----1-|"
             , "||-----1-----1-----1-|-----1-----1-----1-----1-|"
-            , "|3-----1-----1-----1-|-----1-----1-----1-----1-|"
+            , "_-----1-----1-----1-|-----1-----1-----1-----1-|"
     };
 
     /**
      * All of these lines should parse into a space
      */
     public static final String[] VALID_LINES = {
-            "|-----1-----1-----1-|-----1-----1-----1-----1-|"
-            , "|----1-----1-----1-|-----1-----1-----1-----1-|"
-            , "|---1-----1-----1-|-----1-----1-----1-----1-|"
-            , "|--1-----1-----1-|-----1-----1-----1-----1-|"
-            , "|-1-----1-----1-|-----1-----1-----1-----1-|"
-            , "|-----------------------------"
+            "-----1-----1-----1-|-----1-----1-----1-----1-|"
+            , "----1-----1-----1-|-----1-----1-----1-----1-|"
+            , "---1-----1-----1-|-----1-----1-----1-----1-|"
+            , "--1-----1-----1-|-----1-----1-----1-----1-|"
+            , "-1-----1-----1-|-----1-----1-----1-----1-|"
+            , "-----------------------------"
     };
 
-    private StandardBarParser parser;
+    private DashParser parser;
 
     @Before
     public void setUp() {
-        parser = new StandardBarParser();
+
+        parser = new DashParser();
     }
 
     @Test
@@ -59,8 +60,8 @@ public class StandardBarParserTest {
 
         for (String line : VALID_LINES) {   // Go through each valid line,
 
-            StandardBar s = parser.parse(line);   // parse it
-            assertEquals(new StandardBar(), s);   // ensure it equals the Note in the corresponding VALID_NOTES index
+            Dash s = parser.parse(line);   // parse it
+            assertEquals(new Dash(), s);   // ensure it equals the Note in the corresponding VALID_NOTES index
         }
     }
 

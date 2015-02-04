@@ -1,5 +1,6 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
+import ca.yorku.cse2311.tab2pdf.parser.exception.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -64,7 +65,7 @@ public class SubtitleParserTest {
         for (int i = 0; i < VALID_SUBTITLES.length; ++i) {  // Go through each valid line,
 
             String line = VALID_SUBTITLES[i];           // grab the current line
-            String title = parser.parse(line);          // parse it
+            String title = parser.parse(line).getSubtitle();          // parse it
             assertEquals(CORRECT_SUBTITLES[i], title);  // ensure it equals the Subtitle in the corresponding CORRECT_SUBTITLES index
         }
     }

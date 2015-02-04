@@ -1,83 +1,212 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
 import ca.yorku.cse2311.tab2pdf.model.*;
+import ca.yorku.cse2311.tab2pdf.parser.exception.CouldNotParseSymbolException;
+import ca.yorku.cse2311.tab2pdf.parser.exception.ParseException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * TabParser
  *
  * Parser than can parse an entire Tab
  *
- * @author Marco
+ * @author Marco Cirillo
  * @since 2015-01-13
  */
 public class TabParser {
 
-    public static final List<IMusicalNotation> MUSICAL_NOTES = new ArrayList<>();
+    public static final List<ITabNotation> MUSICAL_NOTES = new ArrayList<>();
 
     static {
         MUSICAL_NOTES.add(new Note(""));
-        MUSICAL_NOTES.add(new Space());
-        MUSICAL_NOTES.add(new StandardBar());
+        MUSICAL_NOTES.add(new Dash());
+        MUSICAL_NOTES.add(new Pipe());
     }
 
-    public static final List<AbstractParser> PARSERS = new ArrayList<>();
+    public static final List<IParser> PARSERS = new ArrayList<>();
 
     static {
+        PARSERS.add(new SpacingParser());
+        PARSERS.add(new TitleParser());
+        PARSERS.add(new SubtitleParser());
         PARSERS.add(new NoteParser());
-        PARSERS.add(new SpaceParser());
-        PARSERS.add(new StandardBarParser());
+        PARSERS.add(new DashParser());
+        PARSERS.add(new PipeParser());
         //PARSERS.add()
-
     }
 
+    private static final Logger LOG = Logger.getLogger(TabParser.class.getSimpleName());
 
     public static boolean endOfLine(int index, String line) {
         return (index + 1 > line.length());
     }
 
-    public static String getTitle(List<String> lines) throws Exception {
+    public static boolean isTitleLine(String line) {
+
+        return new TitleParser().canParse(line);
+    }
+
+    public static boolean isSubtitleLine(String line) {
+
+        return new SubtitleParser().canParse(line);
+    }
+
+    public static boolean isSpacingLine(String line) {
+
+        return new SpacingParser().canParse(line);
+    }
+
+    public static Title getTitle(List<String> lines) {
 
         TitleParser parser = new TitleParser();
 
         for (String line : lines) {
             if (parser.canParse(line)) {
-                return parser.parse(line);
+                try {
+                    return parser.parse(line);
+                } catch (ParseException e) {
+                    LOG.warning(e.getMessage());
+                }
             }
         }
 
-        throw new Exception("No title found in file");
+        // If no title was found, give it the default title
+        return new Title();
     }
 
-    public static String getSubtitle(List<String> lines) throws Exception {
+    public static Subtitle getSubtitle(List<String> lines) {
 
         SubtitleParser parser = new SubtitleParser();
 
         for (String line : lines) {
             if (parser.canParse(line)) {
-                return parser.parse(line);
+                try {
+                    return parser.parse(line);
+                } catch (ParseException e) {
+                    LOG.warning(e.getMessage());
+                }
             }
         }
 
-        throw new Exception("No subtitle found in file");
+        // no subtitle found, give it the default subtitle
+        return new Subtitle();
     }
 
-    public Tab parse(List<String> lines) {
+    public static Spacing getSpacing(List<String> lines) {
 
-        Tab tab = new Tab();
+        SpacingParser parser = new SpacingParser();
 
         for (String line : lines) {
-
-            parseLine(line);
+            if (parser.canParse(line)) {
+                try {
+                    return parser.parse(line);
+                } catch (ParseException e) {
+                    LOG.warning(e.getMessage());
+                }
+            }
         }
 
-        return null;
+        // no Spacing found, give it the default Spacing
+        return new Spacing();
     }
 
-    public void parseLine(String line) {
+    public static Tab parse(List<String> lines) {
 
+        Tab tab = new Tab(getTitle(lines), getSubtitle(lines), getSpacing(lines));
+        Bar bar = new Bar();
+
+        for (int i = 0; i < lines.size(); ++i) {
+
+            String line = lines.get(i);
+
+            // Skip lines that are title or spacing lines
+            if (isTitleLine(line) || isSubtitleLine(line) || isSpacingLine(line)) {
+                LOG.info("Skipping title/subtitle/spacing line: " + line);
+                continue;
+            }
+
+            // A blank line begins a new Bar
+            if (line.isEmpty()) {
+                if (!bar.isEmpty()) {
+                    LOG.info("Adding Bar: " + bar.toString());
+                    tab.addBar(bar);    // Add current bar if its not empty
+                }
+
+                bar = new Bar();        // Make a new Bar for the next lines
+                continue;               // Skip this line since its blank
+            }
+
+
+            try {
+                BarLine barLine = new BarLine(parseLine(line));
+                LOG.info("Adding Bar Line: " + barLine.toString());
+                bar.addLine(barLine);
+
+            } catch (ParseException e) {
+                LOG.warning(e.getMessage());
+                LOG.warning("Discarding line: " + line);
+            }
+        }
+
+        return tab;
     }
 
+    /**
+     * Given a line:
+     * <p/>
+     * |-------------------------|-------------------------|
+     * <p/>
+     * This method will generate a List of ITabNotation objects that represent the line
+     * <p/>
+     * Pipe, Dash, Dash, ..., Pipe, Dash, Dash, ..., Pipe
+     * <p/>
+     * Note that calling ITabNotation.toString() on the List should give you back your original tab
+     *
+     * @param line A single line of ascii guitar tablature
+     * @return A List of the tabs representation in ITabNotation objects
+     */
+    public static List<ITabNotation> parseLine(String line) throws ParseException {
+
+        List<ITabNotation> result = new ArrayList<>(line.length());
+
+        for (int i = 0; i < line.length(); ++i) {
+
+            // The current section of the line we are parsing
+            String leftToParse = line.substring(i);
+
+            try {
+
+                // parse the remainder of the line
+                ITabNotation symbol = parseSymbol(leftToParse);
+
+                // parsing the line succeeded
+
+                // add the symbol to the result list
+                result.add(symbol);
+
+                // Advance the pointer to the end of the parsed symbol
+                i += symbol.toString().length() - 1;
+
+            } catch (CouldNotParseSymbolException e) {
+                LOG.warning(e.getMessage());
+                i++;    // Skip the current symbol
+            }
+        }
+
+        return result;
+    }
+
+    public static ITabNotation parseSymbol(String line) throws CouldNotParseSymbolException, ParseException {
+
+        for (IParser parser : PARSERS) {
+            if (parser.canParse(line)) {
+                return (ITabNotation) parser.parse(line);
+            }
+        }
+
+        throw new CouldNotParseSymbolException(line);
+    }
 }

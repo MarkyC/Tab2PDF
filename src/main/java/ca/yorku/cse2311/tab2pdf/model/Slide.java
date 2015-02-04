@@ -3,7 +3,7 @@ package ca.yorku.cse2311.tab2pdf.model;
 /**
  * Created by Brody Atto on 25/01/2015.
  */
-public class Slide implements IMusicalNotation {
+public class Slide implements ITabNotation {
     private final int slideStart;
     private final int slideEnd;
 
