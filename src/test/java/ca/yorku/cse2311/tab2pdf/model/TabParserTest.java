@@ -11,13 +11,17 @@ import static org.junit.Assert.assertEquals;
  *
  * Tests TabParser.
  *
- * @author Marco
+ * @author Marco Cirillo
  * @since 2015-02-03
  */
 public class TabParserTest {
 
     public static final String[] LINES = {
-            "|-------------------------|-------------------------|"
+            "TITLE=Moonlight Sonata"
+            , "SUBTITLE=Ludwig van Beethoven"
+            , "SPACING=5"
+            , ""
+            , "|-------------------------|-------------------------|"
             , "|-----1-----1-----1-----1-|-----1-----1-----1-----1-|"
             , "|---2-----2-----2-----2---|---2-----2-----2-----2---|"
             , "|-2-----2-----2-----2-----|-2-----2-----2-----2-----|"

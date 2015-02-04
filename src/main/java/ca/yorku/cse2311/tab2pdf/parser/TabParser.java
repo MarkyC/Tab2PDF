@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  *
  * Parser than can parse an entire Tab
  *
- * @author Marco
+ * @author Marco Cirillo
  * @since 2015-01-13
  */
 public class TabParser {
@@ -29,6 +29,9 @@ public class TabParser {
     public static final List<IParser> PARSERS = new ArrayList<>();
 
     static {
+        PARSERS.add(new SpacingParser());
+        PARSERS.add(new TitleParser());
+        PARSERS.add(new SubtitleParser());
         PARSERS.add(new NoteParser());
         PARSERS.add(new DashParser());
         PARSERS.add(new PipeParser());
@@ -47,7 +50,7 @@ public class TabParser {
 
         for (String line : lines) {
             if (parser.canParse(line)) {
-                return parser.parse(line);
+                return parser.parse(line).getTitle();
             }
         }
 
@@ -60,7 +63,7 @@ public class TabParser {
 
         for (String line : lines) {
             if (parser.canParse(line)) {
-                return parser.parse(line);
+                return parser.parse(line).getSubtitle();
             }
         }
 
@@ -74,6 +77,8 @@ public class TabParser {
         for (String line : lines) {
 
             parseLine(line);
+
+            // Youtube break.
         }
 
         return null;
