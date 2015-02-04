@@ -171,13 +171,12 @@ public class Main {
         // This creates a PDF in the background using the command line arguments. Our GUI is not wired up yet
         try {
 
-            // TODO: Do this in GUI
             Tab tab = TabParser.parse(FileUtils.readFile(arguments.getInputFile()));
             LOG.info(tab.toString());
 
             // I'm going to hackily make this spit output for now, and wire up to the GUI later
 
-            new Main().createPdf(tab, arguments.getOutputFile());
+            //new Main().createPdf(tab, arguments.getOutputFile());
 
             // Run the example code
             // new Main().createPdf(arguments.getInputFile(), arguments.getOutputFile());
