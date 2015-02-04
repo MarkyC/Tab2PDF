@@ -51,7 +51,20 @@ public class Tab {
         this.bars = bars;
     }
 
+    public Title getTitle() {
 
+        return title;
+    }
+
+    public Subtitle getSubtitle() {
+
+        return subtitle;
+    }
+
+    public Spacing getSpacing() {
+
+        return spacing;
+    }
 
     public List<Bar> getBars() {
 

@@ -1,5 +1,6 @@
 package ca.yorku.cse2311.tab2pdf;
 
+import ca.yorku.cse2311.tab2pdf.model.*;
 import ca.yorku.cse2311.tab2pdf.parser.TabParser;
 import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
 import ca.yorku.cse2311.tab2pdf.util.FileUtils;
@@ -170,12 +171,16 @@ public class Main {
         // This creates a PDF in the background using the command line arguments. Our GUI is not wired up yet
         try {
 
-            LOG.info(TabParser.parse(FileUtils.readFile(arguments.getInputFile())).toString());
-            System.out.println(TabParser.parse(FileUtils.readFile(arguments.getInputFile())).toString());
+            // TODO: Do this in GUI
+            Tab tab = TabParser.parse(FileUtils.readFile(arguments.getInputFile()));
+            LOG.info(tab.toString());
 
+            // I'm going to hackily make this spit output for now, and wire up to the GUI later
+
+            new Main().createPdf(tab, arguments.getOutputFile());
 
             // Run the example code
-            new Main().createPdf(arguments.getInputFile(), arguments.getOutputFile());
+            // new Main().createPdf(arguments.getInputFile(), arguments.getOutputFile());
 
             // open the newly created PDF
             Desktop.getDesktop().open(arguments.getOutputFile());
@@ -187,6 +192,49 @@ public class Main {
             e.printStackTrace();
         }
 
+    }
+
+    public void createPdf(Tab tab, File out) throws Exception {
+
+        // step 1
+        Document document = new Document();
+        // step 2
+        PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(out.toPath()));
+        // step 3
+        document.open();
+        // step 4
+        //document.add(new Paragraph("Hello World!"));                // Hello World!
+        document.add(new Paragraph(tab.getTitle().getTitle()));     // The Tab's Title
+        document.add(new Paragraph(tab.getSubtitle().getSubtitle()));  // The Tab's Subtitle
+
+        stave(1, writer);
+
+        for (Bar bar : tab.getBars()) {
+            for (int i = 0; i < bar.getLines().size(); ++i) {
+
+                int lineNumber = i + 1;
+                BarLine line = bar.getLine(i);
+                int xPos = 50;
+                for (ITabNotation note : line.getLine()) {
+
+                    // TODO: What design pattern to use here?
+                    if (note instanceof Pipe) {
+                        thinLine(1, xPos, writer);
+                        xPos += 10;
+                    } else if (note instanceof Dash) {
+                        xPos += 10;
+                    } else if (note instanceof Note) {
+                        int actualNote = Integer.parseInt(((Note) note).getNote());
+                        drawDigit(1, lineNumber, xPos, actualNote, writer);
+                        xPos += 10;
+                    } else {
+                        LOG.warning("Could not draw symbol " + note.getClass().getSimpleName());
+                    }
+                }
+
+            }
+        }
+        document.close();
     }
 
     /**
