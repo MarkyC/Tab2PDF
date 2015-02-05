@@ -36,6 +36,15 @@ public class PdfHelper {
     private static final int DIGIT_SIZE = (int) (LINE_SPACE * 1.5);
 
     /**
+     * TODO: Needs to be replaced with the ability to scale vertical spaceing
+     *
+     * @return Gets separation between lines
+     */
+    public static int getLineSpace() {
+        return LINE_SPACE;
+    }
+
+    /**
      * Draws a circle at the specified coordinates.
      *
      * @param x      The x position of the circle
@@ -94,7 +103,7 @@ public class PdfHelper {
      * @param staveNumber the number of stave to work with
      * @return the Y coordinate of the line to draw
      */
-    private static int determineYCoordinate(int staveNumber) {
+    public static int determineYCoordinate(int staveNumber) {
 
         final int STAVE_SPACE = PdfHelper.LINE_SPACE * 10; //Space between the staves
         int yCoordinate = 700 - staveNumber * STAVE_SPACE;
@@ -217,9 +226,8 @@ public class PdfHelper {
      * @param lineNumber  the number of line to work with (from 1 to 6)
      * @param xCoordinate the X coordinate of the middle of the combination
      * @param writer      Pdf writer for the document
-     * @return yCoordinate    the Y coordinate of the blank space; used in drawDigit method
      */
-    private static int blankSpace(int staveNumber, int lineNumber, int xCoordinate, int digitWidth, PdfWriter writer) {
+    private static void blankSpace(int staveNumber, int lineNumber, int xCoordinate, int digitWidth, PdfWriter writer) {
 
         int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * PdfHelper.LINE_SPACE;
 
@@ -236,8 +244,6 @@ public class PdfHelper {
         canvas.stroke();
 
         canvas.restoreState();
-
-        return yCoordinate;
     }
 
     /**
@@ -254,9 +260,16 @@ public class PdfHelper {
 
         BaseFont font = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1257, BaseFont.EMBEDDED);
         //Distance from the middle of the digit to the digit border
-        int digitRadius = (int) font.getWidthPoint(' ', DIGIT_SIZE);
+        int digitRadius;
+        if (9 < digit) {
+            digitRadius = (int) font.getWidthPoint(' ', DIGIT_SIZE * (int) (Math.log10(digit) + 1)); //compensate for larger than 1 length
+        } else {
+            digitRadius = (int) font.getWidthPoint(' ', DIGIT_SIZE);
+        }
+        xCoordinate -= digitRadius/2;
         //Clears a space for the digit and determines the Y coordinate of the digit to be printed
-        int yCoordinate = blankSpace(staveNumber, lineNumber, xCoordinate, digitRadius, writer);
+        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * PdfHelper.LINE_SPACE;
+        blankSpace(staveNumber, lineNumber, xCoordinate, digitRadius, writer);
         PdfContentByte canvas = writer.getDirectContent();
 
         canvas.saveState();
