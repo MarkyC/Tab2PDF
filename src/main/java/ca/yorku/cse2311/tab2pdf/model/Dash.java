@@ -12,8 +12,21 @@ import com.itextpdf.text.pdf.PdfWriter;
  */
 public class Dash implements ITabNotation {
 
+    boolean imaginary;
+
+    public Dash() {
+        this(false);
+    }
+
+    public Dash(boolean imaginary) {
+        this.imaginary = imaginary;
+    }
+
     @Override
     public String toString() {
+        if (imaginary) {
+            return "";
+        }
         return "-";
     }
 

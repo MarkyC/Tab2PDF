@@ -194,7 +194,7 @@ public class TabParser {
                 */
                 int len = 0;
                 while (symbol.toString().length() - ++len > 0) {
-                    result.add(new Dash());
+                    result.add(new Dash(true));
                 }
 
 

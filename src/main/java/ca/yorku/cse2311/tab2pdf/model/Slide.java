@@ -81,6 +81,18 @@ public class Slide implements ITabNotation {
     @Override
     public String toString() {
 
-        return getStart().toString() + "s" + getEnd().toString();
+        String result = "";
+
+        if (getStart().getNote() != 0) {
+            result += getStart().toString();
+        }
+
+        result += "s";
+
+        if (getEnd().getNote() != 0) {
+            result += getEnd().toString();
+        }
+
+        return result;
     }
 }
