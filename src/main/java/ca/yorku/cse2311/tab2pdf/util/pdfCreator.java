@@ -64,9 +64,12 @@ public class pdfCreator implements Runnable {
 
         double spacing = 5 + tab.getSpacing().getSpacing();
 
+        int stave = 1;
 
         for (Bar bar : tab.getBars()) {
-            for (int stave = 1; bar.getLine(0).getLine().size() * spacing > pageWidth; stave++)
+            if (bar.getLine(0).getLine().size() * spacing > pageWidth) {
+                stave++;
+            }
             for (int i = 0; i < bar.getLines().size(); ++i) {
 
                 int lineNumber = i + 1;
@@ -75,6 +78,7 @@ public class pdfCreator implements Runnable {
                 for (IDrawable note : line.getLine()) {
 
                     note.Draw(stave, i, xPos, writer);
+                    xPos += spacing;
 
                     /*
                     if (note instanceof IDrawable) {
