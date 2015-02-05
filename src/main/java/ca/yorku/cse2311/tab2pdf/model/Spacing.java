@@ -10,40 +10,39 @@ package ca.yorku.cse2311.tab2pdf.model;
  */
 public class Spacing implements ITabNotation {
 
-    private final String spacing;
+    private final double spacing;
 
     public Spacing() {
 
-        this("auto");
+        this(5); //default 5
     }
 
-    public Spacing(String spacing) {
+    public Spacing(double spacing) {
 
         this.spacing = spacing;
     }
 
-    public String getSpacing() {
+    public double getSpacing() {
 
         return spacing;
     }
 
     @Override
     public boolean equals(Object o) {
-
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Spacing note1 = (Spacing) o;
+        Spacing spacing1 = (Spacing) o;
 
-        if (spacing != null ? !spacing.equals(note1.spacing) : note1.spacing != null) return false;
+        if (spacing != spacing1.spacing) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-
-        return spacing != null ? spacing.hashCode() : 0;
+        long temp = Double.doubleToLongBits(spacing);
+        return (int) (temp ^ (temp >>> 32));
     }
 
     @Override

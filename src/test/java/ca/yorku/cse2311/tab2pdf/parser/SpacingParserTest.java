@@ -33,11 +33,11 @@ public class SpacingParserTest {
     /**
      * All of these should be parsed
      */
-    public static final String[] CORRECT_SPACEINGS = {
-            "1",
-            "2",
-            "2.10",
-            "2.5",
+    public static final double[] CORRECT_SPACEINGS = {
+            1,
+            2,
+            2.10,
+            2.5,
     };
 
     private SpacingParser parser;
@@ -69,8 +69,8 @@ public class SpacingParserTest {
         for (int i = 0; i < VALID_LINES.length; ++i) {  // Go through each valid line,
 
             String line = VALID_LINES[i];          // grab the current line
-            String spaceing = parser.parse(line).getSpacing();      // parse it
-            assertEquals(CORRECT_SPACEINGS[i], spaceing); // ensure it equals the Title in the corresponding CORRECT_TITLES index
+            double spaceing = parser.parse(line).getSpacing();      // parse it
+            assertEquals(CORRECT_SPACEINGS[i], spaceing, 0.001); // ensure it equals the Title in the corresponding CORRECT_TITLES index
         }
     }
 
