@@ -1,7 +1,7 @@
 package ca.yorku.cse2311.tab2pdf.ui;
 
 import ca.yorku.cse2311.tab2pdf.Arguments;
-import ca.yorku.cse2311.tab2pdf.util.pdfCreator;
+import ca.yorku.cse2311.tab2pdf.util.PdfCreator;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -87,7 +87,7 @@ public class MainJFrame extends JFrame {
 
             LOG.log(Level.INFO, e.paramString());
 
-            new Thread(new pdfCreator(new Arguments(getInputFile(), getOutputFile()))).start();
+            new Thread(new PdfCreator(new Arguments(getInputFile(), getOutputFile()))).start();
         }
     };
 

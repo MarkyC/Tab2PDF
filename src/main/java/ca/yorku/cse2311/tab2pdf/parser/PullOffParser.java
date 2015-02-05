@@ -28,10 +28,11 @@ public class PullOffParser extends AbstractParser<PullOff> {
 
         if (m.find()) {
 
-            Note start = (null == m.group(1)) ? PullOff.EMPTY_NOTE : new Note(Integer.parseInt(m.group(1)));
+            //Note start = (null == m.group(1)) ? PullOff.EMPTY_NOTE : new Note(Integer.parseInt(m.group(1)));
             Note end = (null == m.group(2)) ? PullOff.EMPTY_NOTE : new Note(Integer.parseInt(m.group(2)));
 
-            return new PullOff(start, end);
+            //return new PullOff(start, end);
+            return new PullOff(end);
         }
 
         throw new ParseException(token, getPattern());

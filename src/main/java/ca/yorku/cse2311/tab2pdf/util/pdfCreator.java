@@ -25,12 +25,12 @@ import static ca.yorku.cse2311.tab2pdf.PdfHelper.stave;
  * @author Brody Atto
  * @since 2015-02-4
  */
-public class pdfCreator implements Runnable {
+public class PdfCreator implements Runnable {
 
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
     private Arguments args;
 
-    public pdfCreator(Arguments args) {
+    public PdfCreator(Arguments args) {
         this.args = args;
     }
 
