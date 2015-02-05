@@ -57,6 +57,10 @@ public class pdfCreator implements Runnable {
 
         stave(1, writer);
 
+
+        double spaceing = 5 + tab.getSpacing().getSpacing();
+
+
         for (Bar bar : tab.getBars()) {
             for (int i = 0; i < bar.getLines().size(); ++i) {
 
@@ -82,6 +86,8 @@ public class pdfCreator implements Runnable {
 
             }
         }
+        
+
         document.close();
     }
 }
