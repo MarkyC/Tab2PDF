@@ -14,7 +14,7 @@ import com.itextpdf.text.pdf.PdfWriter;
  */
 public class Slide implements ITabNotation {
 
-    public static final Note EMPTY_NOTE = new Note("");
+    public static final Note EMPTY_NOTE = new Note();
 
     private final Note start;
 

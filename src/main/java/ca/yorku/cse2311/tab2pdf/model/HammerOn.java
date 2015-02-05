@@ -1,5 +1,7 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
+import com.itextpdf.text.pdf.PdfWriter;
+
 /**
  * HammerOn
  * <p/>
@@ -11,7 +13,7 @@ package ca.yorku.cse2311.tab2pdf.model;
  */
 public class HammerOn implements ITabNotation {
 
-    public static final Note EMPTY_NOTE = new Note("");
+    public static final Note EMPTY_NOTE = new Note();
 
     private final Note start;
 
@@ -36,6 +38,10 @@ public class HammerOn implements ITabNotation {
     public Note getEnd() {
 
         return end;
+    }
+
+    public void Draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+        //Do Nothing
     }
 
     @Override

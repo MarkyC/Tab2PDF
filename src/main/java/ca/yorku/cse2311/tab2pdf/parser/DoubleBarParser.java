@@ -17,7 +17,7 @@ public class DoubleBarParser extends AbstractParser<DoubleBar> {
      * Fancy regex to recognise; ||*, *||*, *|| or || where any of the second pipes can be replaced with a number
      * It follows a priority in the order listed
      */
-    public static final Pattern TOKEN_PATTERN = Pattern.compile("(^(?<start>^\\|(?<startR>\\||\\d+)\\*)|^(?<both>\\*\\|(?<bothR>\\||\\d+)\\*)|^(?<end>\\*\\|(?<endR>\\||\\d+))|^(?<double>^\\|(?<doubleR>\\||\\d+)))(?!\\||\\d)");
+    public static final Pattern TOKEN_PATTERN = Pattern.compile("(^(?<start>^\\|(?<startR>\\||\\d+)\\*)|^(?<both>\\*\\|(?<bothR>\\||\\d+)\\*)|^(?<end>\\*\\|(?<endR>\\||\\d+))|^(?<double>^\\|(?<doubleR>\\||\\d+)))(?!\\w)");
 
     @Override
     public Pattern getPattern() {

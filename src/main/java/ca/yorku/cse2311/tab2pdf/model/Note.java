@@ -23,6 +23,10 @@ public class Note implements ITabNotation, IDrawable {
         this.note = note;
     }
 
+    public Note() {
+        this(0);
+    }
+
     public int getNote() {
         return note;
     }

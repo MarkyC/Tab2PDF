@@ -25,8 +25,8 @@ public class SlideParser extends AbstractParser<Slide> {
 
         if (m.find()) {
 
-            Note start = (null == m.group(1)) ? Slide.EMPTY_NOTE : new Note(m.group(1));
-            Note end = (null == m.group(2)) ? Slide.EMPTY_NOTE : new Note(m.group(2));
+            Note start = (null == m.group(1)) ? Slide.EMPTY_NOTE : new Note(Integer.parseInt(m.group(1)));
+            Note end = (null == m.group(2)) ? Slide.EMPTY_NOTE : new Note(Integer.parseInt(m.group(2)));
 
             return new Slide(start, end);
         }

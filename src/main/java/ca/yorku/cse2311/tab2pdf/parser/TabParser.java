@@ -182,6 +182,13 @@ public class TabParser {
                 // add the symbol to the result list
                 result.add(symbol);
 
+                int len = 0;
+
+                while (symbol.toString().length() - len++ > 0) {
+                    result.add(new Dash());
+                }
+
+
                 // Advance the pointer to the end of the parsed symbol
                 i += symbol.toString().length() - 1;
 

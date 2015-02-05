@@ -66,40 +66,33 @@ public class pdfCreator implements Runnable {
 
         int stave = 1;
 
+        int MARGIN = 50;
+
+        int xBarPos = MARGIN;
+
         for (Bar bar : tab.getBars()) {
             if (bar.getLine(0).getLine().size() * spacing > pageWidth) {
                 stave++;
+                xBarPos = MARGIN;
+                //?
             }
+
+            int xPos = xBarPos;
+
             for (int i = 0; i < bar.getLines().size(); ++i) {
+                xPos = xBarPos;
 
                 int lineNumber = i + 1;
                 BarLine line = bar.getLine(i);
-                int xPos = 50;
                 for (IDrawable note : line.getLine()) {
 
-                    note.Draw(stave, i, xPos, writer);
+                    note.Draw(stave, lineNumber, xPos, writer);
                     xPos += spacing;
 
-                    /*
-                    if (note instanceof IDrawable) {
-                        // TODO: What design pattern to use here?
-                        if (note instanceof Pipe) {
-                            thinLine(1, xPos, writer);
-                            xPos += 10;
-                        } else if (note instanceof Dash) {
-                            xPos += 10;
-                        } else if (note instanceof Note) {
-                            int actualNote = ((Note) note).getNote();
-                            drawDigit(1, lineNumber, xPos, actualNote, writer);
-                            xPos += 10;
-                        } else {
-                            LOG.warning("Could not draw symbol " + note.getClass().getSimpleName());
-                        }
-                    }
-                    */
                 }
 
             }
+            xBarPos = xPos;
         }
         
 
