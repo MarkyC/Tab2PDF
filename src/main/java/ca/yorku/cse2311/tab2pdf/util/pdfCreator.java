@@ -15,16 +15,18 @@ import java.util.logging.Logger;
 import static ca.yorku.cse2311.tab2pdf.PdfHelper.*;
 
 /**
- * Created by Brody Atto on 04/02/2015.
+ * pdfCreator
+ * Handles the creaton of the pdf file
+ *
+ * @author Brody Atto
+ * @since 2015-02-4
  */
 public class pdfCreator implements Runnable {
 
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
-    private Tab tab;
     private Arguments args;
 
-    public pdfCreator(Tab tab, Arguments args) {
-        this.tab = tab;
+    public pdfCreator(Arguments args) {
         this.args = args;
     }
 
