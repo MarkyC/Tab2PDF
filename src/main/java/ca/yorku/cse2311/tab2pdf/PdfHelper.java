@@ -1,5 +1,6 @@
 package ca.yorku.cse2311.tab2pdf;
 
+import ca.yorku.cse2311.tab2pdf.model.Slide;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.GrayColor;
@@ -279,6 +280,48 @@ public class PdfHelper {
         canvas.showText(Integer.toString(digit));
         canvas.endText();
         canvas.restoreState();
+
+    }
+
+    /**
+     * @param staveNumber the number of stave to work with
+     * @param lineNumber  the number of line to work with (from 1 to 6)
+     * @param xCoordinate the X coordinate of the middle of the combination
+     * @param slide       the slide to be printed
+     * @param writer      Pdf writer for the document
+     * @throws IOException
+     * @throws DocumentException
+     */
+    public static void drawSlide(int staveNumber, int lineNumber, int xCoordinate, Slide slide, PdfWriter writer) throws DocumentException, IOException {
+
+        BaseFont font = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1257, BaseFont.EMBEDDED);
+        //Distance from the middle of the digit to the digit border
+        int fontHeight = (int) font.getWidthPoint(' ', DIGIT_SIZE);
+
+        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * PdfHelper.LINE_SPACE;
+
+        if (slide.getStart().getNote() != 0) {
+            drawDigit(staveNumber, lineNumber, xCoordinate - fontHeight * 2, slide.getStart().getNote(), writer);
+        }
+
+        /*
+        PdfContentByte canvas = writer.getDirectContent();
+
+        canvas.saveState();
+        canvas.beginText();
+        canvas.moveText(xCoordinate - fontHeight, yCoordinate - fontHeight - 1);
+        canvas.setFontAndSize(font, DIGIT_SIZE);
+        canvas.showText("/");
+        canvas.endText();
+        canvas.restoreState();
+        */
+
+        if (slide.getEnd().getNote() != 0) {
+            drawDigit(staveNumber, lineNumber, xCoordinate + fontHeight * 2, slide.getEnd().getNote(), writer);
+        }
+        float xlen = 1.4f;
+        float ylen = 1.2f;
+        line(xCoordinate - fontHeight * xlen, yCoordinate - fontHeight * ylen, xCoordinate + fontHeight * xlen, yCoordinate + fontHeight * ylen, 0.6f, writer);
 
     }
 }
