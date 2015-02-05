@@ -42,8 +42,6 @@ public class Slide implements ITabNotation {
 
     @Override
     public String toString() {
-        return "Note{" +
-                "slide='" + slideStart + "s" + slideEnd + '\'' +
-                '}';
+        return slideStart + "s" + slideEnd;
     }
 }
