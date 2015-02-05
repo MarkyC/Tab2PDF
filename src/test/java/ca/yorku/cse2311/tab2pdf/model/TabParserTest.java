@@ -17,10 +17,10 @@ import static org.junit.Assert.assertEquals;
 public class TabParserTest {
 
     public static final String[] LINES = {
-            //"TITLE=Moonlight Sonata"
-            //, "SUBTITLE=Ludwig van Beethoven"
-            //, "SPACING=5.0"
-            ""
+            "TITLE=Moonlight Sonata"
+            , "SUBTITLE=Ludwig van Beethoven"
+            , "SPACING=5.0"
+            , ""
             , "|-------------------------|-------------------------|"
             , "|-----1-----1-----1-----1-|-----1-----1-----1-----1-|"
             , "|---2-----2-----2-----2---|---2-----2-----2-----2---|"
