@@ -27,6 +27,9 @@ public class TabParser {
         PARSERS.add(new NoteParser());
         PARSERS.add(new DashParser());
         PARSERS.add(new PipeParser());
+        PARSERS.add(new SlideParser());
+        PARSERS.add(new HammerOnParser());
+        PARSERS.add(new PullOffParser());
         //PARSERS.add()
     }
 
