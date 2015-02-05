@@ -1,5 +1,7 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
+import com.itextpdf.text.pdf.PdfWriter;
+
 /**
  * Created by Brody Atto on 25/01/2015.
  * <p/>
@@ -65,6 +67,10 @@ public class DoubleBar implements ITabNotation {
     public void setEndRepeat(boolean endRepeat) {
         if (endRepeat)
             this.endRepeat = true;
+    }
+
+    public void Draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+        //Do Nothing
     }
 
     @Override

@@ -40,17 +40,17 @@ public class NoteParserTest {
      * That means that each line in VALID_LINES should equal its corresponding Note in VALID_NOTES
      */
     public static final Note[] VALID_NOTES = {
-            new Note("1")
-            , new Note("1")
-            , new Note("2")
-            , new Note("3")
-            , new Note("4")
-            , new Note("5")
-            , new Note("6")
-            , new Note("7")
-            , new Note("8")
-            , new Note("9")
-            , new Note("0")
+            new Note(1)
+            , new Note(1)
+            , new Note(2)
+            , new Note(3)
+            , new Note(4)
+            , new Note(5)
+            , new Note(6)
+            , new Note(7)
+            , new Note(8)
+            , new Note(9)
+            , new Note(0)
     };
 
     private NoteParser parser;

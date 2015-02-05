@@ -1,5 +1,7 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
+import com.itextpdf.text.pdf.PdfWriter;
+
 /**
  * Spacing
  * <p/>
@@ -25,6 +27,10 @@ public class Spacing implements ITabNotation {
     public double getSpacing() {
 
         return spacing;
+    }
+
+    public void Draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+        //Do Nothing
     }
 
     @Override

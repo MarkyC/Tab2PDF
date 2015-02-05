@@ -1,5 +1,7 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
+import com.itextpdf.text.pdf.PdfWriter;
+
 /**
  * Created by Brody Atto on 25/01/2015.
  */
@@ -18,6 +20,10 @@ public class Slide implements ITabNotation {
 
     public int getSlideEnd() {
         return slideEnd;
+    }
+
+    public void Draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+        //Do Nothing
     }
 
     @Override

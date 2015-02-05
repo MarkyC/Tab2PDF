@@ -1,5 +1,12 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfWriter;
+
+import java.io.IOException;
+
+import static ca.yorku.cse2311.tab2pdf.PdfHelper.drawDigit;
+
 /**
  * Note
  *
@@ -8,16 +15,26 @@ package ca.yorku.cse2311.tab2pdf.model;
  * @author Brody
  * @since 2015-01-12
  */
-public class Note implements ITabNotation {
+public class Note implements ITabNotation, IDrawable {
 
-    private final String note;
+    private final int note;
 
-    public Note(String note) {
+    public Note(int note) {
         this.note = note;
     }
 
-    public String getNote() {
+    public int getNote() {
         return note;
+    }
+
+    public void Draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+        try {
+            drawDigit(1, lineNumber, xCoordinate, note, writer);
+        } catch (IOException e) {
+            //TODO: What should we do on an IOExeption?
+        } catch (DocumentException e) {
+            //TODO: What should we do on an DocumentExecption?
+        }
     }
 
     @Override
@@ -27,18 +44,18 @@ public class Note implements ITabNotation {
 
         Note note1 = (Note) o;
 
-        if (note != null ? !note.equals(note1.note) : note1.note != null) return false;
+        if (note != note1.note) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return note != null ? note.hashCode() : 0;
+        return note;
     }
 
     @Override
     public String toString() {
-        return note;
+        return note + "";
     }
 }

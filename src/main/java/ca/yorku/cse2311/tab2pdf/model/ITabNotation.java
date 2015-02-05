@@ -10,6 +10,6 @@ package ca.yorku.cse2311.tab2pdf.model;
  * @author Marco
  * @since 2015-01-12
  */
-public interface ITabNotation {
+public interface ITabNotation extends IDrawable {
 
 }

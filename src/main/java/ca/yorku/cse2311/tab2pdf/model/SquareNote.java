@@ -1,5 +1,7 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
+import com.itextpdf.text.pdf.PdfWriter;
+
 /**
  * Created by Brody Atto on 25/01/2015.
  * TODO: Rename class to a mor apropriat representation of the sheet music
@@ -14,6 +16,10 @@ public class SquareNote implements ITabNotation {
 
     public String getNote() {
         return note;
+    }
+
+    public void Draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+        //Do Nothing
     }
 
     @Override

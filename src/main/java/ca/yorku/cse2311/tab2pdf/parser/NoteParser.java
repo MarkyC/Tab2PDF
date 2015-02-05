@@ -33,7 +33,7 @@ public class NoteParser extends AbstractParser<Note> {
 
         if (m.find()) {
 
-            return new Note(m.group(1));
+            return new Note(Integer.parseInt(m.group(1)));
         }
 
         throw new ParseException(token, getPattern());

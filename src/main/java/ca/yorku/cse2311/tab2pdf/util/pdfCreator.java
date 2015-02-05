@@ -1,7 +1,10 @@
 package ca.yorku.cse2311.tab2pdf.util;
 
 import ca.yorku.cse2311.tab2pdf.Arguments;
-import ca.yorku.cse2311.tab2pdf.model.*;
+import ca.yorku.cse2311.tab2pdf.model.Bar;
+import ca.yorku.cse2311.tab2pdf.model.BarLine;
+import ca.yorku.cse2311.tab2pdf.model.IDrawable;
+import ca.yorku.cse2311.tab2pdf.model.Tab;
 import ca.yorku.cse2311.tab2pdf.parser.TabParser;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Paragraph;
@@ -12,7 +15,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.logging.Logger;
 
-import static ca.yorku.cse2311.tab2pdf.PdfHelper.*;
+import static ca.yorku.cse2311.tab2pdf.PdfHelper.stave;
 
 /**
  * pdfCreator
@@ -57,31 +60,39 @@ public class pdfCreator implements Runnable {
 
         stave(1, writer);
 
+        float pageWidth = writer.getPageSize().getWidth();
 
-        double spaceing = 5 + tab.getSpacing().getSpacing();
+        double spacing = 5 + tab.getSpacing().getSpacing();
 
 
         for (Bar bar : tab.getBars()) {
+            for (int stave = 1; bar.getLine(0).getLine().size() * spacing > pageWidth; stave++)
             for (int i = 0; i < bar.getLines().size(); ++i) {
 
                 int lineNumber = i + 1;
                 BarLine line = bar.getLine(i);
                 int xPos = 50;
-                for (ITabNotation note : line.getLine()) {
+                for (IDrawable note : line.getLine()) {
 
-                    // TODO: What design pattern to use here?
-                    if (note instanceof Pipe) {
-                        thinLine(1, xPos, writer);
-                        xPos += 10;
-                    } else if (note instanceof Dash) {
-                        xPos += 10;
-                    } else if (note instanceof Note) {
-                        int actualNote = Integer.parseInt(((Note) note).getNote());
-                        drawDigit(1, lineNumber, xPos, actualNote, writer);
-                        xPos += 10;
-                    } else {
-                        LOG.warning("Could not draw symbol " + note.getClass().getSimpleName());
+                    note.Draw(stave, i, xPos, writer);
+
+                    /*
+                    if (note instanceof IDrawable) {
+                        // TODO: What design pattern to use here?
+                        if (note instanceof Pipe) {
+                            thinLine(1, xPos, writer);
+                            xPos += 10;
+                        } else if (note instanceof Dash) {
+                            xPos += 10;
+                        } else if (note instanceof Note) {
+                            int actualNote = ((Note) note).getNote();
+                            drawDigit(1, lineNumber, xPos, actualNote, writer);
+                            xPos += 10;
+                        } else {
+                            LOG.warning("Could not draw symbol " + note.getClass().getSimpleName());
+                        }
                     }
+                    */
                 }
 
             }

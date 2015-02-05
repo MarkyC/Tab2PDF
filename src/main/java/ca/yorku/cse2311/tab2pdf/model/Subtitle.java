@@ -1,5 +1,7 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
+import com.itextpdf.text.pdf.PdfWriter;
+
 /**
  * Subtitle
  * <p/>
@@ -25,6 +27,11 @@ public class Subtitle implements ITabNotation {
     public String getSubtitle() {
 
         return subtitle;
+    }
+
+
+    public void Draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+        //Do Nothing
     }
 
     @Override
