@@ -190,7 +190,7 @@ public class TabParser {
                 * becomes
                 * S---
                 * where S is the slide object
-                * This allows for the text file to be esaly formated where the beginning of the note is where it is in the bar
+                * This allows for the text file to be easily formated where the beginning of the note is where it is in the bar
                 */
                 int len = 0;
                 while (symbol.toString().length() - ++len > 0) {

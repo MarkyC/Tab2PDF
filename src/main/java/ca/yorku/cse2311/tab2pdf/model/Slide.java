@@ -1,6 +1,11 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
+import ca.yorku.cse2311.tab2pdf.PdfHelper;
+import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfWriter;
+
+import java.io.IOException;
+
 
 /**
  * Slide
@@ -42,7 +47,13 @@ public class Slide implements ITabNotation {
     }
 
     public void draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
-        //Do Nothing
+        try {
+            PdfHelper.drawSlide(staveNumber, lineNumber, xCoordinate, this, writer);
+        } catch (IOException e) {
+            //TODO: What should we do on an IOExeption?
+        } catch (DocumentException e) {
+            //TODO: What should we do on an DocumentExecption?
+        }
     }
 
     @Override
