@@ -18,7 +18,7 @@ public class SquareNote implements ITabNotation {
         return note;
     }
 
-    public void Draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+    public void draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
         //Do Nothing
     }
 

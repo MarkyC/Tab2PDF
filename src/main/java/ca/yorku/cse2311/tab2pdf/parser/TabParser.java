@@ -182,9 +182,18 @@ public class TabParser {
                 // add the symbol to the result list
                 result.add(symbol);
 
+                /*
+                * Multi char strings now turn into an object followed by a number of dashes
+                * equal to the length of the string - 1
+                * Ex:
+                * 4s11
+                * becomes
+                * S---
+                * where S is the slide object
+                * This allows for the text file to be esaly formated where the beginning of the note is where it is in the bar
+                */
                 int len = 0;
-
-                while (symbol.toString().length() - len++ > 0) {
+                while (symbol.toString().length() - ++len > 0) {
                     result.add(new Dash());
                 }
 

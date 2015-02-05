@@ -41,7 +41,7 @@ public class NoteParserTest {
      */
     public static final Note[] VALID_NOTES = {
             new Note(1)
-            , new Note(1)
+            , new Note(12)
             , new Note(2)
             , new Note(3)
             , new Note(4)

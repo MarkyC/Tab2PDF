@@ -26,7 +26,7 @@ public class Pipe implements ITabNotation {
         return obj instanceof Pipe;
     }
 
-    public void Draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+    public void draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
         thinLine(staveNumber, xCoordinate, writer);
     }
 }

@@ -31,9 +31,9 @@ public class Note implements ITabNotation, IDrawable {
         return note;
     }
 
-    public void Draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+    public void draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
         try {
-            drawDigit(1, lineNumber, xCoordinate, note, writer);
+            drawDigit(staveNumber, lineNumber, xCoordinate, note, writer);
         } catch (IOException e) {
             //TODO: What should we do on an IOExeption?
         } catch (DocumentException e) {

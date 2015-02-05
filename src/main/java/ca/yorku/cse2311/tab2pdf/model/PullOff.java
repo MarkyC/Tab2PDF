@@ -40,7 +40,7 @@ public class PullOff implements ITabNotation {
         return end;
     }
 
-    public void Draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+    public void draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
         //Do Nothing
     }
 

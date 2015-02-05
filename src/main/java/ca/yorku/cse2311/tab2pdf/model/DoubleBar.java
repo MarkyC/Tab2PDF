@@ -69,7 +69,7 @@ public class DoubleBar implements ITabNotation {
             this.endRepeat = true;
     }
 
-    public void Draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+    public void draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
         //Do Nothing
     }
 

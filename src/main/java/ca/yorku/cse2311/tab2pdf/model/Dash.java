@@ -23,7 +23,7 @@ public class Dash implements ITabNotation {
         return obj instanceof Dash;    // All Spaces are the same for now
     }
 
-    public void Draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+    public void draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
         //Do Nothing
     }
 }

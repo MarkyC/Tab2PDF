@@ -1,6 +1,7 @@
 package ca.yorku.cse2311.tab2pdf.util;
 
 import ca.yorku.cse2311.tab2pdf.Arguments;
+import ca.yorku.cse2311.tab2pdf.PdfHelper;
 import ca.yorku.cse2311.tab2pdf.model.Bar;
 import ca.yorku.cse2311.tab2pdf.model.BarLine;
 import ca.yorku.cse2311.tab2pdf.model.IDrawable;
@@ -58,23 +59,36 @@ public class pdfCreator implements Runnable {
         document.add(new Paragraph(tab.getTitle().getTitle()));     // The Tab's Title
         document.add(new Paragraph(tab.getSubtitle().getSubtitle()));  // The Tab's Subtitle
 
-        stave(1, writer);
+        stave(0, writer);
+
 
         float pageWidth = writer.getPageSize().getWidth();
 
         double spacing = 5 + tab.getSpacing().getSpacing();
 
-        int stave = 1;
+        int stave = 0;
 
         int MARGIN = 50;
 
         int xBarPos = MARGIN;
 
         for (Bar bar : tab.getBars()) {
-            if (bar.getLine(0).getLine().size() * spacing > pageWidth) {
+
+            double temp = (bar.getLine(0).getLine().size() - 1) * spacing + xBarPos;
+
+            if (temp > pageWidth) {
                 stave++;
                 xBarPos = MARGIN;
-                //?
+
+                temp = PdfHelper.determineYCoordinate(stave + 1) + (6) * PdfHelper.getLineSpace();
+                if (temp < 0) {
+                    writer.setPageEmpty(false);
+                    document.newPage();
+
+                    stave = -1;
+                }
+
+                stave(stave, writer);
             }
 
             int xPos = xBarPos;
@@ -84,9 +98,11 @@ public class pdfCreator implements Runnable {
 
                 int lineNumber = i + 1;
                 BarLine line = bar.getLine(i);
+
                 for (IDrawable note : line.getLine()) {
 
-                    note.Draw(stave, lineNumber, xPos, writer);
+                    //  (int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer)
+                    note.draw(stave, lineNumber, xPos, writer);
                     xPos += spacing;
 
                 }

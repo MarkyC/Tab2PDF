@@ -29,7 +29,7 @@ public class Spacing implements ITabNotation {
         return spacing;
     }
 
-    public void Draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+    public void draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
         //Do Nothing
     }
 
