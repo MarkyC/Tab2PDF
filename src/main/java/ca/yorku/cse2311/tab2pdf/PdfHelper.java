@@ -260,13 +260,13 @@ public class PdfHelper {
 
         BaseFont font = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1257, BaseFont.EMBEDDED);
         //Distance from the middle of the digit to the digit border
+        int fontHeight = (int) font.getWidthPoint(' ', DIGIT_SIZE);
         int digitRadius;
         if (9 < digit) {
             digitRadius = (int) font.getWidthPoint(' ', DIGIT_SIZE * (int) (Math.log10(digit) + 1)); //compensate for larger than 1 length
         } else {
             digitRadius = (int) font.getWidthPoint(' ', DIGIT_SIZE);
         }
-        xCoordinate -= digitRadius/2;
         //Clears a space for the digit and determines the Y coordinate of the digit to be printed
         int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * PdfHelper.LINE_SPACE;
         blankSpace(staveNumber, lineNumber, xCoordinate, digitRadius, writer);
@@ -274,7 +274,7 @@ public class PdfHelper {
 
         canvas.saveState();
         canvas.beginText();
-        canvas.moveText(xCoordinate - digitRadius, yCoordinate - digitRadius - 1);
+        canvas.moveText(xCoordinate - digitRadius, yCoordinate - fontHeight - 1);
         canvas.setFontAndSize(font, DIGIT_SIZE);
         canvas.showText(Integer.toString(digit));
         canvas.endText();
