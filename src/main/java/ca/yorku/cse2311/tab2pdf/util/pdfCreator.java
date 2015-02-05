@@ -2,10 +2,7 @@ package ca.yorku.cse2311.tab2pdf.util;
 
 import ca.yorku.cse2311.tab2pdf.Arguments;
 import ca.yorku.cse2311.tab2pdf.PdfHelper;
-import ca.yorku.cse2311.tab2pdf.model.Bar;
-import ca.yorku.cse2311.tab2pdf.model.BarLine;
-import ca.yorku.cse2311.tab2pdf.model.IDrawable;
-import ca.yorku.cse2311.tab2pdf.model.Tab;
+import ca.yorku.cse2311.tab2pdf.model.*;
 import ca.yorku.cse2311.tab2pdf.parser.TabParser;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Paragraph;
@@ -14,21 +11,38 @@ import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.*;
 import java.io.File;
 import java.nio.file.Files;
+import java.util.LinkedList;
 import java.util.logging.Logger;
 
 import static ca.yorku.cse2311.tab2pdf.PdfHelper.stave;
 
 /**
  * pdfCreator
- * Handles the creaton of the pdf file
+ * Handles the creation of the pdf file
  *
  * @author Brody Atto
  * @since 2015-02-4
  */
 public class PdfCreator implements Runnable {
 
+    private static java.util.List<ILongDraw> longNotes = new LinkedList<>();
+
+    static {
+        longNotes.add(new PullOff(new Note()));
+        longNotes.add(new HammerOn(new Note()));
+    }
+
+    private static java.util.List<IDrawable> ignoreNotes = new LinkedList<>();
+
+    static {
+        ignoreNotes.add(new Dash());
+        ignoreNotes.add(new Pipe());
+        ignoreNotes.add(new DoubleBar());
+        //ignoreNotes.add()
+    }
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
     private Arguments args;
+
 
     public PdfCreator(Arguments args) {
         this.args = args;
@@ -72,6 +86,10 @@ public class PdfCreator implements Runnable {
 
         int xBarPos = MARGIN;
 
+        int lastStave = 0;
+        int lastXPos = 0;
+        int lastLine = 0;
+
         for (Bar bar : tab.getBars()) {
 
             double temp = (bar.getLine(0).getLine().size() - 1) * spacing + xBarPos;
@@ -100,9 +118,25 @@ public class PdfCreator implements Runnable {
                 BarLine line = bar.getLine(i);
 
                 for (IDrawable note : line.getLine()) {
+                    //Draw the note
+                    for (IDrawable longNoteType : longNotes) {
+                        if (longNoteType.getClass() == note.getClass()) { //If it is a long draw we have to do something special
+                            ((ILongDraw) note).drawLong(stave, lineNumber, xPos, writer, lastStave, lastLine, lastXPos);
+                        } else {
+                            note.draw(stave, lineNumber, xPos, writer);
+                        }
+                    }
 
-                    //  (int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer)
-                    note.draw(stave, lineNumber, xPos, writer);
+                    //Saves the location of the last note
+                    for (IDrawable ignore : ignoreNotes) {
+                        if (ignore.getClass() != note.getClass()) {
+                            lastXPos = xPos;
+                            lastLine = lineNumber;
+                            lastStave = stave;
+                        }
+                    }
+
+
                     xPos += spacing;
 
                 }

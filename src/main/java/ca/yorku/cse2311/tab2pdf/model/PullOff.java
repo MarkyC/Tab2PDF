@@ -11,7 +11,7 @@ import com.itextpdf.text.pdf.PdfWriter;
  * @author Brody Atto, Marco Cirillo
  * @since 2015-02-04
  */
-public class PullOff implements ITabNotation {
+public class PullOff implements ITabNotation, ILongDraw {
 
     public static final Note EMPTY_NOTE = new Note();
 
@@ -44,6 +44,10 @@ public class PullOff implements ITabNotation {
         //Do Nothing
     }
 
+    public void drawLong(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer, int oldStave, int OldLine, int oldXCoordinate) {
+        //do nothing
+    }
+
     @Override
     public boolean equals(Object o) {
 
@@ -69,6 +73,6 @@ public class PullOff implements ITabNotation {
     @Override
     public String toString() {
 
-        return getStart().toString() + "p" + getEnd().toString();
+        return "p" + getEnd().toString();
     }
 }

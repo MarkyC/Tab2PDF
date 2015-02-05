@@ -11,7 +11,7 @@ import com.itextpdf.text.pdf.PdfWriter;
  * @author Brody Atto, Marco Cirillo
  * @since 2015-02-04
  */
-public class HammerOn implements ITabNotation {
+public class HammerOn implements ITabNotation, ILongDraw {
 
     public static final Note EMPTY_NOTE = new Note();
 
@@ -42,6 +42,10 @@ public class HammerOn implements ITabNotation {
 
     public void draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
         //Do Nothing
+    }
+
+    public void drawLong(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer, int oldStave, int OldLine, int oldXCoordinate) {
+        //TODO: finish method
     }
 
     @Override
