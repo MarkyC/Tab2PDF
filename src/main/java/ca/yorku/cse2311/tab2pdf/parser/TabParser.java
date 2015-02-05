@@ -18,14 +18,6 @@ import java.util.logging.Logger;
  */
 public class TabParser {
 
-    public static final List<ITabNotation> MUSICAL_NOTES = new ArrayList<>();
-
-    static {
-        MUSICAL_NOTES.add(new Note(""));
-        MUSICAL_NOTES.add(new Dash());
-        MUSICAL_NOTES.add(new Pipe());
-    }
-
     public static final List<IParser> PARSERS = new ArrayList<>();
 
     static {
@@ -35,6 +27,9 @@ public class TabParser {
         PARSERS.add(new NoteParser());
         PARSERS.add(new DashParser());
         PARSERS.add(new PipeParser());
+        PARSERS.add(new SlideParser());
+        PARSERS.add(new HammerOnParser());
+        PARSERS.add(new PullOffParser());
         //PARSERS.add()
     }
 
