@@ -12,5 +12,5 @@ import com.itextpdf.text.pdf.PdfWriter;
  */
 public interface ILongDraw extends IDrawable {
 
-    public void drawLong(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer, int oldStave, int OldLine, int oldXCoordinate);
+    public void drawLong(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer, int oldStave, int OldLine, int oldXCoordinate, String oldString);
 }

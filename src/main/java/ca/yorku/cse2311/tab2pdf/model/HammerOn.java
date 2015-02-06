@@ -44,7 +44,7 @@ public class HammerOn implements ITabNotation, ILongDraw {
         //Do Nothing
     }
 
-    public void drawLong(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer, int oldStave, int OldLine, int oldXCoordinate) {
+    public void drawLong(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer, int oldStave, int OldLine, int oldXCoordinate, String oldString) {
         //TODO: finish method
     }
 

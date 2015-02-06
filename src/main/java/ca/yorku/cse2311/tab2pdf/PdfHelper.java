@@ -1,5 +1,6 @@
 package ca.yorku.cse2311.tab2pdf;
 
+import ca.yorku.cse2311.tab2pdf.model.PullOff;
 import ca.yorku.cse2311.tab2pdf.model.Slide;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.BaseFont;
@@ -30,6 +31,8 @@ public class PdfHelper {
      * Determined based on LINE_SPACE
      */
     private static final int STAVE_WIDTH = LINE_SPACE * 5;
+
+    private static final float LINE_WIDTH = 0.6f;
 
     /**
      * Size of the digits in stave
@@ -99,6 +102,41 @@ public class PdfHelper {
     }
 
     /**
+     * Draws a horizontal arc between the specified points with a specified height.
+     *
+     * @param x1     X coordinate of the first point
+     * @param y1     Y coordinate of the first point
+     * @param x2     X coordinate of the second point
+     * @param y2     Y coordinate of the second point
+     * @param width  Thickness of the line
+     * @param height Height of the Arc
+     * @param writer Pdf writer for the document
+     */
+    private static void arc(float x1, float y1, float x2, float y2, float width, float height, PdfWriter writer) {
+
+        float leftHandleX = x1 - (x1 - x2) / 4;
+        float leftHandleY = (y1 + y2) / 2 + height;
+        float rightHandleX = x2 + (x1 - x2) / 4;
+        float rightHandleY = (y1 + y2) / 2 + height;
+
+
+        PdfContentByte canvas = writer.getDirectContent();
+
+        canvas.saveState();
+        canvas.setColorStroke(GrayColor.BLACK);
+
+        canvas.setLineWidth(width);
+
+        canvas.moveTo(x1, y1);
+        //Control Point 1, Control Point 2, End Point
+        canvas.curveTo(leftHandleX, leftHandleY, rightHandleX, rightHandleY, x2, y2);
+
+        canvas.stroke();
+
+        canvas.restoreState();
+    }
+
+    /**
      * Determines the Y coordinate of the line to draw based on the stave number
      *
      * @param staveNumber the number of stave to work with
@@ -141,7 +179,7 @@ public class PdfHelper {
     public static void thinLine(int staveNumber, int xCoordinate, PdfWriter writer) {
 
         int yCoordinate = determineYCoordinate(staveNumber);
-        PdfHelper.line(xCoordinate, yCoordinate, xCoordinate, yCoordinate + PdfHelper.STAVE_WIDTH, .5f, writer);
+        PdfHelper.line(xCoordinate - 1, yCoordinate, xCoordinate - 1, yCoordinate + PdfHelper.STAVE_WIDTH, .5f, writer);
     }
 
     /**
@@ -280,7 +318,6 @@ public class PdfHelper {
         canvas.showText(Integer.toString(digit));
         canvas.endText();
         canvas.restoreState();
-
     }
 
     /**
@@ -304,24 +341,38 @@ public class PdfHelper {
             drawDigit(staveNumber, lineNumber, xCoordinate - fontHeight * 2, slide.getStart().getNote(), writer);
         }
 
-        /*
-        PdfContentByte canvas = writer.getDirectContent();
-
-        canvas.saveState();
-        canvas.beginText();
-        canvas.moveText(xCoordinate - fontHeight, yCoordinate - fontHeight - 1);
-        canvas.setFontAndSize(font, DIGIT_SIZE);
-        canvas.showText("/");
-        canvas.endText();
-        canvas.restoreState();
-        */
-
         if (slide.getEnd().getNote() != 0) {
             drawDigit(staveNumber, lineNumber, xCoordinate + fontHeight * 2, slide.getEnd().getNote(), writer);
         }
         float xlen = 1.4f;
         float ylen = 1.2f;
-        line(xCoordinate - fontHeight * xlen, yCoordinate - fontHeight * ylen, xCoordinate + fontHeight * xlen, yCoordinate + fontHeight * ylen, 0.6f, writer);
+        line(xCoordinate - fontHeight * xlen, yCoordinate - fontHeight * ylen, xCoordinate + fontHeight * xlen, yCoordinate + fontHeight * ylen, LINE_WIDTH, writer);
+
+    }
+
+    public static void drawPull(int staveNumber, int lineNumber, int xCoordinate, PullOff pullOff, PdfWriter writer,
+                                int oldStave, int oldLine, int oldXCoordinate, String oldString) throws DocumentException, IOException {
+
+        BaseFont font = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1257, BaseFont.EMBEDDED);
+        //Distance from the middle of the digit to the digit border
+        int fontHeight = (int) font.getWidthPoint(' ', DIGIT_SIZE);
+        int digitRadius;
+        if (9 < pullOff.getEnd().getNote()) {
+            digitRadius = (int) font.getWidthPoint(' ', DIGIT_SIZE * (int) (Math.log10(pullOff.getEnd().getNote()) + 1)); //compensate for larger than 1 length
+        } else {
+            digitRadius = (int) font.getWidthPoint(' ', DIGIT_SIZE);
+        }
+
+        int oldDigitRadius = (int) font.getWidthPoint(' ', DIGIT_SIZE * oldString.length()); //compensate for larger than 1 length
+
+        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * PdfHelper.LINE_SPACE;
+        int oldyCoordinate = determineYCoordinate(oldStave) + (6 - oldLine) * PdfHelper.LINE_SPACE;
+
+
+        drawDigit(staveNumber, lineNumber, xCoordinate - fontHeight * 2, pullOff.getEnd().getNote(), writer);
+
+        arc(xCoordinate - digitRadius * 3.0f, yCoordinate + 3, oldXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, LINE_WIDTH, 2.0f, writer);
+
 
     }
 }
