@@ -83,6 +83,6 @@ public class PullOff implements ITabNotation, ILongDraw {
     @Override
     public String toString() {
 
-        return "p" + getEnd().toString();
+        return "p";
     }
 }

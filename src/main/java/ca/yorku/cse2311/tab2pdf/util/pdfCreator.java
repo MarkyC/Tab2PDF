@@ -40,6 +40,14 @@ public class PdfCreator implements Runnable {
         ignoreNotes.add(new DoubleBar());
         //ignoreNotes.add()
     }
+
+    private static java.util.List<IDrawable> bars = new LinkedList<>();
+
+    static {
+        bars.add(new Pipe());
+        bars.add(new DoubleBar());
+        //bars.add()
+    }
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
     private Arguments args;
 
@@ -78,17 +86,18 @@ public class PdfCreator implements Runnable {
 
         float pageWidth = writer.getPageSize().getWidth();
 
-        double spacing = 5 + tab.getSpacing().getSpacing();
+        double spacing = 3 + tab.getSpacing().getSpacing();
 
         int stave = 0;
 
-        int MARGIN = 50;
+        int MARGIN = 30;
 
         int xBarPos = MARGIN;
 
         int lastStave = 0;
         int lastXPos = 0;
         int lastLine = 0;
+        String lastString = " ";
 
         for (Bar bar : tab.getBars()) {
 
@@ -121,21 +130,25 @@ public class PdfCreator implements Runnable {
                     //Draw the note
                     for (IDrawable longNoteType : longNotes) {
                         if (longNoteType.getClass() == note.getClass()) { //If it is a long draw we have to do something special
-                            ((ILongDraw) note).drawLong(stave, lineNumber, xPos, writer, lastStave, lastLine, lastXPos);
+                            ((ILongDraw) note).drawLong(stave, lineNumber, xPos, writer, lastStave, lastLine, lastXPos, lastString);
                         } else {
                             note.draw(stave, lineNumber, xPos, writer);
                         }
                     }
 
                     //Saves the location of the last note
-                    for (IDrawable ignore : ignoreNotes) {
-                        if (ignore.getClass() != note.getClass()) {
-                            lastXPos = xPos;
-                            lastLine = lineNumber;
-                            lastStave = stave;
+                    boolean ignore = false;
+                    for (IDrawable ignoreType : ignoreNotes) {
+                        if (ignoreType.getClass().isInstance(note)) {
+                            ignore = true;
                         }
                     }
-
+                    if (!ignore) {
+                        lastXPos = xPos;
+                        lastLine = lineNumber;
+                        lastStave = stave;
+                        lastString = note.toString();
+                    }
 
                     xPos += spacing;
 

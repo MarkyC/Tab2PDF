@@ -19,7 +19,7 @@ public class NoteParser extends AbstractParser<Note> {
     /**
      * Fancy regex for "an integer at the beginning of the line"
      */
-    public static final Pattern TOKEN_PATTERN = Pattern.compile("^(\\d+)(?![A-Za-z])");
+    public static final Pattern TOKEN_PATTERN = Pattern.compile("^(\\d+)");
 
     @Override
     public final Pattern getPattern() {

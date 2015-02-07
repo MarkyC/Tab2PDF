@@ -1,6 +1,10 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
+import ca.yorku.cse2311.tab2pdf.PdfHelper;
+import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfWriter;
+
+import java.io.IOException;
 
 /**
  * HammerOn
@@ -44,8 +48,14 @@ public class HammerOn implements ITabNotation, ILongDraw {
         //Do Nothing
     }
 
-    public void drawLong(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer, int oldStave, int OldLine, int oldXCoordinate, String oldString) {
-        //TODO: finish method
+    public void drawLong(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer, int oldStave, int oldLine, int oldXCoordinate, String oldString) {
+        try {
+            PdfHelper.drawHammer(staveNumber, lineNumber, xCoordinate, this, writer, oldStave, oldLine, oldXCoordinate, oldString);
+        } catch (DocumentException e) {
+            //e.printStackTrace();
+        } catch (IOException e) {
+            //e.printStackTrace();
+        }
     }
 
     @Override
@@ -73,6 +83,6 @@ public class HammerOn implements ITabNotation, ILongDraw {
     @Override
     public String toString() {
 
-        return getStart().toString() + "h" + getEnd().toString();
+        return "h";
     }
 }

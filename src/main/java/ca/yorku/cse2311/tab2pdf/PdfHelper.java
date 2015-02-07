@@ -1,5 +1,6 @@
 package ca.yorku.cse2311.tab2pdf;
 
+import ca.yorku.cse2311.tab2pdf.model.HammerOn;
 import ca.yorku.cse2311.tab2pdf.model.PullOff;
 import ca.yorku.cse2311.tab2pdf.model.Slide;
 import com.itextpdf.text.DocumentException;
@@ -179,7 +180,7 @@ public class PdfHelper {
     public static void thinLine(int staveNumber, int xCoordinate, PdfWriter writer) {
 
         int yCoordinate = determineYCoordinate(staveNumber);
-        PdfHelper.line(xCoordinate - 1, yCoordinate, xCoordinate - 1, yCoordinate + PdfHelper.STAVE_WIDTH, .5f, writer);
+        PdfHelper.line(xCoordinate, yCoordinate, xCoordinate, yCoordinate + PdfHelper.STAVE_WIDTH, .5f, writer);
     }
 
     /**
@@ -266,7 +267,7 @@ public class PdfHelper {
      * @param xCoordinate the X coordinate of the middle of the combination
      * @param writer      Pdf writer for the document
      */
-    private static void blankSpace(int staveNumber, int lineNumber, int xCoordinate, int digitWidth, PdfWriter writer) {
+    private static void blankSpace(int staveNumber, int lineNumber, float xCoordinate, int digitWidth, PdfWriter writer) {
 
         int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * PdfHelper.LINE_SPACE;
 
@@ -295,7 +296,7 @@ public class PdfHelper {
      * @throws IOException
      * @throws DocumentException
      */
-    public static void drawDigit(int staveNumber, int lineNumber, int xCoordinate, int digit, PdfWriter writer) throws DocumentException, IOException {
+    public static void drawDigit(int staveNumber, int lineNumber, float xCoordinate, int digit, PdfWriter writer) throws DocumentException, IOException {
 
         BaseFont font = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1257, BaseFont.EMBEDDED);
         //Distance from the middle of the digit to the digit border
@@ -321,6 +322,37 @@ public class PdfHelper {
     }
 
     /**
+     * Draws text to the pdf
+     * Note: It does not remove the lines behind the text
+     *
+     * @param xCoordinate the X coordinate of the middle of the combination
+     * @param yCoordinate the Y coordinate of the middle of the combination
+     * @param text        the text to be printed
+     * @param writer      Pdf writer for the document
+     * @throws IOException
+     * @throws DocumentException
+     */
+    public static void drawText(float xCoordinate, int yCoordinate, String text, int size, PdfWriter writer) throws DocumentException, IOException {
+
+        BaseFont font = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1257, BaseFont.EMBEDDED);
+        //Distance from the middle of the digit to the digit border
+        int fontHeight = (int) font.getWidthPoint(' ', size);
+
+        int digitRadius = (int) font.getWidthPoint(' ', size * text.length()); //compensate for larger than 1 length
+
+        //Print
+        PdfContentByte canvas = writer.getDirectContent();
+
+        canvas.saveState();
+        canvas.beginText();
+        canvas.moveText(xCoordinate - digitRadius, yCoordinate - fontHeight - 1);
+        canvas.setFontAndSize(font, size);
+        canvas.showText(text);
+        canvas.endText();
+        canvas.restoreState();
+    }
+
+    /**
      * @param staveNumber the number of stave to work with
      * @param lineNumber  the number of line to work with (from 1 to 6)
      * @param xCoordinate the X coordinate of the middle of the combination
@@ -332,6 +364,7 @@ public class PdfHelper {
     public static void drawSlide(int staveNumber, int lineNumber, int xCoordinate, Slide slide, PdfWriter writer) throws DocumentException, IOException {
 
         BaseFont font = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1257, BaseFont.EMBEDDED);
+
         //Distance from the middle of the digit to the digit border
         int fontHeight = (int) font.getWidthPoint(' ', DIGIT_SIZE);
 
@@ -369,10 +402,40 @@ public class PdfHelper {
         int oldyCoordinate = determineYCoordinate(oldStave) + (6 - oldLine) * PdfHelper.LINE_SPACE;
 
 
-        drawDigit(staveNumber, lineNumber, xCoordinate - fontHeight * 2, pullOff.getEnd().getNote(), writer);
+        //drawDigit(staveNumber, lineNumber, xCoordinate - fontHeight * 2, pullOff.getEnd().getNote(), writer);
+        drawText(((xCoordinate + digitRadius * 3.5f) + oldXCoordinate) / 2, yCoordinate + 8, "p", 6, writer);
 
-        arc(xCoordinate - digitRadius * 3.0f, yCoordinate + 3, oldXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, LINE_WIDTH, 2.0f, writer);
+        arc(xCoordinate + digitRadius * 3.0f, yCoordinate + 3, oldXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, LINE_WIDTH, 2.0f, writer);
 
 
     }
+
+    public static void drawHammer(int staveNumber, int lineNumber, int xCoordinate, HammerOn hammerOn, PdfWriter writer,
+                                  int oldStave, int oldLine, int oldXCoordinate, String oldString) throws DocumentException, IOException {
+
+        BaseFont font = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1257, BaseFont.EMBEDDED);
+        //Distance from the middle of the digit to the digit border
+        int fontHeight = (int) font.getWidthPoint(' ', DIGIT_SIZE);
+        int digitRadius;
+        if (9 < hammerOn.getEnd().getNote()) {
+            digitRadius = (int) font.getWidthPoint(' ', DIGIT_SIZE * (int) (Math.log10(hammerOn.getEnd().getNote()) + 1)); //compensate for larger than 1 length
+        } else {
+            digitRadius = (int) font.getWidthPoint(' ', DIGIT_SIZE);
+        }
+
+        int oldDigitRadius = (int) font.getWidthPoint(' ', DIGIT_SIZE * oldString.length()); //compensate for larger than 1 length
+
+        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * PdfHelper.LINE_SPACE;
+        int oldyCoordinate = determineYCoordinate(oldStave) + (6 - oldLine) * PdfHelper.LINE_SPACE;
+
+
+        //drawDigit(staveNumber, lineNumber, xCoordinate + fontHeight / 4f, hammerOn.getEnd().getNote(), writer);
+        drawText(((xCoordinate + digitRadius * 3.5f) + oldXCoordinate) / 2, yCoordinate + 7, "h", 6, writer);
+
+        arc(xCoordinate + digitRadius * 3.0f, yCoordinate + 3, oldXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, LINE_WIDTH, 2.0f, writer);
+
+
+    }
+
+
 }

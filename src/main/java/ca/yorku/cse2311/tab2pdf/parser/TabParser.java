@@ -203,7 +203,7 @@ public class TabParser {
 
             } catch (CouldNotParseSymbolException e) {
                 LOG.warning(e.getMessage());
-                i++;    // Skip the current symbol
+                //i++;    // Skip the current symbol //not needed, will skip when i hits the for loop anyway
             }
         }
 

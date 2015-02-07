@@ -13,7 +13,7 @@ public class HammerOnParser extends AbstractParser<HammerOn> {
     /**
      * Look for intiger\intiger
      */
-    public static final Pattern TOKEN_PATTERN = Pattern.compile("^(\\d+)*h(\\d+)*", Pattern.CASE_INSENSITIVE);
+    public static final Pattern TOKEN_PATTERN = Pattern.compile("^h(\\d+)*", Pattern.CASE_INSENSITIVE);
 
     @Override
     public Pattern getPattern() {
@@ -28,10 +28,10 @@ public class HammerOnParser extends AbstractParser<HammerOn> {
 
         if (m.find()) {
 
-            Note start = (null == m.group(1)) ? HammerOn.EMPTY_NOTE : new Note(Integer.parseInt(m.group(1)));
-            Note end = (null == m.group(2)) ? HammerOn.EMPTY_NOTE : new Note(Integer.parseInt(m.group(2)));
+            Note end = (null == m.group(1)) ? HammerOn.EMPTY_NOTE : new Note(Integer.parseInt(m.group(1)));
+            //Note end = (null == m.group(2)) ? HammerOn.EMPTY_NOTE : new Note(Integer.parseInt(m.group(2)));
 
-            return new HammerOn(start, end);
+            return new HammerOn(end);
         }
 
         throw new ParseException(token, getPattern());
