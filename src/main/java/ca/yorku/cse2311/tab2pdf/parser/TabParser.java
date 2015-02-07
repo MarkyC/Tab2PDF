@@ -132,7 +132,7 @@ public class TabParser {
                 for (Bar bar : bars) {
                     try {
                         int barLenght = 0;
-                        int barRepeat = 0;
+                        int barRepeat = -1;
                         for (BarLine barLine : bar.getLines()) {
                             //find length
                             if (0 == barLenght && barLine.getLine().size() != 0) {
@@ -140,6 +140,15 @@ public class TabParser {
                             } else if (barLine.getLine().size() > barLenght) {
                                 throw new FileFormatExeption("Varying bar lengths"); //Overkill should call a tab repair function to fix it
                             }
+                            //find repeat
+                            ITabNotation lastSymbol = barLine.getLine().get(barLenght - 1);
+
+                            if (lastSymbol.getClass() == DoubleBar.class)
+                                if (-1 == barRepeat) {
+                                    barRepeat = ((DoubleBar) lastSymbol).getRepeat();
+                                } else if (barLine.getLine().size() > barLenght) {
+                                    throw new FileFormatExeption("Varying bar lengths"); //Overkill should call a tab repair function to fix it
+                                }
 
                             //Set and remove begin bar
                             if (barLine.getLine().get(0).getClass() == DoubleBar.class) {
@@ -148,12 +157,14 @@ public class TabParser {
                             barLine.getLine().remove(0);
 
                             //Set and remove end bar
-                            int length = barLine.getLine().size() - 1;
-                            if (barLine.getLine().get(length).getClass() == DoubleBar.class) {
-                                bar.setEndRepeat(((DoubleBar) barLine.getLine().get(length)).getEndRepeat());
+                            if (barLine.getLine().get(barLenght - 2).getClass() == DoubleBar.class) {
+                                bar.setEndRepeat(((DoubleBar) barLine.getLine().get(barLenght - 2)).getEndRepeat());
                             }
-                            barLine.getLine().remove(length);
+                            barLine.getLine().remove(barLenght - 2);
                         }
+
+                        bar.setBarLength(barLenght);
+                        bar.setBarRepeat(Math.abs(barRepeat));
 
                         if (!bar.isEmpty()) {
                             LOG.info("Adding Bar: " + bar.toString());
@@ -209,7 +220,7 @@ public class TabParser {
      */
     public static List<List<ITabNotation>> parseLine(String line) throws ParseException {
 
-        List<ITabNotation> fragResult = new ArrayList<>(line.length());
+        List<ITabNotation> resultFrag = new ArrayList<>(line.length());
         List<List<ITabNotation>> result = new LinkedList<>();
 
         for (int i = 0; i < line.length(); ++i) {
@@ -226,15 +237,15 @@ public class TabParser {
 
                 //Separates multiple bars on the same line
                 if (Pipe.class == symbol.getClass()) {
-                    if (!fragResult.isEmpty()) {
-                        fragResult.add(symbol);
-                        result.add(fragResult);
-                        fragResult = new ArrayList<>(line.length());
+                    if (!resultFrag.isEmpty()) {
+                        resultFrag.add(symbol);
+                        result.add(resultFrag);
+                        resultFrag = new ArrayList<>(line.length());
                     }
                 }
 
                 // add the symbol to the result list
-                fragResult.add(symbol);
+                resultFrag.add(symbol);
 
                 /*
                 * Multi char strings now turn into an object followed by a number of dashes
@@ -248,19 +259,29 @@ public class TabParser {
                 */
                 int len = 0;
                 while (symbol.toString().length() - ++len > 0) {
-                    fragResult.add(new Dash(true));
+                    resultFrag.add(new Dash(true));
                 }
 
 
                 // Advance the pointer to the end of the parsed symbol
-                i += symbol.toString().length() - 1;
+                if (symbol.getClass() == DoubleBar.class) {
+                    if (((DoubleBar) symbol).getEndRepeat()) {
+                        i += 4; //removes the next 4 characters since there are 4 characters that need to be replaced. Ex '*||-
+                    } else {
+                        i += 3; //only remove the next 3 characters since there is nothing in front of the double bar ex '||-'
+                    }
+                } else {
+                    i += symbol.toString().length() - 1;
+                }
 
             } catch (CouldNotParseSymbolException e) {
                 LOG.warning(e.getMessage());
                 //i++;    // Skip the current symbol //not needed, will skip when i hits the for loop anyway
             }
         }
-
+        if (result.isEmpty()) {
+            result.add(resultFrag);
+        }
         return result;
     }
 

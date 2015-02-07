@@ -403,9 +403,9 @@ public class PdfHelper {
 
 
         //drawDigit(staveNumber, lineNumber, xCoordinate - fontHeight * 2, pullOff.getEnd().getNote(), writer);
-        drawText(((xCoordinate + digitRadius * 3.5f) + oldXCoordinate) / 2, yCoordinate + 8, "p", 6, writer);
+        drawText(((xCoordinate + digitRadius * 2.0f) + oldXCoordinate) / 2, yCoordinate + 8, "p", 6, writer);
 
-        arc(xCoordinate + digitRadius * 3.0f, yCoordinate + 3, oldXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, LINE_WIDTH, 2.0f, writer);
+        arc(xCoordinate + digitRadius * 1.5f, yCoordinate + 3, oldXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, LINE_WIDTH, 2.0f, writer);
 
 
     }
@@ -430,9 +430,9 @@ public class PdfHelper {
 
 
         //drawDigit(staveNumber, lineNumber, xCoordinate + fontHeight / 4f, hammerOn.getEnd().getNote(), writer);
-        drawText(((xCoordinate + digitRadius * 3.5f) + oldXCoordinate) / 2, yCoordinate + 7, "h", 6, writer);
+        drawText(((xCoordinate + digitRadius * 2.0f) + oldXCoordinate) / 2, yCoordinate + 7, "h", 6, writer);
 
-        arc(xCoordinate + digitRadius * 3.0f, yCoordinate + 3, oldXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, LINE_WIDTH, 2.0f, writer);
+        arc(xCoordinate + digitRadius * 1.5f, yCoordinate + 3, oldXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, LINE_WIDTH, 2.0f, writer);
 
 
     }

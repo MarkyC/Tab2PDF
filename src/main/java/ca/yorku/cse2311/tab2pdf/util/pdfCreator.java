@@ -64,6 +64,7 @@ public class PdfCreator implements Runnable {
             Desktop.getDesktop().open(args.getOutputFile());
 
         } catch (Exception e) {
+            e.printStackTrace();
             LOG.severe(e.getMessage());
         }
     }
@@ -94,13 +95,18 @@ public class PdfCreator implements Runnable {
 
         int xBarPos = MARGIN;
 
-        int lastStave = 0;
-        int lastXPos = 0;
-        int lastLine = 0;
-        String lastString = " ";
+        int numLines = tab.getBars().get(0).getNumLines() + 1;
 
-        for (int j = 0; j < tab.getBars().get(0).getLength(); j++) {
+        int[] lastStave = new int[numLines];
+        int[] lastXPos = new int[numLines];
+        int[] lastLine = new int[numLines];
+        String[] lastString = new String[numLines];
 
+        for (int j = 0; j < numLines; j++) {
+            lastStave[j] = 0;
+            lastXPos[j] = 0;
+            lastLine[j] = 0;
+            lastString[j] = " ";
         }
 
         for (Bar bar : tab.getBars()) {
@@ -127,6 +133,7 @@ public class PdfCreator implements Runnable {
             //add start of bar
             if (bar.getBeginRepeat()) {
                 new DoubleBar(0, true, false).draw(stave, 1, xPos, writer);
+                xBarPos += spacing;
             } else {
                 new Pipe().draw(stave, 1, xPos, writer);
             }
@@ -142,7 +149,7 @@ public class PdfCreator implements Runnable {
                     //Draw the note
                     for (IDrawable longNoteType : longNotes) {
                         if (longNoteType.getClass() == note.getClass()) { //If it is a long draw we have to do something special
-                            ((ILongDraw) note).drawLong(stave, lineNumber, xPos, writer, lastStave, lastLine, lastXPos, lastString);
+                            ((ILongDraw) note).drawLong(stave, lineNumber, xPos, writer, lastStave[i], lastLine[i], lastXPos[i], lastString[i]);
                         } else {
                             note.draw(stave, lineNumber, xPos, writer);
                         }
@@ -156,10 +163,10 @@ public class PdfCreator implements Runnable {
                         }
                     }
                     if (!ignore) {
-                        lastXPos = xPos;
-                        lastLine = lineNumber;
-                        lastStave = stave;
-                        lastString = note.toString();
+                        lastXPos[i] = xPos;
+                        lastLine[i] = lineNumber;
+                        lastStave[i] = stave;
+                        lastString[i] = note.toString();
                     }
 
                     xPos += spacing;

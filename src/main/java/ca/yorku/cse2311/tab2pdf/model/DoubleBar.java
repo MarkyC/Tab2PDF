@@ -92,6 +92,10 @@ public class DoubleBar implements ITabNotation {
             temp += "*";
         }
 
+        if (endRepeat) {
+            temp += "-";
+        }
+
         return temp;
     }
 

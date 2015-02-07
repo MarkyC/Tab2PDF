@@ -25,6 +25,8 @@ public class Bar {
 
     private boolean beginRepeat = false;
 
+    private int repeat;
+
     /**
      * Constructs a Bar with 6 lines (the standard number of lines for a guitar tab)
      */
@@ -97,6 +99,24 @@ public class Bar {
      */
     public int getLength() {
         return length;
+    }
+
+    /**
+     * Sets the length of the bar
+     *
+     * @param len The new length of the bar
+     */
+    public void setBarRepeat(int len) {
+        this.repeat = len;
+    }
+
+    /**
+     * Returns the length of the bar
+     *
+     * @return Lenght of the bar
+     */
+    public int getRepeat() {
+        return repeat;
     }
 
     /**
