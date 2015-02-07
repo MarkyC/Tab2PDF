@@ -2,9 +2,11 @@ package ca.yorku.cse2311.tab2pdf.parser;
 
 import ca.yorku.cse2311.tab2pdf.model.*;
 import ca.yorku.cse2311.tab2pdf.parser.exception.CouldNotParseSymbolException;
+import ca.yorku.cse2311.tab2pdf.parser.exception.FileFormatExeption;
 import ca.yorku.cse2311.tab2pdf.parser.exception.ParseException;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -111,7 +113,9 @@ public class TabParser {
     public static Tab parse(List<String> lines) {
 
         Tab tab = new Tab(getTitle(lines), getSubtitle(lines), getSpacing(lines));
-        Bar bar = new Bar();
+        //Bar bar = new Bar();
+
+        List<Bar> bars = new ArrayList<>();
 
         for (int i = 0; i < lines.size(); ++i) {
 
@@ -125,20 +129,60 @@ public class TabParser {
 
             // A blank line begins a new Bar
             if (line.isEmpty()) {
-                if (!bar.isEmpty()) {
-                    LOG.info("Adding Bar: " + bar.toString());
-                    tab.addBar(bar);    // Add current bar if its not empty
-                }
+                for (Bar bar : bars) {
+                    try {
+                        int barLenght = 0;
+                        int barRepeat = 0;
+                        for (BarLine barLine : bar.getLines()) {
+                            //find length
+                            if (0 == barLenght && barLine.getLine().size() != 0) {
+                                barLenght = barLine.getLine().size();
+                            } else if (barLine.getLine().size() > barLenght) {
+                                throw new FileFormatExeption("Varying bar lengths"); //Overkill should call a tab repair function to fix it
+                            }
 
-                bar = new Bar();        // Make a new Bar for the next lines
+                            //Set and remove begin bar
+                            if (barLine.getLine().get(0).getClass() == DoubleBar.class) {
+                                bar.setBeginRepeat(((DoubleBar) barLine.getLine().get(0)).getBeginRepeat());
+                            }
+                            barLine.getLine().remove(0);
+
+                            //Set and remove end bar
+                            int length = barLine.getLine().size() - 1;
+                            if (barLine.getLine().get(length).getClass() == DoubleBar.class) {
+                                bar.setEndRepeat(((DoubleBar) barLine.getLine().get(length)).getEndRepeat());
+                            }
+                            barLine.getLine().remove(length);
+                        }
+
+                        if (!bar.isEmpty()) {
+                            LOG.info("Adding Bar: " + bar.toString());
+                            tab.addBar(bar);    // Add current bar if its not empty
+                        }
+
+
+                    } catch (FileFormatExeption e) {
+                        LOG.warning(e.getMessage());
+                        LOG.warning("Discarding bar: " + bar);
+                    }
+
+                }
+                bars = new ArrayList<>();        // Make a new Bar for the next lines
                 continue;               // Skip this line since its blank
             }
 
 
             try {
-                BarLine barLine = new BarLine(parseLine(line));
-                LOG.info("Adding Bar Line: " + barLine.toString());
-                bar.addLine(barLine);
+                List<List<ITabNotation>> parsedLine = parseLine(line);
+                for (int j = 0; j < parsedLine.size(); j++) {
+                    BarLine barLine = new BarLine(parsedLine.get(j));
+                    LOG.info("Adding Bar Line: " + barLine.toString());
+                    if (bars.size() <= j) {
+                        bars.add(new Bar());
+                    }
+                    bars.get(j).addLine(barLine);
+
+                }
 
             } catch (ParseException e) {
                 LOG.warning(e.getMessage());
@@ -163,9 +207,10 @@ public class TabParser {
      * @param line A single line of ascii guitar tablature
      * @return A List of the tabs representation in ITabNotation objects
      */
-    public static List<ITabNotation> parseLine(String line) throws ParseException {
+    public static List<List<ITabNotation>> parseLine(String line) throws ParseException {
 
-        List<ITabNotation> result = new ArrayList<>(line.length());
+        List<ITabNotation> fragResult = new ArrayList<>(line.length());
+        List<List<ITabNotation>> result = new LinkedList<>();
 
         for (int i = 0; i < line.length(); ++i) {
 
@@ -179,8 +224,17 @@ public class TabParser {
 
                 // parsing the line succeeded
 
+                //Separates multiple bars on the same line
+                if (Pipe.class == symbol.getClass()) {
+                    if (!fragResult.isEmpty()) {
+                        fragResult.add(symbol);
+                        result.add(fragResult);
+                        fragResult = new ArrayList<>(line.length());
+                    }
+                }
+
                 // add the symbol to the result list
-                result.add(symbol);
+                fragResult.add(symbol);
 
                 /*
                 * Multi char strings now turn into an object followed by a number of dashes
@@ -194,7 +248,7 @@ public class TabParser {
                 */
                 int len = 0;
                 while (symbol.toString().length() - ++len > 0) {
-                    result.add(new Dash(true));
+                    fragResult.add(new Dash(true));
                 }
 
 

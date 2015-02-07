@@ -86,7 +86,7 @@ public class PdfCreator implements Runnable {
 
         float pageWidth = writer.getPageSize().getWidth();
 
-        double spacing = 3 + tab.getSpacing().getSpacing();
+        double spacing = tab.getSpacing().getSpacing();
 
         int stave = 0;
 
@@ -98,6 +98,10 @@ public class PdfCreator implements Runnable {
         int lastXPos = 0;
         int lastLine = 0;
         String lastString = " ";
+
+        for (int j = 0; j < tab.getBars().get(0).getLength(); j++) {
+
+        }
 
         for (Bar bar : tab.getBars()) {
 
@@ -119,6 +123,14 @@ public class PdfCreator implements Runnable {
             }
 
             int xPos = xBarPos;
+
+            //add start of bar
+            if (bar.getBeginRepeat()) {
+                new DoubleBar(0, true, false).draw(stave, 1, xPos, writer);
+            } else {
+                new Pipe().draw(stave, 1, xPos, writer);
+            }
+            xBarPos += spacing;
 
             for (int i = 0; i < bar.getLines().size(); ++i) {
                 xPos = xBarPos;
@@ -155,6 +167,14 @@ public class PdfCreator implements Runnable {
                 }
 
             }
+
+            //add end of bar
+            if (bar.getBeginRepeat()) {
+                new DoubleBar(0, false, true).draw(stave, 1, xPos, writer);
+            } else {
+                new Pipe().draw(stave, 1, xPos, writer);
+            }
+
             xBarPos = xPos;
         }
         

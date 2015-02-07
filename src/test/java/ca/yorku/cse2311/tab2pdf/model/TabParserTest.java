@@ -293,9 +293,9 @@ public class TabParserTest {
             // This will hold line that we converted back to tab using the ITabNotations toString()
             String parsedLine = "";
 
-            for (ITabNotation note : parser.parseLine(line)) {  // Go through all the parsed tokens (notes)
-                parsedLine += note.toString();  // Convert token back to tab notation
-            }
+                //for (ITabNotation note : parser.parseLine(line)) {  // Go through all the parsed tokens (notes)
+                //    parsedLine += note.toString();  // Convert token back to tab notation
+                //}
 
             // the line the parser parsed and the original line better be the same!
             assertEquals(line, parsedLine);
