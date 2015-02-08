@@ -31,7 +31,7 @@ public class SpacingParser extends AbstractParser<Spacing> {
 
         if (m.find()) {
 
-            return new Spacing(m.group(1));
+            return new Spacing(Float.parseFloat(m.group(1)));
         }
 
         throw new ParseException(token, getPattern());

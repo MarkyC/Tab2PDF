@@ -42,17 +42,17 @@ public class SquareNoteParserTest {
      * That means that each line in VALID_LINES should equal its corresponding Note in VALID_NOTES
      */
     public static final SquareNote[] VALID_NOTES = {
-            new SquareNote("1")
-            , new SquareNote("12")
-            , new SquareNote("2")
-            , new SquareNote("3")
-            , new SquareNote("4")
-            , new SquareNote("5")
-            , new SquareNote("6")
-            , new SquareNote("7")
-            , new SquareNote("8")
-            , new SquareNote("9")
-            , new SquareNote("0")
+            new SquareNote(1)
+            , new SquareNote(12)
+            , new SquareNote(2)
+            , new SquareNote(3)
+            , new SquareNote(4)
+            , new SquareNote(5)
+            , new SquareNote(6)
+            , new SquareNote(7)
+            , new SquareNote(8)
+            , new SquareNote(9)
+            , new SquareNote(0)
     };
 
     private SquareNoteParser parser;

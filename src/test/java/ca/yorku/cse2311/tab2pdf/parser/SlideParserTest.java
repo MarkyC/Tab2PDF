@@ -1,5 +1,6 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
+import ca.yorku.cse2311.tab2pdf.model.Note;
 import ca.yorku.cse2311.tab2pdf.model.Slide;
 import ca.yorku.cse2311.tab2pdf.parser.exception.ParseException;
 import org.junit.Before;
@@ -40,17 +41,17 @@ public class SlideParserTest {
      * That means that each line in VALID_LINES should equal its corresponding Note in VALID_NOTES
      */
     public static final Slide[] VALID_NOTES = {
-            new Slide(0, 1)
-            , new Slide(1, 2)
-            , new Slide(2, 3)
-            , new Slide(3, 4)
-            , new Slide(4, 5)
-            , new Slide(5, 6)
-            , new Slide(6, 7)
-            , new Slide(7, 8)
-            , new Slide(8, 9)
-            , new Slide(9, 10)
-            , new Slide(10, 0)
+            new Slide(new Note(0), new Note(1))
+            , new Slide(new Note(1), new Note(2))
+            , new Slide(new Note(2), new Note(3))
+            , new Slide(new Note(3), new Note(4))
+            , new Slide(new Note(4), new Note(5))
+            , new Slide(new Note(5), new Note(6))
+            , new Slide(new Note(6), new Note(7))
+            , new Slide(new Note(7), new Note(8))
+            , new Slide(new Note(8), new Note(9))
+            , new Slide(new Note(9), new Note(10))
+            , new Slide(new Note(10), new Note(0))
     };
 
 

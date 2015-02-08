@@ -6,18 +6,16 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.IOException;
 
-
 /**
- * Slide
- *
- * Represents a Slide in guitar tab notation
- * A Slide may or may or may not have a starting note
- *
+ * PullOff
+ * <p/>
+ * Represents a PullOff in guitar tab notation
+ * A PullOff may or may or may not have a starting note
  *
  * @author Brody Atto, Marco Cirillo
  * @since 2015-02-04
  */
-public class Slide implements ITabNotation {
+public class PullOff implements ITabNotation, ILongDraw {
 
     public static final Note EMPTY_NOTE = new Note();
 
@@ -25,12 +23,12 @@ public class Slide implements ITabNotation {
 
     private final Note end;
 
-    public Slide(Note end) {
+    public PullOff(Note end) {
 
         this(EMPTY_NOTE, end);
     }
 
-    public Slide(Note start, Note end) {
+    public PullOff(Note start, Note end) {
 
         this.start = start;
         this.end = end;
@@ -47,12 +45,16 @@ public class Slide implements ITabNotation {
     }
 
     public void draw(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer) {
+        //Do Nothing
+    }
+
+    public void drawLong(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer, int oldStave, int oldLine, float oldXCoordinate, String oldString) {
         try {
-            PdfHelper.drawSlide(staveNumber, lineNumber, xCoordinate, this, writer);
-        } catch (IOException e) {
-            //TODO: What should we do on an IOExeption?
+            PdfHelper.drawPull(staveNumber, lineNumber, xCoordinate, this, writer, oldStave, oldLine, oldXCoordinate, oldString);
         } catch (DocumentException e) {
-            //TODO: What should we do on an DocumentExecption?
+            //e.printStackTrace();
+        } catch (IOException e) {
+            //e.printStackTrace();
         }
     }
 
@@ -71,7 +73,7 @@ public class Slide implements ITabNotation {
      * @return always 0
      */
     public int rightPadding() {
-        return toString().length() - 1;
+        return 0;
     }
 
     /**
@@ -80,7 +82,7 @@ public class Slide implements ITabNotation {
      * @return always 1
      */
     public int size() {
-        return toString().length();
+        return 1;
     }
 
     @Override
@@ -89,7 +91,7 @@ public class Slide implements ITabNotation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Slide slide = (Slide) o;
+        PullOff slide = (PullOff) o;
 
         if (end != null ? !end.equals(slide.end) : slide.end != null) return false;
         if (start != null ? !start.equals(slide.start) : slide.start != null) return false;
@@ -108,18 +110,6 @@ public class Slide implements ITabNotation {
     @Override
     public String toString() {
 
-        String result = "";
-
-        if (getStart().getValue() != 0) {
-            result += getStart().toString();
-        }
-
-        result += "s";
-
-        if (getEnd().getValue() != 0) {
-            result += getEnd().toString();
-        }
-
-        return result;
+        return "p";
     }
 }
