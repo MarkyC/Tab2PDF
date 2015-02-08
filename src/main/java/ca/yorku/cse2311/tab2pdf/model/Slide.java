@@ -110,13 +110,13 @@ public class Slide implements ITabNotation {
 
         String result = "";
 
-        if (getStart().getNote() != 0) {
+        if (getStart().getValue() != 0) {
             result += getStart().toString();
         }
 
         result += "s";
 
-        if (getEnd().getNote() != 0) {
+        if (getEnd().getValue() != 0) {
             result += getEnd().toString();
         }
 

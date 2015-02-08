@@ -63,7 +63,7 @@ public class TitleParserTest {
         for (int i = 0; i < VALID_TITLES.length; ++i) {  // Go through each valid line,
 
             String line = VALID_TITLES[i];          // grab the current line
-            String title = parser.parse(line).getTitle();      // parse it
+            String title = parser.parse(line).getValue();      // parse it
             assertEquals(CORRECT_TITLES[i], title); // ensure it equals the Title in the corresponding CORRECT_TITLES index
         }
     }

@@ -27,7 +27,7 @@ public class Note implements ITabNotation, IDrawable {
         this(0);
     }
 
-    public int getNote() {
+    public int getValue() {
         return note;
     }
 

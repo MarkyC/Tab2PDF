@@ -24,7 +24,7 @@ public class Title implements ITabNotation {
         this.title = title;
     }
 
-    public String getTitle() {
+    public String getValue() {
 
         return title;
     }

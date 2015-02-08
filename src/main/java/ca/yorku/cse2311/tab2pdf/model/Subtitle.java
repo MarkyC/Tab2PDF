@@ -24,7 +24,7 @@ public class Subtitle implements ITabNotation {
         this.subtitle = subtitle;
     }
 
-    public String getSubtitle() {
+    public String getValue() {
 
         return subtitle;
     }
