@@ -13,8 +13,6 @@ import java.util.List;
  */
 public class Bar {
 
-    /* TODO: A Bar should know how wide it is, so we don't print off the end of the page */
-
     private final List<BarLine> lines = new ArrayList<>();
 
     private final int numLines;
