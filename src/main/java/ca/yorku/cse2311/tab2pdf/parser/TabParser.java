@@ -140,7 +140,7 @@ public class TabParser {
                             if (0 == barLenght && barLine.getLine().size() != 0) {
                                 barLenght = barLine.getLine().size();
                             } else if (barLine.getLine().size() != barLenght) {
-                                throw new BarFormatException("Varying bar lengths"); //TODO: Overkill should call a tab repair function to fix it, needs a copy method
+                                throw new BarFormatException("Varying bar lengths"); //TODO: Overkill should call a tab repair function to fix it, needs a copy method to keep a clean copy
                             }
                             //find repeat
                             ITabNotation lastSymbol = barLine.getLine().get(barLenght - 1);
@@ -260,29 +260,7 @@ public class TabParser {
                 }
 
                 // Advance the pointer to the end of the parsed symbol
-                /*
-                if (symbol.getClass() == DoubleBar.class) {
-                    if (((DoubleBar) symbol).getEndRepeat()) {
-                        //resultFrag.add(new Dash(true));
-                        i += 3; //removes the next 4 characters since there are 4 characters that need to be replaced. Ex '*||-
-                        rightPad = 3;
-
-                    } else if (((DoubleBar) symbol).getBeginRepeat()) {
-                        i += 3; //removes the next 4 characters since there are 4 characters that need to be replaced. Ex '*||-
-                        rightPad = 3;
-
-                        if (leftToParse == line && leftToParse.startsWith("|")) {
-                            i--; //undo one if it is the start of the bar
-                            rightPad--;
-                        }
-                    } else {
-                        i += 2; //only remove the next 3 characters since there is nothing in front of the double bar ex '||-'
-                        rightPad = 1;
-                    }
-                } else {
-                */
                 i += symbol.size() - 1;
-                //}
 
                 // add the symbol to the result list
                 resultFrag.add(symbol);
