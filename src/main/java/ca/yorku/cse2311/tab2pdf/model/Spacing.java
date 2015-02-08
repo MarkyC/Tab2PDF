@@ -12,25 +12,52 @@ import com.itextpdf.text.pdf.PdfWriter;
  */
 public class Spacing implements ITabNotation {
 
-    private final double spacing;
+    private final float spacing;
 
     public Spacing() {
 
         this(5); //default 5
     }
 
-    public Spacing(double spacing) {
+    public Spacing(float spacing) {
 
         this.spacing = spacing;
     }
 
-    public double getSpacing() {
+    public float getSpacing() {
 
         return spacing;
     }
 
-    public void draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+    public void draw(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer) {
         //Do Nothing
+    }
+
+    /**
+     * The padding to the left of the character
+     *
+     * @return always 0
+     */
+    public int leftPadding() {
+        return 0;
+    }
+
+    /**
+     * The padding to the right of the character
+     *
+     * @return always 0
+     */
+    public int rightPadding() {
+        return 0;
+    }
+
+    /**
+     * Logical parser size
+     *
+     * @return always 1
+     */
+    public int size() {
+        return toString().length();
     }
 
     @Override

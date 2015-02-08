@@ -34,11 +34,11 @@ public class DoubleBarParserTest {
     };
 
     public static final DoubleBar[] VALID_RESPONSES = {
-            new DoubleBar(1, true, false),
-            new DoubleBar(1, false, true),
-            new DoubleBar(5, true, true),
-            new DoubleBar(1, true, true),
-            new DoubleBar(2, false, false),
+            new DoubleBar(1, true, false, false),
+            new DoubleBar(1, false, true, true),
+            new DoubleBar(5, true, true, false),
+            new DoubleBar(1, true, true, false),
+            new DoubleBar(2, false, false, false),
             new DoubleBar()
     };
 

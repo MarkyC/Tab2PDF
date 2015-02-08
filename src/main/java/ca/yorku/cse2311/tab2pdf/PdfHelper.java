@@ -1,6 +1,8 @@
 package ca.yorku.cse2311.tab2pdf;
 
-import ca.yorku.cse2311.tab2pdf.model.*;
+import ca.yorku.cse2311.tab2pdf.model.HammerOn;
+import ca.yorku.cse2311.tab2pdf.model.PullOff;
+import ca.yorku.cse2311.tab2pdf.model.Slide;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.GrayColor;
@@ -191,7 +193,7 @@ public class PdfHelper {
     public static void thickLine(int staveNumber, float xCoordinate, PdfWriter writer) {
 
         int yCoordinate = determineYCoordinate(staveNumber);
-        PdfHelper.line(xCoordinate, yCoordinate, xCoordinate, yCoordinate + PdfHelper.STAVE_WIDTH, 2, writer);
+        PdfHelper.line(xCoordinate, yCoordinate, xCoordinate, yCoordinate + PdfHelper.STAVE_WIDTH, 1.5f, writer);
     }
 
     /**
@@ -204,9 +206,9 @@ public class PdfHelper {
     public static void filledCircles(int staveNumber, float xCoordinate, PdfWriter writer) {
 
         int yCoordinate = determineYCoordinate(staveNumber) + 2 * PdfHelper.LINE_SPACE;
-        PdfHelper.circle(xCoordinate, yCoordinate, 1.5f, true, writer);
+        PdfHelper.circle(xCoordinate, yCoordinate, 1f, true, writer);
         yCoordinate += PdfHelper.LINE_SPACE;
-        PdfHelper.circle(xCoordinate, yCoordinate, 1.5f, true, writer);
+        PdfHelper.circle(xCoordinate, yCoordinate, 1f, true, writer);
 
     }
 
@@ -359,7 +361,7 @@ public class PdfHelper {
      * @throws IOException
      * @throws DocumentException
      */
-    public static void drawSlide(int staveNumber, int lineNumber, int xCoordinate, Slide slide, PdfWriter writer) throws DocumentException, IOException {
+    public static void drawSlide(int staveNumber, int lineNumber, float xCoordinate, Slide slide, PdfWriter writer) throws DocumentException, IOException {
 
         BaseFont font = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1257, BaseFont.EMBEDDED);
 
@@ -396,8 +398,8 @@ public class PdfHelper {
      * @throws DocumentException
      * @throws IOException
      */
-    public static void drawPull(int staveNumber, int lineNumber, int xCoordinate, PullOff pullOff, PdfWriter writer,
-                                int connectingStave, int connectingLine, int connectingXCoordinate, ITabNotation connectingNote) throws DocumentException, IOException {
+    public static void drawPull(int staveNumber, int lineNumber, float xCoordinate, PullOff pullOff, PdfWriter writer,
+                                int connectingStave, int connectingLine, float connectingXCoordinate, String connectingNote) throws DocumentException, IOException {
 
         BaseFont font = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1257, BaseFont.EMBEDDED);
         //Distance from the middle of the digit to the digit border
@@ -409,7 +411,7 @@ public class PdfHelper {
             digitRadius = (int) font.getWidthPoint(' ', DIGIT_SIZE);
         }
 
-        int oldDigitRadius = (int) font.getWidthPoint(' ', DIGIT_SIZE * connectingNote.toString().length()); //compensate for larger than 1 length
+        int oldDigitRadius = (int) font.getWidthPoint(' ', DIGIT_SIZE * connectingNote.length()); //compensate for larger than 1 length
 
         int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * PdfHelper.LINE_SPACE;
         int oldyCoordinate = determineYCoordinate(connectingStave) + (6 - connectingLine) * PdfHelper.LINE_SPACE;
@@ -437,8 +439,8 @@ public class PdfHelper {
      * @throws DocumentException
      * @throws IOException
      */
-    public static void drawHammer(int staveNumber, int lineNumber, int xCoordinate, HammerOn hammerOn, PdfWriter writer,
-                                  int connectingStave, int connectingLine, int connectingXCoordinate, Note connectingNote) throws DocumentException, IOException {
+    public static void drawHammer(int staveNumber, int lineNumber, float xCoordinate, HammerOn hammerOn, PdfWriter writer,
+                                  int connectingStave, int connectingLine, float connectingXCoordinate, String connectingNote) throws DocumentException, IOException {
 
         BaseFont font = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1257, BaseFont.EMBEDDED);
         //Distance from the middle of the digit to the digit border
@@ -450,7 +452,7 @@ public class PdfHelper {
             digitRadius = (int) font.getWidthPoint(' ', DIGIT_SIZE);
         }
 
-        int oldDigitRadius = (int) font.getWidthPoint(' ', DIGIT_SIZE * connectingNote.toString().length()); //compensate for larger than 1 length
+        int oldDigitRadius = (int) font.getWidthPoint(' ', DIGIT_SIZE * connectingNote.length()); //compensate for larger than 1 length
 
         int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * PdfHelper.LINE_SPACE;
         int oldyCoordinate = determineYCoordinate(connectingStave) + (6 - connectingLine) * PdfHelper.LINE_SPACE;
@@ -473,11 +475,11 @@ public class PdfHelper {
      * @param spacing     the documents horizontal spacing constant
      * @param writer      Pdf writer for the document
      */
-    public static void startRepeat(int staveNumber, int xCoordinate, float spacing, PdfWriter writer) {
+    public static void startRepeat(int staveNumber, float xCoordinate, float spacing, PdfWriter writer) {
 
         thickLine(staveNumber, xCoordinate, writer);
-        thinLine(staveNumber, xCoordinate + spacing / 5f, writer);
-        filledCircles(staveNumber, xCoordinate + spacing / 2.5f, writer);
+        thinLine(staveNumber, xCoordinate + spacing / 2f, writer);
+        filledCircles(staveNumber, xCoordinate + spacing * 1.1f, writer);
     }
 
 
@@ -489,11 +491,11 @@ public class PdfHelper {
      * @param spacing     the documents horizontal spacing constant
      * @param writer      Pdf writer for the document
      */
-    public static void endRepeat(int staveNumber, int xCoordinate, float spacing, PdfWriter writer) {
+    public static void endRepeat(int staveNumber, float xCoordinate, float spacing, PdfWriter writer) {
 
         thickLine(staveNumber, xCoordinate, writer);
-        thinLine(staveNumber, xCoordinate - spacing / 5f, writer);
-        filledCircles(staveNumber, xCoordinate - spacing / 2.5f, writer);
+        thinLine(staveNumber, xCoordinate - spacing / 2f, writer);
+        filledCircles(staveNumber, xCoordinate - spacing * 1.1f, writer);
     }
 
 }

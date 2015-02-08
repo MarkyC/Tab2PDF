@@ -12,6 +12,6 @@ import com.itextpdf.text.pdf.PdfWriter;
  */
 public interface IDrawable {
 
-    public void draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer);
+    public void draw(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer);
 
 }

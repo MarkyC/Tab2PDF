@@ -2,14 +2,14 @@ package ca.yorku.cse2311.tab2pdf.parser.exception;
 
 
 /**
- * FileFormatExeption
+ * BarFormatException
  *
  * @author Brody
  * @since 2015-02-07
  */
-public class FileFormatExeption extends Exception {
+public class BarFormatException extends Exception {
 
-    public FileFormatExeption(String errMsg) {
+    public BarFormatException(String errMsg) {
         super(errMsg);
     }
 }

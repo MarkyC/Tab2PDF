@@ -44,11 +44,11 @@ public class PullOff implements ITabNotation, ILongDraw {
         return end;
     }
 
-    public void draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+    public void draw(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer) {
         //Do Nothing
     }
 
-    public void drawLong(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer, int oldStave, int oldLine, int oldXCoordinate, String oldString) {
+    public void drawLong(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer, int oldStave, int oldLine, float oldXCoordinate, String oldString) {
         try {
             PdfHelper.drawPull(staveNumber, lineNumber, xCoordinate, this, writer, oldStave, oldLine, oldXCoordinate, oldString);
         } catch (DocumentException e) {
@@ -56,6 +56,33 @@ public class PullOff implements ITabNotation, ILongDraw {
         } catch (IOException e) {
             //e.printStackTrace();
         }
+    }
+
+    /**
+     * The padding to the left of the character
+     *
+     * @return always 0
+     */
+    public int leftPadding() {
+        return 0;
+    }
+
+    /**
+     * The padding to the right of the character
+     *
+     * @return always 0
+     */
+    public int rightPadding() {
+        return 0;
+    }
+
+    /**
+     * Logical parser size
+     *
+     * @return always 1
+     */
+    public int size() {
+        return 1;
     }
 
     @Override

@@ -22,6 +22,18 @@ public class Dash implements ITabNotation {
         this.imaginary = imaginary;
     }
 
+    public int leftPadding() {
+        return 0;
+    }
+
+    public int rightPadding() {
+        return 0;
+    }
+
+    public int size() {
+        return 1;
+    }
+
     @Override
     public String toString() {
         if (imaginary) {
@@ -36,7 +48,7 @@ public class Dash implements ITabNotation {
         return obj instanceof Dash;    // All Spaces are the same for now
     }
 
-    public void draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+    public void draw(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer) {
         //Do Nothing
     }
 }

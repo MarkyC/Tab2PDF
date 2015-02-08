@@ -17,7 +17,7 @@ public class DoubleBarParser extends AbstractParser<DoubleBar> {
      * Fancy regex to recognise; ||*, *||*, *|| or || where any of the second pipes can be replaced with a number
      * It follows a priority in the order listed
      */
-    public static final Pattern TOKEN_PATTERN = Pattern.compile("(^(?<start>^\\|(?<startR>\\||\\d+)\\*)|^(?<both>\\*\\|(?<bothR>\\||\\d+)\\*)|^(?<end>\\*\\|(?<endR>\\||\\d+))|^(?<double>^\\|(?<doubleR>\\||\\d+)))(?!\\w)");
+    public static final Pattern TOKEN_PATTERN = Pattern.compile("(^(?<start>^\\|(?<startR>\\||\\d+)\\*)|^(?<both>\\*\\|(?<bothR>\\||\\d+)\\*)|^(?<end>\\*\\|(?<endR>\\||\\d+)-?)|^(?<double>^\\|(?<doubleR>\\||\\d+)-?))(?!\\w)");
 
     @Override
     public Pattern getPattern() {
@@ -33,27 +33,28 @@ public class DoubleBarParser extends AbstractParser<DoubleBar> {
 
 
         if (m.find()) {
+            boolean trailingDash = (m.group().endsWith("-"));
 
             if (!(m.group("start") == null || m.group("start").equals(""))) {
                 temp = m.group("startR");
                 if (!temp.equals("|"))
                     repeat = Integer.parseInt(temp);
-                return new DoubleBar(repeat, true, false);
+                return new DoubleBar(repeat, true, false, trailingDash);
             } else if (!(m.group("both") == null || m.group("both").equals(""))) {
                 temp = m.group("bothR");
                 if (!temp.equals("|"))
                     repeat = Integer.parseInt(temp);
-                return new DoubleBar(repeat, true, true);
+                return new DoubleBar(repeat, true, true, trailingDash);
             } else if (!(m.group("end") == null || m.group("end").equals(""))) {
                 temp = m.group("endR");
                 if (!temp.equals("|"))
                     repeat = Integer.parseInt(temp);
-                return new DoubleBar(repeat, false, true);
+                return new DoubleBar(repeat, false, true, trailingDash);
             } else if (!(m.group("double") == null || m.group("double").equals(""))) {
                 temp = m.group("doubleR");
                 if (!temp.equals("|"))
                     repeat = Integer.parseInt(temp);
-                return new DoubleBar(repeat, false, false);
+                return new DoubleBar(repeat, false, false, trailingDash);
             }
         }
 

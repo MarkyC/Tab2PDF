@@ -12,4 +12,25 @@ package ca.yorku.cse2311.tab2pdf.model;
  */
 public interface ITabNotation extends IDrawable {
 
+    /**
+     * Represents the number of spaces to be inserted to the left of the symbol
+     *
+     * @return number of characters to buffer on the left
+     */
+    public int leftPadding();
+
+    /**
+     * Represents the number of spaces to be inserted to the right of the symbol
+     *
+     * @return number of characters to buffer on the right
+     */
+    public int rightPadding();
+
+
+    /**
+     * Represents logical size the parser should treat the symbol as
+     *
+     * @return symbols logical size
+     */
+    public int size();
 }

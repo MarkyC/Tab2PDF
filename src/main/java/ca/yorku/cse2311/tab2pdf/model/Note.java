@@ -31,7 +31,7 @@ public class Note implements ITabNotation, IDrawable {
         return note;
     }
 
-    public void draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+    public void draw(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer) {
         try {
             drawDigit(staveNumber, lineNumber, xCoordinate, note, writer);
         } catch (IOException e) {
@@ -39,6 +39,34 @@ public class Note implements ITabNotation, IDrawable {
         } catch (DocumentException e) {
             //TODO: What should we do on an DocumentExecption?
         }
+    }
+
+
+    /**
+     * The padding to the left of the character
+     *
+     * @return always 0
+     */
+    public int leftPadding() {
+        return 0;
+    }
+
+    /**
+     * The padding to the right of the character
+     *
+     * @return always 0
+     */
+    public int rightPadding() {
+        return toString().length() - 1;
+    }
+
+    /**
+     * Logical parser size
+     *
+     * @return always 1
+     */
+    public int size() {
+        return toString().length();
     }
 
     @Override

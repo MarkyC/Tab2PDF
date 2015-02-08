@@ -1,8 +1,8 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
 import ca.yorku.cse2311.tab2pdf.model.*;
+import ca.yorku.cse2311.tab2pdf.parser.exception.BarFormatException;
 import ca.yorku.cse2311.tab2pdf.parser.exception.CouldNotParseSymbolException;
-import ca.yorku.cse2311.tab2pdf.parser.exception.FileFormatExeption;
 import ca.yorku.cse2311.tab2pdf.parser.exception.ParseException;
 
 import java.util.ArrayList;
@@ -32,6 +32,8 @@ public class TabParser {
         PARSERS.add(new SlideParser());
         PARSERS.add(new HammerOnParser());
         PARSERS.add(new PullOffParser());
+        PARSERS.add(new DoubleBarParser());
+        PARSERS.add(new SquareNoteParser());
         //PARSERS.add()
     }
 
@@ -133,12 +135,12 @@ public class TabParser {
                     try {
                         int barLenght = 0;
                         int barRepeat = -1;
-                        for (BarLine barLine : bar.getLines()) {
+                        for (BarLine barLine : bar.getLines()) { //assign bar values
                             //find length
                             if (0 == barLenght && barLine.getLine().size() != 0) {
                                 barLenght = barLine.getLine().size();
-                            } else if (barLine.getLine().size() > barLenght) {
-                                throw new FileFormatExeption("Varying bar lengths"); //Overkill should call a tab repair function to fix it
+                            } else if (barLine.getLine().size() != barLenght) {
+                                throw new BarFormatException("Varying bar lengths"); //TODO: Overkill should call a tab repair function to fix it, needs a copy method
                             }
                             //find repeat
                             ITabNotation lastSymbol = barLine.getLine().get(barLenght - 1);
@@ -147,18 +149,24 @@ public class TabParser {
                                 if (-1 == barRepeat) {
                                     barRepeat = ((DoubleBar) lastSymbol).getRepeat();
                                 } else if (barLine.getLine().size() > barLenght) {
-                                    throw new FileFormatExeption("Varying bar lengths"); //Overkill should call a tab repair function to fix it
+                                    throw new BarFormatException("Varying bar lengths"); //Overkill should call a tab repair function to fix it
                                 }
 
                             //Set and remove begin bar
                             if (barLine.getLine().get(0).getClass() == DoubleBar.class) {
-                                bar.setBeginRepeat(((DoubleBar) barLine.getLine().get(0)).getBeginRepeat());
+                                if (!bar.getBeginRepeat()) {
+                                    bar.setBeginRepeat(((DoubleBar) barLine.getLine().get(0)).getBeginRepeat());
+                                }
                             }
+
+
                             barLine.getLine().remove(0);
 
                             //Set and remove end bar
                             if (barLine.getLine().get(barLenght - 2).getClass() == DoubleBar.class) {
-                                bar.setEndRepeat(((DoubleBar) barLine.getLine().get(barLenght - 2)).getEndRepeat());
+                                if (!bar.getEndRepeat()) {
+                                    bar.setEndRepeat(((DoubleBar) barLine.getLine().get(barLenght - 2)).getEndRepeat());
+                                }
                             }
                             barLine.getLine().remove(barLenght - 2);
                         }
@@ -172,7 +180,7 @@ public class TabParser {
                         }
 
 
-                    } catch (FileFormatExeption e) {
+                    } catch (BarFormatException e) {
                         LOG.warning(e.getMessage());
                         LOG.warning("Discarding bar: " + bar);
                     }
@@ -235,8 +243,15 @@ public class TabParser {
 
                 // parsing the line succeeded
 
+
+                //Adds the left padding
+                int leftPad = 0;
+                while (symbol.leftPadding() - leftPad++ > 0) {
+                    resultFrag.add(new Dash(true));
+                }
+
                 //Separates multiple bars on the same line
-                if (Pipe.class == symbol.getClass()) {
+                if (Pipe.class == symbol.getClass() || DoubleBar.class == symbol.getClass()) {
                     if (!resultFrag.isEmpty()) {
                         resultFrag.add(symbol);
                         result.add(resultFrag);
@@ -244,35 +259,41 @@ public class TabParser {
                     }
                 }
 
+                // Advance the pointer to the end of the parsed symbol
+                /*
+                if (symbol.getClass() == DoubleBar.class) {
+                    if (((DoubleBar) symbol).getEndRepeat()) {
+                        //resultFrag.add(new Dash(true));
+                        i += 3; //removes the next 4 characters since there are 4 characters that need to be replaced. Ex '*||-
+                        rightPad = 3;
+
+                    } else if (((DoubleBar) symbol).getBeginRepeat()) {
+                        i += 3; //removes the next 4 characters since there are 4 characters that need to be replaced. Ex '*||-
+                        rightPad = 3;
+
+                        if (leftToParse == line && leftToParse.startsWith("|")) {
+                            i--; //undo one if it is the start of the bar
+                            rightPad--;
+                        }
+                    } else {
+                        i += 2; //only remove the next 3 characters since there is nothing in front of the double bar ex '||-'
+                        rightPad = 1;
+                    }
+                } else {
+                */
+                i += symbol.size() - 1;
+                //}
+
                 // add the symbol to the result list
                 resultFrag.add(symbol);
 
-                /*
-                * Multi char strings now turn into an object followed by a number of dashes
-                * equal to the length of the string - 1
-                * Ex:
-                * 4s11
-                * becomes
-                * S---
-                * where S is the slide object
-                * This allows for the text file to be easily formated where the beginning of the note is where it is in the bar
-                */
-                int len = 0;
-                while (symbol.toString().length() - ++len > 0) {
+
+                //Adds right padding
+                int rightPad = 0;
+                while (symbol.rightPadding() - rightPad++ > 0) {
                     resultFrag.add(new Dash(true));
                 }
 
-
-                // Advance the pointer to the end of the parsed symbol
-                if (symbol.getClass() == DoubleBar.class) {
-                    if (((DoubleBar) symbol).getEndRepeat()) {
-                        i += 4; //removes the next 4 characters since there are 4 characters that need to be replaced. Ex '*||-
-                    } else {
-                        i += 3; //only remove the next 3 characters since there is nothing in front of the double bar ex '||-'
-                    }
-                } else {
-                    i += symbol.toString().length() - 1;
-                }
 
             } catch (CouldNotParseSymbolException e) {
                 LOG.warning(e.getMessage());

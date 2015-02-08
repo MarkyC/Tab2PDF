@@ -87,31 +87,31 @@ public class PdfCreator implements Runnable {
 
         float pageWidth = writer.getPageSize().getWidth();
 
-        double spacing = tab.getSpacing().getSpacing();
+        float spacing = tab.getSpacing().getSpacing();
 
         int stave = 0;
 
         int MARGIN = 30;
 
-        int xBarPos = MARGIN;
+        float xBarPos = MARGIN;
 
         int numLines = tab.getBars().get(0).getNumLines() + 1;
 
         int[] lastStave = new int[numLines];
-        int[] lastXPos = new int[numLines];
+        float[] lastXPos = new float[numLines];
         int[] lastLine = new int[numLines];
         String[] lastString = new String[numLines];
 
         for (int j = 0; j < numLines; j++) {
             lastStave[j] = 0;
-            lastXPos[j] = 0;
+            lastXPos[j] = 0f;
             lastLine[j] = 0;
             lastString[j] = " ";
         }
 
         for (Bar bar : tab.getBars()) {
 
-            double temp = (bar.getLine(0).getLine().size() - 1) * spacing + xBarPos;
+            double temp = (bar.getLine(0).getLine().size() - 1) * spacing + xBarPos + MARGIN;
 
             if (temp > pageWidth) {
                 stave++;
@@ -128,11 +128,11 @@ public class PdfCreator implements Runnable {
                 stave(stave, writer);
             }
 
-            int xPos = xBarPos;
+            float xPos = xBarPos;
 
             //add start of bar
             if (bar.getBeginRepeat()) {
-                new DoubleBar(0, true, false).draw(stave, 1, xPos, writer);
+                PdfHelper.startRepeat(stave, xPos, spacing, writer);
                 xBarPos += spacing;
             } else {
                 new Pipe().draw(stave, 1, xPos, writer);
@@ -176,8 +176,9 @@ public class PdfCreator implements Runnable {
             }
 
             //add end of bar
-            if (bar.getBeginRepeat()) {
-                new DoubleBar(0, false, true).draw(stave, 1, xPos, writer);
+            if (bar.getEndRepeat()) {
+                xPos += spacing;
+                PdfHelper.endRepeat(stave, xPos, spacing, writer);
             } else {
                 new Pipe().draw(stave, 1, xPos, writer);
             }

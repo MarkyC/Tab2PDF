@@ -15,6 +15,33 @@ import static ca.yorku.cse2311.tab2pdf.PdfHelper.thinLine;
  */
 public class Pipe implements ITabNotation {
 
+    /**
+     * The padding to the left of the character
+     *
+     * @return always 0
+     */
+    public int leftPadding() {
+        return 0;
+    }
+
+    /**
+     * The padding to the right of the character
+     *
+     * @return always 0
+     */
+    public int rightPadding() {
+        return 0;
+    }
+
+    /**
+     * Logical parser size
+     *
+     * @return always 1
+     */
+    public int size() {
+        return 1;
+    }
+
     @Override
     public String toString() {
         return "|";
@@ -26,7 +53,7 @@ public class Pipe implements ITabNotation {
         return obj instanceof Pipe;
     }
 
-    public void draw(int staveNumber, int lineNumber, int xCoordinate, PdfWriter writer) {
+    public void draw(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer) {
         thinLine(staveNumber, xCoordinate, writer);
     }
 }
