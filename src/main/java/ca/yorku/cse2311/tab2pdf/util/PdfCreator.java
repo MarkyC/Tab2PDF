@@ -79,8 +79,8 @@ public class PdfCreator implements Runnable {
         document.open();
         // step 4
         //document.add(new Paragraph("Hello World!"));                // Hello World!
-        document.add(new Paragraph(tab.getTitle().getTitle()));     // The Tab's Title
-        document.add(new Paragraph(tab.getSubtitle().getSubtitle()));  // The Tab's Subtitle
+        document.add(new Paragraph(tab.getTitle().getValue()));     // The Tab's Title
+        document.add(new Paragraph(tab.getSubtitle().getValue()));  // The Tab's Subtitle
 
         stave(0, writer);
 
