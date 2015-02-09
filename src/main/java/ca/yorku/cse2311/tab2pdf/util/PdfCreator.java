@@ -71,32 +71,49 @@ public class PdfCreator implements Runnable {
 
     public void createPdf(Tab tab, File out) throws Exception {
 
-        // step 1
+        // Create document
         Document document = new Document();
-        // step 2
+        // get writer
         PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(out.toPath()));
-        // step 3
+        // open document
         document.open();
         // step 4
         //document.add(new Paragraph("Hello World!"));                // Hello World!
-        document.add(new Paragraph(tab.getTitle().getValue()));     // The Tab's Title
-        document.add(new Paragraph(tab.getSubtitle().getValue()));  // The Tab's Subtitle
+        document.add(new Paragraph(tab.getTitle().getTitle()));     // The Tab's Title
+        document.add(new Paragraph(tab.getSubtitle().getSubtitle()));  // The Tab's Subtitle
 
+        //Title
+        Paragraph title = new Paragraph(tab.getTitle().getValue());
+        title.setAlignment(Paragraph.ALIGN_CENTER);
+        document.add(title);     // The Tab's Title
+
+        //Add subtitle
+        Paragraph subTitle = new Paragraph(tab.getSubtitle().getValue());
+        subTitle.setAlignment(Paragraph.ALIGN_CENTER);
+        document.add(subTitle);     // The Tab's Subtitle
+
+        //print first stave
         stave(0, writer);
 
+        //Initialising variables
 
         float pageWidth = writer.getPageSize().getWidth();
 
         float spacing = tab.getSpacing().getSpacing();
 
+        //The current stave
         int stave = 0;
 
+        //Pages Margin
         int MARGIN = 30;
 
+        //Position of the bar (left edge)
         float xBarPos = MARGIN;
 
+        //The number of lines in the bar (default is 6)
         int numLines = tab.getBars().get(0).getNumLines() + 1;
 
+        //These values are hear to keep track of the last note for long draws (ex. hammer on)
         int[] lastStave = new int[numLines];
         float[] lastXPos = new float[numLines];
         int[] lastLine = new int[numLines];
@@ -109,16 +126,16 @@ public class PdfCreator implements Runnable {
             lastString[j] = " ";
         }
 
+        //Goes through each bar
         for (Bar bar : tab.getBars()) {
 
-            double temp = (bar.getLine(0).getLine().size() - 1) * spacing + xBarPos + MARGIN;
-
-            if (temp > pageWidth) {
+            double projectedWidth = (bar.getLine(0).getLine().size() - 1) * spacing + xBarPos + MARGIN;
+            if (projectedWidth > pageWidth) { //if teh bar would go off the page make a new stave
                 stave++;
                 xBarPos = MARGIN;
 
-                temp = PdfHelper.determineYCoordinate(stave + 1) + (6) * PdfHelper.getLineSpace();
-                if (temp < 0) {
+                double projectedHeight = PdfHelper.determineYCoordinate(stave + 1) + (6) * PdfHelper.getLineSpace();
+                if (projectedHeight < 0) { // if the stave would go of the page make a new page and reset the positions
                     writer.setPageEmpty(false);
                     document.newPage();
 
@@ -128,36 +145,39 @@ public class PdfCreator implements Runnable {
                 stave(stave, writer);
             }
 
+            //reset x position to be used by the next loop
             float xPos = xBarPos;
 
             //add start of bar
             if (bar.getBeginRepeat()) {
                 PdfHelper.startRepeat(stave, xPos, spacing, writer);
-                xBarPos += spacing;
+                xBarPos += spacing; //Double bars get an extra space
             } else {
                 new Pipe().draw(stave, 1, xPos, writer);
             }
-            xBarPos += spacing;
+            xBarPos += spacing; //Add a space after the bar
 
+            //iterate through each line in the bar
             for (int i = 0; i < bar.getLines().size(); ++i) {
-                xPos = xBarPos;
+                xPos = xBarPos; //resets the value again. the earlier reset was to grantee the value was initialised
 
-                int lineNumber = i + 1;
+                int lineNumber = i + 1; //the line we are working on
                 BarLine line = bar.getLine(i);
 
+                //Now we are iterating through each of the symbols
                 for (IDrawable note : line.getLine()) {
                     //Draw the note
                     for (IDrawable longNoteType : longNotes) {
                         if (longNoteType.getClass() == note.getClass()) { //If it is a long draw we have to do something special
-                            ((ILongDraw) note).drawLong(stave, lineNumber, xPos, writer, lastStave[i], lastLine[i], lastXPos[i], lastString[i]);
+                            ((ILongDraw) note).drawLong(stave, lineNumber, xPos, writer, lastStave[i], lastLine[i], lastXPos[i], lastString[i]); //They get the information of the last symbol on the line
                         } else {
-                            note.draw(stave, lineNumber, xPos, writer);
+                            note.draw(stave, lineNumber, xPos, writer); //if not it is just a normal draw
                         }
                     }
 
-                    //Saves the location of the last note
+                    //Saves the location of the last symbol
                     boolean ignore = false;
-                    for (IDrawable ignoreType : ignoreNotes) {
+                    for (IDrawable ignoreType : ignoreNotes) { //only if it is not on the ignor list. (Ex: Dash, Pipe)
                         if (ignoreType.getClass().isInstance(note)) {
                             ignore = true;
                         }
@@ -169,7 +189,7 @@ public class PdfCreator implements Runnable {
                         lastString[i] = note.toString();
                     }
 
-                    xPos += spacing;
+                    xPos += spacing; //adds the space for the symbol
 
                 }
 
@@ -179,14 +199,17 @@ public class PdfCreator implements Runnable {
             if (bar.getEndRepeat()) {
                 xPos += spacing;
                 PdfHelper.endRepeat(stave, xPos, spacing, writer);
+                if (bar.getRepeat() != 1) {
+                    PdfHelper.drawRepeat(stave, 0, xPos, bar.getRepeat(), writer);
+                }
             } else {
                 new Pipe().draw(stave, 1, xPos, writer);
             }
 
             xBarPos = xPos;
         }
-        
 
+        //Document is finished
         document.close();
     }
 }
