@@ -1,5 +1,12 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
+import ca.yorku.cse2311.tab2pdf.PdfHelper;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfWriter;
+
+import java.io.IOException;
+
+
 /**
  * Slide
  *
@@ -12,7 +19,7 @@ package ca.yorku.cse2311.tab2pdf.model;
  */
 public class Slide implements ITabNotation {
 
-    public static final Note EMPTY_NOTE = new Note("");
+    public static final Note EMPTY_NOTE = new Note();
 
     private final Note start;
 
@@ -37,6 +44,43 @@ public class Slide implements ITabNotation {
     public Note getEnd() {
 
         return end;
+    }
+
+    public void draw(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer) {
+        try {
+            PdfHelper.drawSlide(staveNumber, lineNumber, xCoordinate, this, writer);
+        } catch (IOException e) {
+            //TODO: What should we do on an IOExeption?
+        } catch (DocumentException e) {
+            //TODO: What should we do on an DocumentExecption?
+        }
+    }
+
+    /**
+     * The padding to the left of the character
+     *
+     * @return always 0
+     */
+    public int leftPadding() {
+        return 0;
+    }
+
+    /**
+     * The padding to the right of the character
+     *
+     * @return always 0
+     */
+    public int rightPadding() {
+        return toString().length() - 1;
+    }
+
+    /**
+     * Logical parser size
+     *
+     * @return always 1
+     */
+    public int size() {
+        return toString().length();
     }
 
     @Override
@@ -64,6 +108,18 @@ public class Slide implements ITabNotation {
     @Override
     public String toString() {
 
-        return getStart().toString() + "s" + getEnd().toString();
+        String result = "";
+
+        if (getStart().getValue() != 0) {
+            result += getStart().toString();
+        }
+
+        result += "s";
+
+        if (getEnd().getValue() != 0) {
+            result += getEnd().toString();
+        }
+
+        return result;
     }
 }

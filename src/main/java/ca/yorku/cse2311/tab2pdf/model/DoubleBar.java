@@ -1,5 +1,7 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
+import com.itextpdf.text.pdf.PdfWriter;
+
 /**
  * Created by Brody Atto on 25/01/2015.
  * <p/>
@@ -8,6 +10,8 @@ package ca.yorku.cse2311.tab2pdf.model;
 public class DoubleBar implements ITabNotation {
 
     private int repeat;
+
+    private boolean trailingDash;
 
     /**
      * True if a repeat section starts here (||*)
@@ -20,13 +24,14 @@ public class DoubleBar implements ITabNotation {
     private boolean endRepeat;
 
     public DoubleBar() {
-        this(1, false, false);
+        this(1, false, false, true);
     }
 
-    public DoubleBar(int repeat, boolean beginRepeat, boolean endRepeat) {
+    public DoubleBar(int repeat, boolean beginRepeat, boolean endRepeat, boolean trailingDash) {
         this.repeat = repeat;
         this.beginRepeat = beginRepeat;
         this.endRepeat = endRepeat;
+        this.trailingDash = trailingDash;
     }
 
     public int getRepeat() {
@@ -67,6 +72,54 @@ public class DoubleBar implements ITabNotation {
             this.endRepeat = true;
     }
 
+    public void draw(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer) {
+        //Do Nothing
+    }
+
+
+    /**
+     * The padding to the left of the character
+     *
+     * @return 1 if an end repeat bar else 0
+     */
+    public int leftPadding() {
+        if (getEndRepeat()) {
+            return 1;
+        }
+        return 0;
+    }
+
+    /**
+     * The padding to the right of the character
+     *
+     * @return 1 if end repeat or trailing dash
+     */
+    public int rightPadding() {
+        if (getBeginRepeat() || trailingDash) {
+            return 1;
+        }
+        return 0;
+    }
+
+    /**
+     * Logical parser size
+     *
+     * @return always 1
+     */
+    public int size() {
+        int result = 2;
+        if (endRepeat) {
+            result++;
+        }
+
+        if (beginRepeat || trailingDash) {
+            result++;
+        }
+
+        return result;
+
+    }
+
     @Override
     public String toString() {
         String temp = "";
@@ -84,6 +137,10 @@ public class DoubleBar implements ITabNotation {
 
         if (beginRepeat) {
             temp += "*";
+        }
+
+        if (trailingDash) {
+            temp += "-";
         }
 
         return temp;

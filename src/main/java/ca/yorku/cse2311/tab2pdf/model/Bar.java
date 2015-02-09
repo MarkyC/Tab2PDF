@@ -13,11 +13,17 @@ import java.util.List;
  */
 public class Bar {
 
-    /* TODO: A Bar should know how wide it is, so we don't print off the end of the page */
-
     private final List<BarLine> lines = new ArrayList<>();
 
     private final int numLines;
+
+    private int length;
+
+    private boolean endRepeat = false;
+
+    private boolean beginRepeat = false;
+
+    private int repeat;
 
     /**
      * Constructs a Bar with 6 lines (the standard number of lines for a guitar tab)
@@ -35,9 +41,7 @@ public class Bar {
      * @param numLines The number of lines (coincides with the number of strings the guitar has)
      */
     public Bar(int numLines) {
-
         this.numLines = numLines;
-
     }
 
     public List<BarLine> getLines() {
@@ -75,6 +79,80 @@ public class Bar {
         }
 
         return lines.get(lineNumber);
+    }
+
+    /**
+     * Sets the length of the bar
+     *
+     * @param len The new length of the bar
+     */
+    public void setBarLength(int len) {
+        this.length = len;
+    }
+
+    /**
+     * Returns the length of the bar
+     *
+     * @return Lenght of the bar
+     */
+    public int getLength() {
+        return length;
+    }
+
+    /**
+     * Sets the length of the bar
+     *
+     * @param len The new length of the bar
+     */
+    public void setBarRepeat(int len) {
+        this.repeat = len;
+    }
+
+    /**
+     * Returns the length of the bar
+     *
+     * @return Lenght of the bar
+     */
+    public int getRepeat() {
+        return repeat;
+    }
+
+    /**
+     * Returns the begin repeat state of the bar
+     *
+     * @return True if the bar is a begin repeat else false
+     */
+    public boolean getBeginRepeat() {
+        return beginRepeat;
+    }
+
+
+    /**
+     * Sets the begin repeat state of the bar
+     *
+     * @param flag True if the bar is a begin repeat, else false
+     */
+    public void setBeginRepeat(boolean flag) {
+        beginRepeat = flag;
+    }
+
+    /**
+     * Returns the end repeat state of the bar
+     *
+     * @return True if the bar is a end repeat else false
+     */
+    public boolean getEndRepeat() {
+        return endRepeat;
+    }
+
+
+    /**
+     * Sets the end repeat state of the bar
+     *
+     * @param flag True if the bar is a end repeat, else false
+     */
+    public void setEndRepeat(boolean flag) {
+        endRepeat = flag;
     }
 
     /**

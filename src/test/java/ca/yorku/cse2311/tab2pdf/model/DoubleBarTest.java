@@ -42,7 +42,7 @@ public class DoubleBarTest {
             boolean tempBool2 = r.nextBoolean();
 
             //Setup get test
-            doubleBarGet[i] = new DoubleBar(tempInt, tempBool1, tempBool2);
+            doubleBarGet[i] = new DoubleBar(tempInt, tempBool1, tempBool2, false);
             getRepeatG[i] = tempInt;
             getBeginG[i] = tempBool1;
             getEnd[i] = tempBool2;
@@ -52,7 +52,7 @@ public class DoubleBarTest {
             tempBool1 = r.nextBoolean();
             tempBool2 = r.nextBoolean();
 
-            doubleBarSet[i] = new DoubleBar(tempInt, false, false);
+            doubleBarSet[i] = new DoubleBar(tempInt, false, false, false);
             getRepeatS[i] = tempInt;
             setBegin[i] = tempBool1;
             setEnd[i] = tempBool2;
@@ -62,8 +62,8 @@ public class DoubleBarTest {
             tempBool1 = r.nextBoolean();
             tempBool2 = r.nextBoolean();
 
-            doubleBar1[i] = new DoubleBar(tempInt, tempBool1, tempBool2);
-            doubleBar2[i] = new DoubleBar(tempInt, tempBool1, tempBool2);
+            doubleBar1[i] = new DoubleBar(tempInt, tempBool1, tempBool2, false);
+            doubleBar2[i] = new DoubleBar(tempInt, tempBool1, tempBool2, false);
         }
     }
 

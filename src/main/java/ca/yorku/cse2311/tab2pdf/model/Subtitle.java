@@ -1,5 +1,7 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
+import com.itextpdf.text.pdf.PdfWriter;
+
 /**
  * Subtitle
  * <p/>
@@ -22,9 +24,41 @@ public class Subtitle implements ITabNotation {
         this.subtitle = subtitle;
     }
 
-    public String getSubtitle() {
+    public String getValue() {
 
         return subtitle;
+    }
+
+
+    public void draw(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer) {
+        //Do Nothing
+    }
+
+    /**
+     * The padding to the left of the character
+     *
+     * @return always 0
+     */
+    public int leftPadding() {
+        return 0;
+    }
+
+    /**
+     * The padding to the right of the character
+     *
+     * @return always 0
+     */
+    public int rightPadding() {
+        return 0;
+    }
+
+    /**
+     * Logical parser size
+     *
+     * @return always 1
+     */
+    public int size() {
+        return toString().length();
     }
 
     @Override

@@ -4,6 +4,8 @@ import ca.yorku.cse2311.tab2pdf.parser.TabParser;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -19,7 +21,7 @@ public class TabParserTest {
     public static final String[] LINES = {
             "TITLE=Moonlight Sonata"
             , "SUBTITLE=Ludwig van Beethoven"
-            , "SPACING=5"
+            , "SPACING=5.0"
             , ""
             , "|-------------------------|-------------------------|"
             , "|-----1-----1-----1-----1-|-----1-----1-----1-----1-|"
@@ -293,9 +295,16 @@ public class TabParserTest {
             // This will hold line that we converted back to tab using the ITabNotations toString()
             String parsedLine = "";
 
-            for (ITabNotation note : parser.parseLine(line)) {  // Go through all the parsed tokens (notes)
-                parsedLine += note.toString();  // Convert token back to tab notation
-            }
+                //TODO: Fix tester since the way it works is different now. (The parser treats each bar as objects)
+                for (List<ITabNotation> noteSet : parser.parseLine(line)) {  // Go through all the parsed tokens (notes)
+                        if (parsedLine.endsWith("|")) {
+                                parsedLine = parsedLine.substring(0, parsedLine.length() - 1);
+                        }
+                        for (ITabNotation note : noteSet) {
+
+                                parsedLine += note.toString();  // Convert token back to tab notation
+                        }
+                }
 
             // the line the parser parsed and the original line better be the same!
             assertEquals(line, parsedLine);

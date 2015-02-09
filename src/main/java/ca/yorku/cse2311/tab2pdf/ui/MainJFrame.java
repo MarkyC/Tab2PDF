@@ -1,12 +1,7 @@
 package ca.yorku.cse2311.tab2pdf.ui;
 
 import ca.yorku.cse2311.tab2pdf.Arguments;
-import ca.yorku.cse2311.tab2pdf.model.*;
-import ca.yorku.cse2311.tab2pdf.parser.TabParser;
-import ca.yorku.cse2311.tab2pdf.util.FileUtils;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
+import ca.yorku.cse2311.tab2pdf.util.PdfCreator;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -16,12 +11,11 @@ import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.File;
-import java.nio.file.Files;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static ca.yorku.cse2311.tab2pdf.PdfHelper.*;
 
 /**
  * MainJFrame
@@ -82,63 +76,7 @@ public class MainJFrame extends JFrame {
 
             LOG.log(Level.INFO, e.paramString());
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-
-                    try {
-                        Tab tab = TabParser.parse(FileUtils.readFile(getInputFile()));
-                        createPdf(tab, getOutputFile());
-                        Desktop.getDesktop().open(getOutputFile());
-
-                    } catch (Exception e) {
-                        LOG.severe(e.getMessage());
-                    }
-                }
-
-                public void createPdf(Tab tab, File out) throws Exception {
-
-                    // step 1
-                    Document document = new Document();
-                    // step 2
-                    PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(out.toPath()));
-                    // step 3
-                    document.open();
-                    // step 4
-                    //document.add(new Paragraph("Hello World!"));                // Hello World!
-                    document.add(new Paragraph(tab.getTitle().getTitle()));     // The Tab's Title
-                    document.add(new Paragraph(tab.getSubtitle().getSubtitle()));  // The Tab's Subtitle
-
-                    stave(1, writer);
-
-                    for (Bar bar : tab.getBars()) {
-                        for (int i = 0; i < bar.getLines().size(); ++i) {
-
-                            int lineNumber = i + 1;
-                            BarLine line = bar.getLine(i);
-                            int xPos = 50;
-                            for (ITabNotation note : line.getLine()) {
-
-                                // TODO: What design pattern to use here?
-                                if (note instanceof Pipe) {
-                                    thinLine(1, xPos, writer);
-                                    xPos += 10;
-                                } else if (note instanceof Dash) {
-                                    xPos += 10;
-                                } else if (note instanceof Note) {
-                                    int actualNote = Integer.parseInt(((Note) note).getNote());
-                                    drawDigit(1, lineNumber, xPos, actualNote, writer);
-                                    xPos += 10;
-                                } else {
-                                    LOG.warning("Could not draw symbol " + note.getClass().getSimpleName());
-                                }
-                            }
-
-                        }
-                    }
-                    document.close();
-                }
-            }).start();
+            new Thread(new PdfCreator(new Arguments(getInputFile(), getOutputFile()))).start();
         }
     };
 
@@ -169,6 +107,7 @@ public class MainJFrame extends JFrame {
 
             // setup file chooser
             JFileChooser fc = new JFileChooser();
+            fc.setCurrentDirectory(getInputFile().getParentFile()); //Starts chooser in current directory
             fc.setFileFilter(TEXT_FILE_FILTER);           // Allow *.txt files (default)
             fc.addChoosableFileFilter(TAB_FILE_FILTER);   // Allow *.tab files
 
@@ -177,7 +116,23 @@ public class MainJFrame extends JFrame {
 
                 // Set the file path in the text field to that of the users chosen file
                 inputFilePath.setText(fc.getSelectedFile().getPath());
+                setInputFile(fc.getSelectedFile());
             }
+        }
+    };
+
+    /**
+     * This Focus Listener will check for when the Input text box has been updated
+     */
+    private final FocusListener INPUT_FOCUS_LISTENER = new FocusListener() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            //Do Nothing
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            setInputFile(new File(inputFilePath.getText()));
         }
     };
 
@@ -198,6 +153,7 @@ public class MainJFrame extends JFrame {
 
             // setup file chooser
             JFileChooser fc = new JFileChooser();
+            fc.setCurrentDirectory(getOutputFile().getParentFile()); //Starts chooser in current directory
             fc.setFileFilter(PDF_FILE_FILTER);  // Allow *.pdf files (default)
 
             // open the file chooser, showing the save dialog
@@ -205,9 +161,26 @@ public class MainJFrame extends JFrame {
 
                 // Set the file path in the text field to that of the users chosen file
                 outputFilePath.setText(fc.getSelectedFile().getPath());
+                setOutputFile(fc.getSelectedFile());
             }
         }
     };
+
+    /**
+     * This Focus Listener will check for when the Input text box has been updated
+     */
+    private final FocusListener OUTPUT_FOCUS_LISTENER = new FocusListener() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            //Do Nothing
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            setInputFile(new File(outputFilePath.getText()));
+        }
+    };
+
     /**
      * Creates the main window of our application
      *
@@ -299,13 +272,27 @@ public class MainJFrame extends JFrame {
         });
     }
 
-    public File getInputFile() {return inputFile;}
 
-    public void setInputFile(File inputFile) {this.inputFile = inputFile;}
+    public File getInputFile() {
 
-    public File getOutputFile() {return outputFile;}
+        return inputFile;
+    }
 
-    public void setOutputFile(File outputFile) {this.outputFile = outputFile;}
+    public void setInputFile(File inputFile) {
+
+        this.inputFile = inputFile;
+    }
+
+    public File getOutputFile() {
+
+        return outputFile;
+    }
+
+    public void setOutputFile(File outputFile) {
+
+        this.outputFile = outputFile;
+    }
+
 
     /**
      * This JPanel will host the input file chooser
@@ -324,6 +311,8 @@ public class MainJFrame extends JFrame {
         browseButton.addActionListener(INPUT_LISTENER);
         // Setup input file text field
         inputFilePath.setMinimumSize(new Dimension(FILE_FIELD_MIN_WIDTH, inputFilePath.getHeight()));
+        inputFilePath.addFocusListener(INPUT_FOCUS_LISTENER);
+
         panel.add(inputFilePath);    // add the input file text field to the panel
         panel.add(browseButton);    // add the browse button to the panel
 
@@ -346,6 +335,8 @@ public class MainJFrame extends JFrame {
         browseButton.addActionListener(OUTPUT_LISTENER);
         // Setup input file text field
         outputFilePath.setMinimumSize(new Dimension(FILE_FIELD_MIN_WIDTH, outputFilePath.getHeight()));
+        outputFilePath.addFocusListener(OUTPUT_FOCUS_LISTENER);
+
         panel.add(outputFilePath);  // add the output file text field to the panel
         panel.add(browseButton);    // add the browse button to the panel
 

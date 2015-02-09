@@ -48,7 +48,7 @@ public class PipeParserTest {
 
                 parser.parse(line);
 
-                fail(); // Fail if we get here, since the lines are invalid, and should produce an Exception
+                fail("Shouldn't be able to parse:" + line); // Fail if we get here, since the lines are invalid, and should produce an Exception
 
             } catch (ParseException e) {
                 /* This Exception should be triggered since we gave the parser invalid lines */

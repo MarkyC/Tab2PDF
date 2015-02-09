@@ -33,8 +33,7 @@ public class Tab {
 
     public Tab(Title title, Subtitle subtitle) {
 
-        // TODO: If this stays, make new Spacing("auto") a static constant in Spacing.java
-        this(title, subtitle, new Spacing("auto"));
+        this(title, subtitle, new Spacing());
 
     }
 

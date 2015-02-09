@@ -29,7 +29,7 @@ public class SquareNoteParser extends AbstractParser<SquareNote> {
 
         if (m.find()) {
 
-            return new SquareNote(m.group(1));
+            return new SquareNote(Integer.parseInt(m.group(1)));
         }
 
         throw new ParseException(token, getPattern());
