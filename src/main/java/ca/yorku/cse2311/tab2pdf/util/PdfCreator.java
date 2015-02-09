@@ -4,6 +4,7 @@ import ca.yorku.cse2311.tab2pdf.Arguments;
 import ca.yorku.cse2311.tab2pdf.PdfHelper;
 import ca.yorku.cse2311.tab2pdf.model.*;
 import ca.yorku.cse2311.tab2pdf.parser.TabParser;
+import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
@@ -60,7 +61,8 @@ public class PdfCreator implements Runnable {
     public void run() {
 
         try {
-            Tab tab = TabParser.parse(FileUtils.readFile(args.getInputFile()));
+            //Tab tab = TabParser.parse(FileUtils.readFile(args.getInputFile()));
+            Tab tab = TabParser.parse(MainJFrame.getEditorContents());
             createPdf(tab, args.getOutputFile());
             Desktop.getDesktop().open(args.getOutputFile());
 

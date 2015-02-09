@@ -5,7 +5,6 @@ import ca.yorku.cse2311.tab2pdf.PdfHelper;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.io.Serializable;
 
 /**
  * JFrameData
@@ -16,7 +15,27 @@ import java.io.Serializable;
  */
 public final class JFrameData {
 
+    //TODO: perhaps this class is not needed and it's better to put constants into respective classes.
+    //TODO: needs documentation comments
+    /**
+     * Toolbar sliders data
+     */
+    static final int SCALING_SLIDER_MIN = 5;
+
+    static final int SCALING_SLIDER_MAX = 15;
+
+    static final int SCALING_SLIDER_INIT = 7;
+
+    static final int SPACING_SLIDER_MIN = 2;
+
+    static final int SPACING_SLIDER_MAX = 8;
+
+    static final int SPACING_SLIDER_INIT = 5;
+
+
     public static final String EMPTY_FILE_PATH = "Type the file path, or select a file by clicking browse...";
+
+    public static final Dimension BUTTON_SIZE = new Dimension(170, 170);
 
     /**
      * Minimum size of the window
@@ -26,7 +45,12 @@ public final class JFrameData {
     /**
      * Size of input editor panel
      */
-    public static final Dimension EDITOR_PANEL_SIZE = new Dimension(640, 480);
+    public static final Dimension VIEW_PANEL_SIZE = new Dimension(500, 500);
+
+    public static final Dimension BAR_SIZE = new Dimension(1020, 50);
+
+    public static final Dimension PROGRESS_BAR_SIZE = new Dimension(200, 50);
+
 
     /**
      * Title of the GUI window
@@ -37,27 +61,6 @@ public final class JFrameData {
      * Scaling constants of the Pdf file
      */
     public static final int MEDIUM_SCALING = PdfHelper.getLineSpace();
-
-    public static final int EXTRA_SMALL_SCALING = MEDIUM_SCALING - 4;
-
-    public static final int SMALL_SCALING = MEDIUM_SCALING - 2;
-
-    public static final int LARGE_SCALING = MEDIUM_SCALING + 2;
-
-    public static final int EXTRA_LARGE_SCALING = MEDIUM_SCALING + 4;
-
-    /**
-     * Radio button names
-     */
-    public static final String EXTRA_LARGE_BUTTON_NAME = "Large+";
-
-    public static final String LARGE_BUTTON_NAME = "Large";
-
-    public static final String MEDIUM_BUTTON_NAME = "Medium";
-
-    public static final String SMALL_BUTTON_NAME = "Small";
-
-    public static final String EXTRA_SMALL_BUTTON_NAME = "Small-";
 
     /**
      * Filters *.txt and *.text files
@@ -72,32 +75,24 @@ public final class JFrameData {
      */
     public static final FileFilter PDF_FILE_FILTER = new FileNameExtensionFilter("PDF Files (*.pdf)", "pdf");
 
-    public static final String EDITOR_PANEL_NAME = "Input Editor";
+    /**
+     * Status panel hints text
+     */
+    public static final String EMPTY_HINT = "Select Any Object to Get a Hint";
 
-    public static final String IO_PANEL_NAME = "File Selection";
+    public static final String INPUT_EDITOR_HINT = "You can edit the input file before converting it to PDF";
 
-    public static final String CONTROL_PANEL_NAME = "Control Panel";
+    public static final String OPEN_FILE_HINT = "Select the input file for the program";
 
-    public static final String SCALING_PANEL_NAME = "Scaling Panel";
+    public static final String SAVE_FILE_HINT = "Save changes you made with editor back into the input file";
 
-    public static final String SPACING_PANEL_NAME = "Spacing Panel";
+    public static final String CONVERT_PDF_HINT = "Preview the Pdf file or save the changes to the input file";
 
-    public static final String INPUT_BUTTON_NAME = "Browse For Input File  ";
+    public static final String SCALING_SLIDER_HINT = "Select the overall size of the Pdf elements";
 
-    public static final String OUTPUT_BUTTON_NAME = "Browse For Output File";
+    public static final String SPACING_SLIDER_HINT = "Select the horizontal spacing between the Pdf elements";
 
-    public static final String CONVERT_BUTTON_NAME = "Convert to Pdf";
 
-    public static final String SAVE_BUTTON_NAME = "Save Changes";
 
-    public static final String EDITOR_TOOLTIP_TEXT = "Edit the input file";
-
-    public static final String IO_TOOLTIP_TEXT = "Select the input and output files for the program";
-
-    public static final String CONVERT_TOOLTIP_TEXT = "Preview the Pdf file or save the changes to the input file";
-
-    public static final String SCALING_TOOLTIP_TEXT = "Select the overall size of the Pdf elements";
-
-    public static final String SPACING_TOOLTIP_TEXT = "Select the horizontal spacing between the Pdf elements";
 
 }
