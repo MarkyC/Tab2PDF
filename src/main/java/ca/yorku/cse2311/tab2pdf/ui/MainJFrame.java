@@ -12,6 +12,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,36 +32,24 @@ import static ca.yorku.cse2311.tab2pdf.PdfHelper.*;
  */
 public class MainJFrame extends JFrame {
 
-    public static final String BROWSE = "Browse";
-
     public static final String EMPTY_FILE_PATH = "Type the file path, or select a file by clicking browse...";
-
-    public static final String CREATE_PDF = "Create PDF";
-
-    /**
-     * Border around the Input file panel
-     */
-    public static final TitledBorder INPUT_PANEL_BORDER = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Input File");
-
-    /**
-     * Border around the output file panel
-     */
-    public static final TitledBorder OUTPUT_PANEL_BORDER = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Output File");
 
     /**
      * Minimum width of inputFilePath/outputFilePath
      */
-    public static final int FILE_FIELD_MIN_WIDTH = 400;
+    //400
+    public static final int FILE_FIELD_MIN_WIDTH = 100;
 
     /**
      * Max width of the input/output panels (file path text field + browse button)
      */
-    public static final int FILE_PANEL_MAX_WIDTH = 800;
+    //800
+    public static final int FILE_PANEL_MAX_WIDTH = 200;
 
     /**
      * Minimum size of the window
      */
-    public static final Dimension WINDOW_MIN_SIZE = new Dimension(400, 200);
+    public static final Dimension WINDOW_MIN_SIZE = new Dimension(0, 600);
 
     /**
      * Title of the GUI window
@@ -219,7 +208,6 @@ public class MainJFrame extends JFrame {
             }
         }
     };
-
     /**
      * Creates the main window of our application
      *
@@ -229,23 +217,19 @@ public class MainJFrame extends JFrame {
 
         super(title);
 
+        //Puts the window in the upper left corner
+        this.setLocation(0, 0);
+
         // This magically centers the window on the screen
-        this.setLocationRelativeTo(null);
+        //this.setLocationRelativeTo(null);
 
         // This magically makes the window look native to your computer (it: Windows, or Mac looking)
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {/* Who cares if we can't set the look and feel? */}
 
-        // This magically makes everything vertical
-        LayoutManager layout = new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS);
-        this.setLayout(layout);
-
-        this.getContentPane().add(createFileInputPanel());
-        this.getContentPane().add(Box.createGlue());
-        this.getContentPane().add(createFileOutputPanel());
-        this.getContentPane().add(Box.createGlue());
-        this.getContentPane().add(createPdfButtonPanel());
+        //This adds the interface panels to the frame
+        addPanels();
     }
 
     private MainJFrame(String title, Arguments args) {
@@ -254,27 +238,53 @@ public class MainJFrame extends JFrame {
 
         inputFile = args.getInputFile();
         outputFile = args.getOutputFile();
-
         inputFilePath.setText((null != inputFile) ? inputFile.getAbsolutePath() : "");
         outputFilePath.setText((null != outputFile) ? outputFile.getAbsolutePath() : "");
     }
 
     /**
+     * Adds interactive panels, such as Input/Output boxes, to the frame
+     */
+    private void addPanels() {
+        //Determines the relative position of panels in the window
+        LayoutManager layout = new GridBagLayout();
+        this.setLayout(layout);
+
+        GridBagConstraints constraints = new GridBagConstraints();
+
+        //TODO: Title
+        //Adds Control Panel to the window
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.anchor = GridBagConstraints.FIRST_LINE_END;
+        this.getContentPane().add(controlPanel(), constraints);
+        //Adds Input Editor to the window
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        constraints.ipady = 480;
+        constraints.ipadx = 640;
+        this.getContentPane().add(inputEditor(), constraints);
+        //Adds File Selection Panel to the window
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        constraints.ipady = 0;
+        constraints.ipadx = 0;
+        constraints.anchor = GridBagConstraints.FIRST_LINE_START;
+        this.getContentPane().add(fileSelectionPanel(), constraints);
+    }
+
+    /**
      * Creates and shows the main window of our application
      */
-    public static void createAndShow() {
-
-        createAndShow(WINDOW_TITLE, new Arguments());
-    }
+    public static void createAndShow() {createAndShow(WINDOW_TITLE, new Arguments());}
 
     public static void createAndShow(String title, Arguments args) {
 
-        MainJFrame window = new MainJFrame(title, args);   // create the window that holds our application
-        window.pack();                          // compress contents
+        MainJFrame window = new MainJFrame(title, args); // create the window that holds our application
+        window.pack(); // compress contents
         window.setMinimumSize(WINDOW_MIN_SIZE); // set minimum size
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // exit the app when the JFrame closes
         window.setVisible(true);                // Show the window
-
     }
 
     public static void main(String[] args) {
@@ -289,25 +299,13 @@ public class MainJFrame extends JFrame {
         });
     }
 
-    public File getInputFile() {
+    public File getInputFile() {return inputFile;}
 
-        return inputFile;
-    }
+    public void setInputFile(File inputFile) {this.inputFile = inputFile;}
 
-    public void setInputFile(File inputFile) {
+    public File getOutputFile() {return outputFile;}
 
-        this.inputFile = inputFile;
-    }
-
-    public File getOutputFile() {
-
-        return outputFile;
-    }
-
-    public void setOutputFile(File outputFile) {
-
-        this.outputFile = outputFile;
-    }
+    public void setOutputFile(File outputFile) {this.outputFile = outputFile;}
 
     /**
      * This JPanel will host the input file chooser
@@ -315,76 +313,147 @@ public class MainJFrame extends JFrame {
      *
      * @return A JPanel that will allow the user to select an input file
      */
-    private JPanel createFileInputPanel() {
+    private JPanel fileInputPanel() {
 
         JPanel panel = new JPanel();
-
         BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
         panel.setLayout(layout);
-
-        // Add border to panel
-        panel.setBorder(INPUT_PANEL_BORDER);
-
         // Setup button
-        JButton browseButton = new JButton(BROWSE);
+        JButton browseButton = new JButton(" Browse For Input File ");
         browseButton.setActionCommand("Browse For Input File");
         browseButton.addActionListener(INPUT_LISTENER);
-
         // Setup input file text field
         inputFilePath.setMinimumSize(new Dimension(FILE_FIELD_MIN_WIDTH, inputFilePath.getHeight()));
-
         panel.add(inputFilePath);    // add the input file text field to the panel
         panel.add(browseButton);    // add the browse button to the panel
 
-        panel.setMaximumSize(new Dimension(FILE_PANEL_MAX_WIDTH, panel.getHeight()));
-
         return panel;
     }
-
     /**
      * This JPanel will host the input file chooser
      * See (for JPanels): http://docs.oracle.com/javase/tutorial/uiswing/components/panel.html
      *
      * @return A JPanel that will allow the user to select an input file
      */
-    private JPanel createFileOutputPanel() {
+    private JPanel fileOutputPanel() {
 
         JPanel panel = new JPanel();
-
         BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
         panel.setLayout(layout);
-
-        // Add border to panel
-        panel.setBorder(OUTPUT_PANEL_BORDER);
-
         // Setup button
-        JButton browseButton = new JButton(BROWSE);
+        JButton browseButton = new JButton("Browse For Output File");
         browseButton.setActionCommand("Browse For Output File");
         browseButton.addActionListener(OUTPUT_LISTENER);
-
         // Setup input file text field
         outputFilePath.setMinimumSize(new Dimension(FILE_FIELD_MIN_WIDTH, outputFilePath.getHeight()));
-
         panel.add(outputFilePath);  // add the output file text field to the panel
         panel.add(browseButton);    // add the browse button to the panel
-
-        panel.setMaximumSize(new Dimension(FILE_PANEL_MAX_WIDTH, panel.getHeight()));
 
         return panel;
     }
 
+    private JPanel scrollBarPanel() {
+        //TODO for me: make scrollbars active
+        JPanel panel = new JPanel();
+        BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
+        panel.setLayout(layout);
+        //Setup Scaling Bar
+        JLabel scalingLabel = new JLabel("Scaling Factor:   ");
+        JTextField scalingTextField = new JTextField();
+        scalingTextField.setText("7.0");
+        JScrollBar scalingScrollBar = new JScrollBar(JScrollBar.VERTICAL);
+        panel.add(scalingLabel);
+        panel.add(scalingTextField);
+        panel.add(scalingScrollBar);
+        //Setup Spacing Bar
+        JLabel spacingLabel = new JLabel("Spacing Factor:   ");
+        JTextField spacingTextField = new JTextField();
+        spacingTextField.setText("1.0");
+        JScrollBar spacingScrollBar = new JScrollBar(JScrollBar.VERTICAL);
+        panel.add(spacingLabel);
+        panel.add(spacingTextField);
+        panel.add(spacingScrollBar);
+        JLabel emptySpace = new JLabel("   ");
+        panel.add(emptySpace);
+
+        return panel;
+    }
+
+
     /**
-     * @return A JPanel with a Create PDF button
+     * @return a panel containing a set of buttons
      */
-    private JPanel createPdfButtonPanel() {
+    private JPanel controlPanel() {
 
         JPanel panel = new JPanel();
-
-        JButton createPdfButton = new JButton(CREATE_PDF);
+        BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
+        panel.setLayout(layout);
+        // Adds border to panel
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Control Panel"));
+        //Add ScrollBar panel
+        panel.add(scrollBarPanel());
+        //Add "Create Pdf" button
+        JButton createPdfButton = new JButton("Create Pdf");
         createPdfButton.addActionListener(CREATE_PDF_LISTENER);
-
         panel.add(createPdfButton);
+        //Add "Preview" button
+        JButton previewButton = new JButton("Preview Pdf");
+        previewButton.addActionListener(CREATE_PDF_LISTENER);
+        panel.add(previewButton);
+
         return panel;
+    }
+
+    private JPanel fileSelectionPanel() {
+
+        JPanel panel = new JPanel();
+        BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS);
+        panel.setLayout(layout);
+        // Adds border to panel
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "File Selection Panel"));
+        //Add Input/Output Selection panels
+        panel.add(fileInputPanel());
+        panel.add(fileOutputPanel());
+        return panel;
+    }
+    /**
+     * @return a panel containing a modifiable and scrollable text field.
+     * -Input file contents are to be loaded in the text field.
+     * -Output of the app is based on the contents of the text field.
+     */
+    private JPanel inputEditor() {
+
+        //TODO for Varsha:implement this method
+        //Don't mind other TODOs, they are for me
+
+        //This determines how components are positioned relative to each other
+        //Change if needed. Leave it like this if method works fine
+        JPanel panel = new JPanel();
+        BoxLayout layout = new BoxLayout(panel, BoxLayout.LINE_AXIS);
+        panel.setLayout(layout);
+
+        //This adds visible border to the panel
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Input Editor"));
+        //JTextArea editor = new JTextArea(); //This is what i suggest to use as a text field
+        //panel.add(editor); // This is how you can add stuff to the panel
+
+        /*
+         * 1) Add text field to the panel
+         * 2) Make sure it fits the size of the panel and does not change the size when you print stuff in it
+         * 3) Add a vertical scroll bar to the text field
+         * 4) When you select input file, its contents must be printed in the text field
+         *    You'll probably need to work with INPUT_LISTENER to do this
+         * 5) Since user can modify the text field, when you create Pdf, it must be created
+         *    based on the text field, not the input file
+         *    You'll probably need to work with CREATE_PDF_LISTENER to do this
+         * 6) After you're done, send me the class and i'll continue working on it
+         *
+         * -  Listeners are already in the code, you don't need to create them
+         * -  Use JFrame API to figure out how to do all this stuff
+         * -  If you don't get how some of the code works, text me
+         */
+
+        return panel; //This returns the resulting panel for further use
     }
 
 }
