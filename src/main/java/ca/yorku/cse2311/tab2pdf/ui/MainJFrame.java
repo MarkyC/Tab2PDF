@@ -45,6 +45,8 @@ public class MainJFrame extends JFrame {
      */
     public static final Dimension WINDOW_MIN_SIZE = new Dimension(0, 600);
 
+    public static final Dimension EDITOR_PANEL_SIZE = new Dimension(640, 480);
+
     /**
      * Title of the GUI window
      */
@@ -220,30 +222,16 @@ public class MainJFrame extends JFrame {
      */
     private void addPanels() {
         //Determines the relative position of panels in the window
-        LayoutManager layout = new GridBagLayout();
+        LayoutManager layout = new BorderLayout();
         this.setLayout(layout);
-
-        GridBagConstraints constraints = new GridBagConstraints();
 
         //TODO: Title
         //Adds Control Panel to the window
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.anchor = GridBagConstraints.FIRST_LINE_END;
-        this.getContentPane().add(controlPanel(), constraints);
+        this.getContentPane().add(controlPanel(), BorderLayout.PAGE_START);
         //Adds Input Editor to the window
-        constraints.gridx = 0;
-        constraints.gridy = 1;
-        constraints.ipady = 480;
-        constraints.ipadx = 640;
-        this.getContentPane().add(inputEditor(), constraints);
+        this.getContentPane().add(inputEditor(), BorderLayout.CENTER);
         //Adds File Selection Panel to the window
-        constraints.gridx = 0;
-        constraints.gridy = 2;
-        constraints.ipady = 0;
-        constraints.ipadx = 0;
-        constraints.anchor = GridBagConstraints.FIRST_LINE_START;
-        this.getContentPane().add(fileSelectionPanel(), constraints);
+        this.getContentPane().add(fileSelectionPanel(), BorderLayout.PAGE_END);
     }
 
     /**
@@ -352,6 +340,7 @@ public class MainJFrame extends JFrame {
         JLabel scalingLabel = new JLabel("Scaling Factor:   ");
         JTextField scalingTextField = new JTextField();
         scalingTextField.setText("7.0");
+
         JScrollBar scalingScrollBar = new JScrollBar(JScrollBar.VERTICAL);
         panel.add(scalingLabel);
         panel.add(scalingTextField);
@@ -425,8 +414,9 @@ public class MainJFrame extends JFrame {
 
         //This adds visible border to the panel
         panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Input Editor"));
-        //JTextArea editor = new JTextArea(); //This is what i suggest to use as a text field
-        //panel.add(editor); // This is how you can add stuff to the panel
+        JTextArea editor = new JTextArea(); //This is what i suggest to use as a text field
+        panel.add(editor); // This is how you can add stuff to the panel
+
 
         /*
          * 1) Add text field to the panel
