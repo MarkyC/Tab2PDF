@@ -4,10 +4,8 @@ import ca.yorku.cse2311.tab2pdf.Arguments;
 import ca.yorku.cse2311.tab2pdf.util.PdfCreator;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,8 +14,6 @@ import java.awt.event.FocusListener;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static java.awt.Font.BOLD;
 
 /**
  * MainJFrame
@@ -31,21 +27,10 @@ public class MainJFrame extends JFrame {
     public static final String EMPTY_FILE_PATH = "Type the file path, or select a file by clicking browse...";
 
     /**
-     * Minimum width of inputFilePath/outputFilePath
-     */
-    //400
-    public static final int FILE_FIELD_MIN_WIDTH = 100;
-
-    /**
-     * Max width of the input/output panels (file path text field + browse button)
-     */
-    //800
-    public static final int FILE_PANEL_MAX_WIDTH = 200;
-
-    /**
      * Minimum size of the window
      */
-    public static final Dimension WINDOW_MIN_SIZE = new Dimension(0, 600);
+    public static final Dimension WINDOW_MIN_SIZE = new Dimension(720, 480);
+
 
     public static final Dimension EDITOR_PANEL_SIZE = new Dimension(640, 480);
 
@@ -122,7 +107,7 @@ public class MainJFrame extends JFrame {
                 inputFilePath.setText(fc.getSelectedFile().getPath());
                 setInputFile(fc.getSelectedFile());
             }
-            
+
         }
     };
 
@@ -198,16 +183,17 @@ public class MainJFrame extends JFrame {
         //Puts the window in the upper left corner
         this.setLocation(0, 0);
 
-        // This magically centers the window on the screen
-        //this.setLocationRelativeTo(null);
+        //Makes the frame look native to your computer (it: Windows, or Mac looking)
+        try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
+        catch (Exception e) {}
 
-        // This magically makes the window look native to your computer (it: Windows, or Mac looking)
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {/* Who cares if we can't set the look and feel? */}
+        //Determines the relative positions of the panels to be added
+        this.setLayout(new BorderLayout());
 
-        //This adds the interface panels to the frame
-        addPanels();
+        //Add panels to the frame
+        this.getContentPane().add(topPanel(), BorderLayout.PAGE_START);
+        this.getContentPane().add(leftPanel(), BorderLayout.LINE_START);
+        this.getContentPane().add(inputEditor(), BorderLayout.CENTER);
     }
 
     private MainJFrame(String title, Arguments args) {
@@ -218,23 +204,6 @@ public class MainJFrame extends JFrame {
         outputFile = args.getOutputFile();
         inputFilePath.setText((null != inputFile) ? inputFile.getAbsolutePath() : "");
         outputFilePath.setText((null != outputFile) ? outputFile.getAbsolutePath() : "");
-    }
-
-    /**
-     * Adds interactive panels, such as Input/Output boxes, to the frame
-     */
-    private void addPanels() {
-        //Determines the relative position of panels in the window
-        LayoutManager layout = new BorderLayout();
-        this.setLayout(layout);
-
-        //TODO: Title
-        //Adds Control Panel to the window
-        this.getContentPane().add(controlPanel(), BorderLayout.PAGE_START);
-        //Adds Input Editor to the window
-        this.getContentPane().add(inputEditor(), BorderLayout.CENTER);
-        //Adds File Selection Panel to the window
-        this.getContentPane().add(fileSelectionPanel(), BorderLayout.PAGE_END);
     }
 
     /**
@@ -264,201 +233,228 @@ public class MainJFrame extends JFrame {
     }
 
 
-    public File getInputFile() {
+    public File getInputFile() {return inputFile;}
 
-        return inputFile;
-    }
+    public void setInputFile(File inputFile) {this.inputFile = inputFile;}
 
-    public void setInputFile(File inputFile) {
+    public File getOutputFile() {return outputFile;}
 
-        this.inputFile = inputFile;
-    }
-
-    public File getOutputFile() {
-
-        return outputFile;
-    }
-
-    public void setOutputFile(File outputFile) {
-
-        this.outputFile = outputFile;
-    }
-
+    public void setOutputFile(File outputFile) {this.outputFile = outputFile;}
 
     /**
-     * This JPanel will host the input file chooser
-     * See (for JPanels): http://docs.oracle.com/javase/tutorial/uiswing/components/panel.html
+     * The IO primary panel which allows user to select input and output files
      *
-     * @return A JPanel that will allow the user to select an input file
+     * @return primary panel to be displayed at the top of the frame
+     */
+    private JPanel topPanel() {
+
+        //Set up panel
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        //Add border to panel
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "File Selection"));
+
+        //Add IO Selection panels
+        panel.add(fileInputPanel());
+        panel.add(fileOutputPanel());
+
+        return panel;
+    }
+
+    /**
+     * The primary panel which allows for Pdf preview, saving the text file, and resizing Pdf components
+     *
+     * @return leftmost primary panel
+     */
+    private JPanel leftPanel() {
+
+        //Setup panel
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        //Add button secondary panel
+        panel.add(controlPanel());
+
+        //Add Scaling/Spacing secondary panels
+        panel.add(scalingPanel());
+        panel.add(spacingPanel());
+
+        return panel;
+    }
+
+    /**
+     * The primary panel which allows to edit the input file
+     *
+     * @return primary panel containing a modifiable and scrollable text pane
+     */
+    private JPanel inputEditor() {
+
+        //Setup panel
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Input Editor"));
+        panel.setMaximumSize(EDITOR_PANEL_SIZE);
+
+        //Setup text editor and add it to the panel
+        JTextPane textPane = new JTextPane();
+        panel.add(textPane);
+        JScrollPane scrollPanel = new JScrollPane(textPane);
+        scrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        panel.add(scrollPanel);
+
+        return panel;
+    }
+
+    /**
+     * The secondary panel which belongs to the top primary panel hosts the input file chooser
+     *
+     * @return secondary panel which allows for browsing input files
      */
     private JPanel fileInputPanel() {
 
+        //Setup panel
         JPanel panel = new JPanel();
-        BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
-        panel.setLayout(layout);
-        // Setup button
-        JButton browseButton = new JButton(" Browse For Input File ");
-        browseButton.setActionCommand("Browse For Input File");
-        browseButton.addActionListener(INPUT_LISTENER);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+
         // Setup input file text field
-        //inputFilePath.setMinimumSize(new Dimension(FILE_FIELD_MIN_WIDTH, inputFilePath.getHeight()));
         inputFilePath.addFocusListener(INPUT_FOCUS_LISTENER);
 
+        // Setup browse button
+        JButton browseButton = new JButton("Browse For Input File  ");
+        browseButton.setActionCommand("Browse For Input File");
+        browseButton.addActionListener(INPUT_LISTENER);
+
+        //Add input file text field and browse button to the panel
         panel.add(inputFilePath);    // add the input file text field to the panel
         panel.add(browseButton);    // add the browse button to the panel
 
         return panel;
     }
     /**
-     * This JPanel will host the input file chooser
-     * See (for JPanels): http://docs.oracle.com/javase/tutorial/uiswing/components/panel.html
-     *
-     * @return A JPanel that will allow the user to select an input file
+     * The secondary panel which belongs to the top primary panel and hosts the output file chooser
+     * @return secondary panel which allows for browsing output files
      */
     private JPanel fileOutputPanel() {
 
+        //Setup panel
         JPanel panel = new JPanel();
-        BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
-        panel.setLayout(layout);
-        // Setup button
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+
+        // Setup input file text field
+        outputFilePath.addFocusListener(OUTPUT_FOCUS_LISTENER);
+
+        // Setup browse button
         JButton browseButton = new JButton("Browse For Output File");
         browseButton.setActionCommand("Browse For Output File");
         browseButton.addActionListener(OUTPUT_LISTENER);
-        // Setup input file text field
-        //outputFilePath.setMinimumSize(new Dimension(FILE_FIELD_MIN_WIDTH, outputFilePath.getHeight()));
-        outputFilePath.addFocusListener(OUTPUT_FOCUS_LISTENER);
 
-        panel.add(outputFilePath);  // add the output file text field to the panel
-        panel.add(browseButton);    // add the browse button to the panel
+        //Add output file text field and browse button to the panel
+        panel.add(outputFilePath);
+        panel.add(browseButton);
 
         return panel;
     }
-
-    private JPanel scrollBarPanel() {
-        //TODO for me: make scrollbars active
-        JPanel panel = new JPanel();
-        BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
-        panel.setLayout(layout);
-        //Setup Scaling Bar
-        JLabel scalingLabel = new JLabel("  Scaling Factor:   ");
-        /*
-        JToolTip toolTip = new JToolTip();
-        toolTip.setTipText("This is scaling");
-        scalingLabel.add(toolTip);
-        toolTip.setVisible(true);
-        */
-        JTextField scalingTextField = new JTextField();
-        //scalingTextField.setFont(scalingTextField.getFont().deriveFont(24.0f));
-        scalingTextField.setText("7.0");
-        scalingTextField.setEditable(false);
-        JScrollBar scalingScrollBar = new JScrollBar(JScrollBar.VERTICAL);
-        panel.add(scalingLabel);
-        panel.add(scalingTextField);
-        panel.add(scalingScrollBar);
-
-        //Setup Spacing Bar
-        JLabel spacingLabel = new JLabel("  Spacing Factor:   ");
-        JTextField spacingTextField = new JTextField();
-        spacingTextField.setText("1.0");
-        spacingTextField.setEditable(false);
-        JScrollBar spacingScrollBar = new JScrollBar(JScrollBar.VERTICAL);
-        panel.add(spacingLabel);
-        panel.add(spacingTextField);
-        panel.add(spacingScrollBar);
-        JLabel emptySpace = new JLabel("   ");
-        panel.add(emptySpace);
-
-        return panel;
-    }
-
 
     /**
-     * @return a panel containing a set of buttons
+     * The secondary panel which belongs to the left primary panel
+     * and contains buttons to preview the Pdf file and to save the input file
+     *
+     * @return secondary panel which allows to preview and save files
      */
     private JPanel controlPanel() {
 
+        //Setup panel
         JPanel panel = new JPanel();
-        BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
-        panel.setLayout(layout);
-        // Adds border to panel
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Control Panel"));
 
-        //Add Title
-        JLabel title = new JLabel("Tab2Pdf  ");
-        title.setFont(title.getFont().deriveFont(24.0f));
-        panel.add(title);
-
-        //Add ScrollBar panel
-        panel.add(scrollBarPanel());
-
         //Add "Create Pdf" button
-        JButton createButton = new JButton(" Create Pdf ");
-        createButton.addActionListener(CREATE_PDF_LISTENER);
-        panel.add(createButton);
+        JButton previewButton = new JButton("Preview File   ");
+        previewButton.addActionListener(CREATE_PDF_LISTENER);
+        panel.add(previewButton);
 
         //Add "Save Changes" button
         JButton saveButton = new JButton("Save Changes");
-        //saveButton.addActionListener(CREATE_PDF_LISTENER);
         panel.add(saveButton);
 
         return panel;
     }
 
-    private JPanel fileSelectionPanel() {
+    /**
+     * The secondary panel which belongs to the left primary panel
+     * and contains a group of radio buttons to select the overall scale of the Pdf file
+     *
+     * @return secondary panel which allows to scale the Pdf file
+     */
+    private JPanel scalingPanel() {
 
+        //Setup panel
         JPanel panel = new JPanel();
-        BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS);
-        panel.setLayout(layout);
-        // Adds border to panel
-        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "File Selection"));
-        //Add Input/Output Selection panels
-        panel.add(fileInputPanel());
-        panel.add(fileOutputPanel());
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Scaling"));
+
+        //Create radio buttons
+        JRadioButtonMenuItem radioButtonExtraLarge = new JRadioButtonMenuItem("Large+", false);
+        JRadioButtonMenuItem radioButtonLarge = new JRadioButtonMenuItem("Large", false);
+        JRadioButtonMenuItem radioButtonMedium = new JRadioButtonMenuItem("Medium", true);
+        JRadioButtonMenuItem radioButtonSmall = new JRadioButtonMenuItem("Small", false);
+        JRadioButtonMenuItem radioButtonExtraSmall = new JRadioButtonMenuItem("Small-", false);
+
+        //Group the buttons
+        ButtonGroup buttonGroup = new ButtonGroup();
+        buttonGroup.add(radioButtonExtraLarge);
+        buttonGroup.add(radioButtonLarge);
+        buttonGroup.add(radioButtonMedium);
+        buttonGroup.add(radioButtonSmall);
+        buttonGroup.add(radioButtonExtraSmall);
+
+        //Add buttons to panel
+        panel.add(radioButtonExtraLarge);
+        panel.add(radioButtonLarge);
+        panel.add(radioButtonMedium);
+        panel.add(radioButtonSmall);
+        panel.add(radioButtonExtraSmall);
+
         return panel;
     }
+
     /**
-     * @return a panel containing a modifiable and scrollable text field.
-     * -Input file contents are to be loaded in the text field.
-     * -Output of the app is based on the contents of the text field.
+     * The secondary panel which belongs to the left primary panel
+     * and contains a group of radio buttons to select the horizontal spacing between the Pdf file objects
+     *
+     * @return secondary panel which allows to select the Pdf file spacing
      */
-    private JPanel inputEditor() {
+    private JPanel spacingPanel() {
 
-        //TODO for Varsha:implement this method
-        //Don't mind other TODOs, they are for me
-
-        //This determines how components are positioned relative to each other
-        //Change if needed. Leave it like this if method works fine
+        //Setup panel
         JPanel panel = new JPanel();
-        BoxLayout layout = new BoxLayout(panel, BoxLayout.LINE_AXIS);
-        panel.setLayout(layout);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Spacing"));
 
-        //This adds visible border to the panel
-        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Input Editor"));
-        JTextArea editor = new JTextArea(); //This is what i suggest to use as a text field
-        panel.add(editor); // This is how you can add stuff to the panel
+        //Create radio buttons
+        JRadioButtonMenuItem radioButtonExtraLarge = new JRadioButtonMenuItem("Large+", false);
+        JRadioButtonMenuItem radioButtonLarge = new JRadioButtonMenuItem("Large", false);
+        JRadioButtonMenuItem radioButtonMedium = new JRadioButtonMenuItem("Medium", true);
+        JRadioButtonMenuItem radioButtonSmall = new JRadioButtonMenuItem("Small", false);
+        JRadioButtonMenuItem radioButtonExtraSmall = new JRadioButtonMenuItem("Small-", false);
 
-        panel.setMaximumSize(EDITOR_PANEL_SIZE);
-        JScrollPane scrollPanel = new JScrollPane(editor);
-        scrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        panel.add(scrollPanel);
+        //Group the buttons
+        ButtonGroup buttonGroup = new ButtonGroup();
+        buttonGroup.add(radioButtonExtraLarge);
+        buttonGroup.add(radioButtonLarge);
+        buttonGroup.add(radioButtonMedium);
+        buttonGroup.add(radioButtonSmall);
+        buttonGroup.add(radioButtonExtraSmall);
 
-        /*
-         * 1) Add text field to the panel
-         * 2) Make sure it fits the size of the panel and does not change the size when you print stuff in it
-         * 3) Add a vertical scroll bar to the text field
-         * 4) When you select input file, its contents must be printed in the text field
-         *    You'll probably need to work with INPUT_LISTENER to do this
-         * 5) Since user can modify the text field, when you create Pdf, it must be created
-         *    based on the text field, not the input file
-         *    You'll probably need to work with CREATE_PDF_LISTENER to do this
-         * 6) After you're done, send me the class and i'll continue working on it
-         *
-         * -  Listeners are already in the code, you don't need to create them
-         * -  Use JFrame API to figure out how to do all this stuff
-         * -  If you don't get how some of the code works, text me
-         */
+        //Add buttons to panel
+        panel.add(radioButtonExtraLarge);
+        panel.add(radioButtonLarge);
+        panel.add(radioButtonMedium);
+        panel.add(radioButtonSmall);
+        panel.add(radioButtonExtraSmall);
 
-        return panel; //This returns the resulting panel for further use
+        return panel;
     }
 
 }
