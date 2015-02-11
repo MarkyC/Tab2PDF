@@ -17,6 +17,8 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.awt.Font.BOLD;
+
 /**
  * MainJFrame
  * Handles the GUI of the application
@@ -44,6 +46,8 @@ public class MainJFrame extends JFrame {
      * Minimum size of the window
      */
     public static final Dimension WINDOW_MIN_SIZE = new Dimension(0, 600);
+
+    public static final Dimension EDITOR_PANEL_SIZE = new Dimension(640, 480);
 
     /**
      * Title of the GUI window
@@ -118,6 +122,7 @@ public class MainJFrame extends JFrame {
                 inputFilePath.setText(fc.getSelectedFile().getPath());
                 setInputFile(fc.getSelectedFile());
             }
+            
         }
     };
 
@@ -220,30 +225,16 @@ public class MainJFrame extends JFrame {
      */
     private void addPanels() {
         //Determines the relative position of panels in the window
-        LayoutManager layout = new GridBagLayout();
+        LayoutManager layout = new BorderLayout();
         this.setLayout(layout);
-
-        GridBagConstraints constraints = new GridBagConstraints();
 
         //TODO: Title
         //Adds Control Panel to the window
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.anchor = GridBagConstraints.FIRST_LINE_END;
-        this.getContentPane().add(controlPanel(), constraints);
+        this.getContentPane().add(controlPanel(), BorderLayout.PAGE_START);
         //Adds Input Editor to the window
-        constraints.gridx = 0;
-        constraints.gridy = 1;
-        constraints.ipady = 480;
-        constraints.ipadx = 640;
-        this.getContentPane().add(inputEditor(), constraints);
+        this.getContentPane().add(inputEditor(), BorderLayout.CENTER);
         //Adds File Selection Panel to the window
-        constraints.gridx = 0;
-        constraints.gridy = 2;
-        constraints.ipady = 0;
-        constraints.ipadx = 0;
-        constraints.anchor = GridBagConstraints.FIRST_LINE_START;
-        this.getContentPane().add(fileSelectionPanel(), constraints);
+        this.getContentPane().add(fileSelectionPanel(), BorderLayout.PAGE_END);
     }
 
     /**
@@ -310,7 +301,7 @@ public class MainJFrame extends JFrame {
         browseButton.setActionCommand("Browse For Input File");
         browseButton.addActionListener(INPUT_LISTENER);
         // Setup input file text field
-        inputFilePath.setMinimumSize(new Dimension(FILE_FIELD_MIN_WIDTH, inputFilePath.getHeight()));
+        //inputFilePath.setMinimumSize(new Dimension(FILE_FIELD_MIN_WIDTH, inputFilePath.getHeight()));
         inputFilePath.addFocusListener(INPUT_FOCUS_LISTENER);
 
         panel.add(inputFilePath);    // add the input file text field to the panel
@@ -334,7 +325,7 @@ public class MainJFrame extends JFrame {
         browseButton.setActionCommand("Browse For Output File");
         browseButton.addActionListener(OUTPUT_LISTENER);
         // Setup input file text field
-        outputFilePath.setMinimumSize(new Dimension(FILE_FIELD_MIN_WIDTH, outputFilePath.getHeight()));
+        //outputFilePath.setMinimumSize(new Dimension(FILE_FIELD_MIN_WIDTH, outputFilePath.getHeight()));
         outputFilePath.addFocusListener(OUTPUT_FOCUS_LISTENER);
 
         panel.add(outputFilePath);  // add the output file text field to the panel
@@ -349,17 +340,27 @@ public class MainJFrame extends JFrame {
         BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
         panel.setLayout(layout);
         //Setup Scaling Bar
-        JLabel scalingLabel = new JLabel("Scaling Factor:   ");
+        JLabel scalingLabel = new JLabel("  Scaling Factor:   ");
+        /*
+        JToolTip toolTip = new JToolTip();
+        toolTip.setTipText("This is scaling");
+        scalingLabel.add(toolTip);
+        toolTip.setVisible(true);
+        */
         JTextField scalingTextField = new JTextField();
+        //scalingTextField.setFont(scalingTextField.getFont().deriveFont(24.0f));
         scalingTextField.setText("7.0");
+        scalingTextField.setEditable(false);
         JScrollBar scalingScrollBar = new JScrollBar(JScrollBar.VERTICAL);
         panel.add(scalingLabel);
         panel.add(scalingTextField);
         panel.add(scalingScrollBar);
+
         //Setup Spacing Bar
-        JLabel spacingLabel = new JLabel("Spacing Factor:   ");
+        JLabel spacingLabel = new JLabel("  Spacing Factor:   ");
         JTextField spacingTextField = new JTextField();
         spacingTextField.setText("1.0");
+        spacingTextField.setEditable(false);
         JScrollBar spacingScrollBar = new JScrollBar(JScrollBar.VERTICAL);
         panel.add(spacingLabel);
         panel.add(spacingTextField);
@@ -381,16 +382,24 @@ public class MainJFrame extends JFrame {
         panel.setLayout(layout);
         // Adds border to panel
         panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Control Panel"));
+
+        //Add Title
+        JLabel title = new JLabel("Tab2Pdf  ");
+        title.setFont(title.getFont().deriveFont(24.0f));
+        panel.add(title);
+
         //Add ScrollBar panel
         panel.add(scrollBarPanel());
+
         //Add "Create Pdf" button
-        JButton createPdfButton = new JButton("Create Pdf");
-        createPdfButton.addActionListener(CREATE_PDF_LISTENER);
-        panel.add(createPdfButton);
-        //Add "Preview" button
-        JButton previewButton = new JButton("Preview Pdf");
-        previewButton.addActionListener(CREATE_PDF_LISTENER);
-        panel.add(previewButton);
+        JButton createButton = new JButton(" Create Pdf ");
+        createButton.addActionListener(CREATE_PDF_LISTENER);
+        panel.add(createButton);
+
+        //Add "Save Changes" button
+        JButton saveButton = new JButton("Save Changes");
+        //saveButton.addActionListener(CREATE_PDF_LISTENER);
+        panel.add(saveButton);
 
         return panel;
     }
@@ -401,7 +410,7 @@ public class MainJFrame extends JFrame {
         BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS);
         panel.setLayout(layout);
         // Adds border to panel
-        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "File Selection Panel"));
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "File Selection"));
         //Add Input/Output Selection panels
         panel.add(fileInputPanel());
         panel.add(fileOutputPanel());
@@ -425,8 +434,13 @@ public class MainJFrame extends JFrame {
 
         //This adds visible border to the panel
         panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Input Editor"));
-        //JTextArea editor = new JTextArea(); //This is what i suggest to use as a text field
-        //panel.add(editor); // This is how you can add stuff to the panel
+        JTextArea editor = new JTextArea(); //This is what i suggest to use as a text field
+        panel.add(editor); // This is how you can add stuff to the panel
+
+        panel.setMaximumSize(EDITOR_PANEL_SIZE);
+        JScrollPane scrollPanel = new JScrollPane(editor);
+        scrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        panel.add(scrollPanel);
 
         /*
          * 1) Add text field to the panel
