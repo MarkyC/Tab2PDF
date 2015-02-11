@@ -77,10 +77,6 @@ public class PdfCreator implements Runnable {
         PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(out.toPath()));
         // open document
         document.open();
-        // step 4
-        //document.add(new Paragraph("Hello World!"));                // Hello World!
-        document.add(new Paragraph(tab.getTitle().getTitle()));     // The Tab's Title
-        document.add(new Paragraph(tab.getSubtitle().getSubtitle()));  // The Tab's Subtitle
 
         //Title
         Paragraph title = new Paragraph(tab.getTitle().getValue());
