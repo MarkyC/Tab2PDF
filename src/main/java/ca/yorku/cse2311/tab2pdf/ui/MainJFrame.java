@@ -11,7 +11,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.io.File;
+import java.io.*;
+import java.util.*;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,19 +21,23 @@ import java.util.logging.Logger;
  * MainJFrame
  * Handles the GUI of the application
  *
- * @author Marco
+ * @author Marco, Glib, Varsha
  * @since 2015-01-21
  */
 public class MainJFrame extends JFrame {
+
+    public JTextPane inputEditor = new JTextPane();
 
     public static final String EMPTY_FILE_PATH = "Type the file path, or select a file by clicking browse...";
 
     /**
      * Minimum size of the window
      */
-    public static final Dimension WINDOW_MIN_SIZE = new Dimension(720, 480);
+    public static final Dimension WINDOW_MIN_SIZE = new Dimension(800, 600);
 
-
+    /**
+     * Size of input editor panel
+     */
     public static final Dimension EDITOR_PANEL_SIZE = new Dimension(640, 480);
 
     /**
@@ -69,6 +75,8 @@ public class MainJFrame extends JFrame {
         }
     };
 
+
+
     /**
      * The Tab File we will be converting to PDF
      */
@@ -95,17 +103,22 @@ public class MainJFrame extends JFrame {
             LOG.log(Level.INFO, e.paramString());
 
             // setup file chooser
-            JFileChooser fc = new JFileChooser();
-            fc.setCurrentDirectory(getInputFile().getParentFile()); //Starts chooser in current directory
-            fc.setFileFilter(TEXT_FILE_FILTER);           // Allow *.txt files (default)
-            fc.addChoosableFileFilter(TAB_FILE_FILTER);   // Allow *.tab files
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(getInputFile().getParentFile()); //Starts chooser in current directory
+            fileChooser.setFileFilter(TEXT_FILE_FILTER);           // Allow *.txt files (default)
+            fileChooser.addChoosableFileFilter(TAB_FILE_FILTER);   // Allow *.tab files
 
             // open the file chooser, showing the open dialog
-            if (JFileChooser.APPROVE_OPTION == fc.showOpenDialog(MainJFrame.this)) {
+            if (JFileChooser.APPROVE_OPTION == fileChooser.showOpenDialog(MainJFrame.this)) {
 
                 // Set the file path in the text field to that of the users chosen file
-                inputFilePath.setText(fc.getSelectedFile().getPath());
-                setInputFile(fc.getSelectedFile());
+                File selectedFile = fileChooser.getSelectedFile();
+                inputFilePath.setText(selectedFile.getPath());
+
+                //Load file contents into editor
+                setInputFile(selectedFile);
+                try {loadEditorFile(selectedFile);}
+                catch (IOException e1) {e1.printStackTrace();}
             }
 
         }
@@ -142,16 +155,17 @@ public class MainJFrame extends JFrame {
             LOG.log(Level.INFO, e.paramString());
 
             // setup file chooser
-            JFileChooser fc = new JFileChooser();
-            fc.setCurrentDirectory(getOutputFile().getParentFile()); //Starts chooser in current directory
-            fc.setFileFilter(PDF_FILE_FILTER);  // Allow *.pdf files (default)
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(getOutputFile().getParentFile()); //Starts chooser in current directory
+            fileChooser.setFileFilter(PDF_FILE_FILTER);  // Allow *.pdf files (default)
 
             // open the file chooser, showing the save dialog
-            if (JFileChooser.APPROVE_OPTION == fc.showSaveDialog(MainJFrame.this)) {
+            if (JFileChooser.APPROVE_OPTION == fileChooser.showSaveDialog(MainJFrame.this)) {
 
                 // Set the file path in the text field to that of the users chosen file
-                outputFilePath.setText(fc.getSelectedFile().getPath());
-                setOutputFile(fc.getSelectedFile());
+                File selectedFile = fileChooser.getSelectedFile();
+                outputFilePath.setText(selectedFile.getPath());
+                setOutputFile(selectedFile);
             }
         }
     };
@@ -172,9 +186,9 @@ public class MainJFrame extends JFrame {
     };
 
     /**
-     * Creates the main window of our application
+     * Application main frame constructor
      *
-     * @param title The title of the window
+     * @param title the window title
      */
     private MainJFrame(String title) {
 
@@ -185,7 +199,7 @@ public class MainJFrame extends JFrame {
 
         //Makes the frame look native to your computer (it: Windows, or Mac looking)
         try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
-        catch (Exception e) {}
+        catch (Exception e) {e.printStackTrace();}
 
         //Determines the relative positions of the panels to be added
         this.setLayout(new BorderLayout());
@@ -193,9 +207,15 @@ public class MainJFrame extends JFrame {
         //Add panels to the frame
         this.getContentPane().add(topPanel(), BorderLayout.PAGE_START);
         this.getContentPane().add(leftPanel(), BorderLayout.LINE_START);
-        this.getContentPane().add(inputEditor(), BorderLayout.CENTER);
+        this.getContentPane().add(centralPanel(), BorderLayout.CENTER);
     }
 
+    /**
+     * Application main frame constructor
+     *
+     * @param title the window title
+     * @param args command line arguments
+     */
     private MainJFrame(String title, Arguments args) {
 
         this(title);
@@ -225,10 +245,7 @@ public class MainJFrame extends JFrame {
         // Temporary stub to test GUI code
         // Right click this file and click Run As > Java Application
         SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-
-                MainJFrame.createAndShow();
-            }
+            public void run() {MainJFrame.createAndShow();}
         });
     }
 
@@ -242,6 +259,29 @@ public class MainJFrame extends JFrame {
     public void setOutputFile(File outputFile) {this.outputFile = outputFile;}
 
     /**
+     * Loads contents of the input file into input editor
+     *
+     * @param sourceFile input file whose contents are to be loaded
+     */
+    private void loadEditorFile(File sourceFile) throws IOException {
+
+        //Setup file reader
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(sourceFile));
+        StringBuilder stringBuilder = new StringBuilder();
+        //TODO: check if line is not null
+        String nextLine = bufferedReader.readLine();
+        //Read file
+        while (nextLine != null) {
+            stringBuilder.append(nextLine);
+            stringBuilder.append(System.lineSeparator());
+            nextLine = bufferedReader.readLine();
+        }
+
+        //Put the resulting string into editor
+        inputEditor.setText(stringBuilder.toString());
+    }
+
+    /**
      * The IO primary panel which allows user to select input and output files
      *
      * @return primary panel to be displayed at the top of the frame
@@ -251,6 +291,7 @@ public class MainJFrame extends JFrame {
         //Set up panel
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setToolTipText("Select the input and output files for the program");
 
         //Add border to panel
         panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "File Selection"));
@@ -288,18 +329,18 @@ public class MainJFrame extends JFrame {
      *
      * @return primary panel containing a modifiable and scrollable text pane
      */
-    private JPanel inputEditor() {
+    private JPanel centralPanel() {
 
         //Setup panel
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
         panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Input Editor"));
         panel.setMaximumSize(EDITOR_PANEL_SIZE);
+        panel.setToolTipText("Edit the input file");
 
         //Setup text editor and add it to the panel
-        JTextPane textPane = new JTextPane();
-        panel.add(textPane);
-        JScrollPane scrollPanel = new JScrollPane(textPane);
+        panel.add(inputEditor);
+        JScrollPane scrollPanel = new JScrollPane(inputEditor);
         scrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         panel.add(scrollPanel);
 
@@ -368,9 +409,10 @@ public class MainJFrame extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Control Panel"));
+        panel.setToolTipText("Preview the Pdf file or save the changes to the input file");
 
         //Add "Create Pdf" button
-        JButton previewButton = new JButton("Preview File   ");
+        JButton previewButton = new JButton("File Preview   ");
         previewButton.addActionListener(CREATE_PDF_LISTENER);
         panel.add(previewButton);
 
@@ -392,10 +434,12 @@ public class MainJFrame extends JFrame {
         //Setup panel
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Scaling"));
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Scaling Panel"));
+        panel.setToolTipText("Select the overall size of the Pdf elements");
 
         //Create radio buttons
         JRadioButtonMenuItem radioButtonExtraLarge = new JRadioButtonMenuItem("Large+", false);
+        radioButtonExtraLarge.setToolTipText("Select the overall size of the Pdf elements");
         JRadioButtonMenuItem radioButtonLarge = new JRadioButtonMenuItem("Large", false);
         JRadioButtonMenuItem radioButtonMedium = new JRadioButtonMenuItem("Medium", true);
         JRadioButtonMenuItem radioButtonSmall = new JRadioButtonMenuItem("Small", false);
@@ -430,7 +474,8 @@ public class MainJFrame extends JFrame {
         //Setup panel
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Spacing"));
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Spacing Panel"));
+        panel.setToolTipText("Select the horizontal spacing between the Pdf elements");
 
         //Create radio buttons
         JRadioButtonMenuItem radioButtonExtraLarge = new JRadioButtonMenuItem("Large+", false);
