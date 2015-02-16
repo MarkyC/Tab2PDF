@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  */
 public class MainJFrame extends JFrame {
 
-    public JTextPane inputEditor = new JTextPane();
+    public static JTextPane inputEditor = new JTextPane();
 
     public static final String EMPTY_FILE_PATH = "Type the file path, or select a file by clicking browse...";
 
@@ -65,7 +65,7 @@ public class MainJFrame extends JFrame {
     /**
      * This ActionListener will fire when the Create PDF button is clicked
      */
-    private final ActionListener CREATE_PDF_LISTENER = new ActionListener() {
+    private final ActionListener FILE_PREVIEW_LISTENER = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
 
@@ -281,6 +281,23 @@ public class MainJFrame extends JFrame {
         inputEditor.setText(stringBuilder.toString());
     }
 
+    public static List<String> getEditorContents() {
+
+        //Setup object to store editor contents
+        List<String> editorContents = new ArrayList<>();
+
+        String contents = inputEditor.getText();
+        if (!contents.isEmpty()) {
+            String lines[] = contents.split("\\r?\\n");
+
+            //Store contents into object
+            for (int i = 0; i < lines.length; i++)
+                editorContents.add(i, lines[i]);
+        }
+
+        return editorContents;
+    }
+
     /**
      * The IO primary panel which allows user to select input and output files
      *
@@ -413,7 +430,7 @@ public class MainJFrame extends JFrame {
 
         //Add "Create Pdf" button
         JButton previewButton = new JButton("File Preview   ");
-        previewButton.addActionListener(CREATE_PDF_LISTENER);
+        previewButton.addActionListener(FILE_PREVIEW_LISTENER);
         panel.add(previewButton);
 
         //Add "Save Changes" button
