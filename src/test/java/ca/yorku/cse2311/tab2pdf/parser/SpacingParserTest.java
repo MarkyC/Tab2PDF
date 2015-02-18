@@ -14,10 +14,11 @@ public class SpacingParserTest {
      * None of these should be parsed
      */
     public static final String[] INVALID_LINES = {
-            "SPACING=",
-            "SPACING=A",
-            "|--",
-            "0--|"
+            "SPACING="
+            , "SPACING=A"
+            , "|--"
+            , "0--|"
+            , "S=1"
     };
 
     /**
