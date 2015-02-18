@@ -22,7 +22,7 @@ Part of the EECS 2311 Winter 2015 Software Project: https://wiki.eecs.yorku.ca/c
 
 # User Manual
 
-* TODO...
+* https://docs.google.com/document/d/1ijf2fZHFywkkz3NW4VkDxmZUUcPQ8mjVx3ZmMPuioZc/edit?usp=sharing
 
 # Team
 
