@@ -25,20 +25,22 @@ public class SpacingParserTest {
      * All of these should be parsed
      */
     public static final String[] VALID_LINES = {
-            "SPACING=1",
-            "SPacING=2",
-            "SPACING=2.10 asd",
-            "SPACING=2.5",
+            "SPACING=1"
+            , "SPacING=2"
+            , "SPACING=2.10 asd"
+            , "SPACING=2.5"
+            , "SPACING=8.8"
     };
 
     /**
      * All of these should be parsed
      */
     public static final double[] CORRECT_SPACEINGS = {
-            1,
-            2,
-            2.10,
-            2.5,
+            1
+            , 2
+            , 2.10
+            , 2.5
+            , 8.8
     };
 
     private SpacingParser parser;
