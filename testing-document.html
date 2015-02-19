@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Testing Doc</title>
+<link rel="stylesheet" href="https://stackedit.io/res-min/themes/base.css" />
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body><div class="container"><h1 id="tab2pdf-testing-documentation">Tab2Pdf Testing Documentation</h1>
+
+<p>EECS 2311 <br>
+V. Tzerpos <br>
+Wednesday, February 25, 2015</p>
+
+<p><strong>Group 1</strong> <br>
+Atto, Brody <br>
+Cirillo, Marco <br>
+Patel, Deep <br>
+Ragavendran, Varsha <br>
+Sitiugin, Glib <br>
+Sitkovets, Anton</p>
+
+<h2 id="testing-methodology">Testing Methodology</h2>
+
+<p>Since Tab2Pdf is built using the agile software development method, we opt to incorporate Test Driven Development into our sprints. When a group member commits code to the repository (via a pull request), the corresponding test cases are also included. This can be seen as a “bottom up” approach to testing, as the foundations of the software are tested as they are built. </p>
+
+<p>Locally, when a member is working on a new feature, stub methods for the feature are  made first, followed by test cases. These test cases are meant to fail, since no code was written yet. As the developer builds out the code in the former stub methods, tests begin to pass, and the software is assured to work correctly. </p>
+
+<p>In our tests, we supply a minimum of 5 valid inputs and 5 invalid inputs to each test case. Examples of valid input were taken straight from the sample files on the course website. Invalid input was created by malforming the valid input, such as adding characters that were not valid (<code>%</code>), making spelling mistakes (<code>ATHOR=</code> instead of <code>AUTHOR=</code>).</p>
+
+<p>This document will detail the specific methods in our JUnit test files, their importance to the overall operation of the code, and the metrics of our testing.</p>
+
+
+
+<h2 id="test-classes">Test Classes</h2>
+
+
+
+<h3 id="iparser-test-classes">IParser Test Classes</h3>
+
+<p>There are two methods we test in all parsers (classes that implement <code>IParser</code>). The first of which is <code>canParse(String token)</code> which returns true if the parser can parse the given token into an <code>ITabNotation</code> object. The <code>ITabNotation</code> object represents a single piece of the tab, such as a note, slide, dash or hammer-on. The second method we test is the <code>parse(String token)</code> method, which actually parses the token and returns an <code>ITabNotation</code> object, throwing a <code>ParseException</code> if the token cannot be parsed. If <code>canParse()</code> returns <code>true</code>, it is expected that <code>parse()</code> will not throw a <code>ParseException</code>.</p>
+
+
+
+<h4 id="dashparsertestjava">DashParserTest.java</h4>
+
+<p>This class tests the programs ability to parse a dash (<code>-</code>) in tab notation. A dash signifies a space between notes. The more dashes there are in a row, the longer the space should be. For valid lines, we ensure the line begins with at least one dash. For invalid lines, we put characters that are <em>not</em> dashes at the beginning of the line, such as <code>|</code>, <code>1</code>, <code>||</code>, <code>_</code>, and <code>%</code>.</p>
+
+
+
+<h4 id="doublebarparsertestjava">DoubleBarParserTest.java</h4>
+
+<p>This class tests the programs ability to parse a repeat bar, which has a few forms: </p>
+
+
+
+<h5 id="standard-repeat-bar">Standard Repeat Bar</h5>
+
+<p>This should render as a regular repeat bar</p>
+
+
+
+<pre class="prettyprint"><code class="language-html hljs ">||- ... -||
+||- ... -||
+||* ... *||
+||* ... *||
+||- ... -||
+||- ... -||</code></pre>
+
+
+
+<h5 id="repeat-bar-with-a-specified-number-of-repeats">Repeat Bar with a Specified Number of Repeats</h5>
+
+<p>This should render as a repeat bar with “Repeat 3 Times” at the top of it</p>
+
+
+
+<pre class="prettyprint"><code class="language-html hljs ">||- ... -|3
+||- ... -||
+||* ... *||
+||* ... *||
+||- ... -||
+||- ... -||</code></pre>
+
+<p>A repeat bar signifies a bar should repeat (an optional amount of times). For valid lines, we ensure the line begins with at least one  type of repeat bar. For invalid lines, we put characters that are <em>not</em> valid repeat bars at the beginning of the line, such as <code>-</code>, <code>1</code>, <code>**||</code>, <code>-|</code>, and <code>|</code>.</p>
+
+
+
+<h4 id="noteparsertestjava">NoteParserTest.java</h4>
+
+<p>This class tests the programs ability to parse a note (<code>3</code>) in tab notation. A note signifies a musical note. Valid notes should be between 0 and 24 inclusive, as most guitars have a maximum of 24 frets. For valid lines, we ensure the line begins with at least one number. For invalid lines, we put characters that are <em>not</em> numbers at the beginning of the line, such as <code>|</code>, <code>-</code>, <code>||</code>, <code>_</code>, and <code>%</code>.</p>
+
+
+
+<h4 id="slideparsertestjava">SlideParserTest.java</h4>
+
+<p>This class tests the programs ability to parse a slide (<code>3s5</code>) in tab notation. A slide signifies a slide between musical notes. The slide must have at least one start note or end note. A slide is considered indeterminate if it does not have both a start and end note (<code>s4</code>), and it is up to the musician to determine where to begin the slide from. Valid slides should have valid notes between 0 and 24 inclusive, as most guitars have a maximum of 24 frets. For valid lines, we ensure the line begins with at least one number or a slide (<code>s</code>). For invalid lines, we put characters that are <em>not</em> numbers at the beginning of the line, such as <code>|</code>, <code>-</code>, <code>||</code>, <code>12</code>, and <code>%</code>.</p>
+
+
+
+<h4 id="spacingparsertestjava">SpacingParserTest.java</h4>
+
+<p>This class tests the programs ability to parse a spacing attribute (<code>SPACING=1</code>) in tab notation. A spacing signifies the horizontal spacing the PDF output should follow. A higher spacing value creates more space between notes. For valid lines, we ensure the line begins with at least (case-insensitive) <code>SPACING=N</code>, where N is any integer or decimal number. For invalid lines, we put characters that are <em>not</em> numbers or misspell/shorthand <code>SPACING</code>, such as <code>SPACING=</code>, <code>SPACING=A</code>, <code>|--</code>, <code>0--|</code>, and <code>S=1</code>.</p>
+
+
+
+<h4 id="squarenoteparsertestjava">SquareNoteParserTest.java</h4>
+
+<p>This class tests the programs ability to parse a square note (<code>&lt;2&gt;</code>) in tab notation. A square note signifies a harmonic should be played. For valid lines, we ensure the line begins with at least <code>&lt;N&gt;</code>, where N is any integer. For invalid lines, we put characters that are <em>not</em> numbers in angle brackets, such as <code>|</code>, <code>-</code>, <code>1</code>, <code>23</code>, and <code>%</code>.</p>
+
+
+
+<h4 id="subtitleparsertestjava">SubtitleParserTest.java</h4>
+
+<p>This class tests the programs ability to parse a title attribute (<code>SUBTITLE=Moonlight Sonata</code>) in tab notation. A title signifies the subtitle of the tab (typically the author). For valid lines, we ensure the line begins with at least (case-insensitive) <code>SUBTITLE=S</code>, where S is any string. For invalid lines, we put empty strings as the title or misspell/shorthand <code>TITLE</code>, such as <code>TITLE=</code>, <code>T=A</code>, <code>SUBTITLE=</code>, <code>Jim Matheos</code>, and <code>S=A</code>.</p>
+
+
+
+<h4 id="tabparsertestjava">TabParserTest.java</h4>
+
+<p>This class tests the programs ability to parse an entire tab file (Moonlight Sonata) into tab notation. The tab file includes title, subtitle, and spacing attributes as well as the entire tab.</p>
+
+<h4 id="titleparsertestjava">TitleParserTest.java</h4>
+
+<p>This class tests the programs ability to parse a title attribute (<code>TITLE=Jim Matheos</code>) in tab notation. A title signifies the title of the tab. For valid lines, we ensure the line begins with at least (case-insensitive) <code>TITLE=S</code>, where S is any string. For invalid lines, we put empty strings as the title or misspell/shorthand <code>TITLE</code>, such as <code>TITLE=</code>, <code>T=A</code>, <code>SUBTITLE=</code>, <code>Remembering Rain</code>, and <code>S=A</code>.</p>
+
+<h3 id="itabnotation-test-classes">ITabNotation Test Classes</h3>
+
+<p>These test classes test all of our model objects (those that implement <code>ITabNotation</code>). These represent each symbol that we support in tab notation. </p>
+
+<h4 id="doublebartestjava">DoubleBarTest.java</h4>
+
+<p>This class tests mutator methods (<code>getters</code> and <code>setters</code>) and the <code>equals</code> method of the DoubleBar class. The DoubleBar class represents a repeat bar.</p>
+
+<h2 id="metrics">Metrics</h2>
+
+<p>todo…</p>
+
+<h2 id="coverage">Coverage</h2>
+
+<p>Code coverage is grouped by package. Currently our focus is on 100% covering model classes and parser classes. We are very close to achieving this. Going forward, we will be focusing on covering the utility that handles drawing the PDF. We chose not to perform automated testing of the GUI, instead opting for manual testing. </p>
+
+<h3 id="cayorkucse2311tab2pdfparser">ca.yorku.cse2311.tab2pdf.parser</h3>
+
+<table>
+<thead>
+<tr>
+  <th>Class</th>
+  <th>Class, %</th>
+  <th>Method, %</th>
+  <th>Line, %</th>
+</tr>
+</thead>
+<tbody><tr>
+  <td>AbstractParser</td>
+  <td>100% (1/ 1)</td>
+  <td>100% (2/ 2)</td>
+  <td>100% (2/ 2)</td>
+</tr>
+<tr>
+  <td>DashParser</td>
+  <td>100% (1/ 1)</td>
+  <td>100% (4/ 4)</td>
+  <td>100% (7/ 7)</td>
+</tr>
+<tr>
+  <td>DoubleBarParser</td>
+  <td>100% (1/ 1)</td>
+  <td>100% (4/ 4)</td>
+  <td>92.9% (26/ 28)</td>
+</tr>
+<tr>
+  <td>HammerOnParser</td>
+  <td>100% (1/ 1)</td>
+  <td>100% (4/ 4)</td>
+  <td>87.5% (7/ 8)</td>
+</tr>
+<tr>
+  <td>NoteParser</td>
+  <td>100% (1/ 1)</td>
+  <td>100% (4/ 4)</td>
+  <td>100% (7/ 7)</td>
+</tr>
+<tr>
+  <td>PipeParser</td>
+  <td>100% (1/ 1)</td>
+  <td>100% (4/ 4)</td>
+  <td>100% (7/ 7)</td>
+</tr>
+<tr>
+  <td>PullOffParser</td>
+  <td>100% (1/ 1)</td>
+  <td>100% (4/ 4)</td>
+  <td>87.5% (7/ 8)</td>
+</tr>
+<tr>
+  <td>SlideParser</td>
+  <td>100% (1/ 1)</td>
+  <td>100% (4/ 4)</td>
+  <td>100% (9/ 9)</td>
+</tr>
+<tr>
+  <td>SpacingParser</td>
+  <td>100% (1/ 1)</td>
+  <td>100% (4/ 4)</td>
+  <td>100% (7/ 7)</td>
+</tr>
+<tr>
+  <td>SquareNoteParser</td>
+  <td>100% (1/ 1)</td>
+  <td>50% (2/ 4)</td>
+  <td>28.6% (2/ 7)</td>
+</tr>
+<tr>
+  <td>SubtitleParser</td>
+  <td>100% (1/ 1)</td>
+  <td>100% (4/ 4)</td>
+  <td>100% (7/ 7)</td>
+</tr>
+<tr>
+  <td>TabParser</td>
+  <td>100% (1/ 1)</td>
+  <td>33.3% (4/ 12)</td>
+  <td>31% (39/ 126)</td>
+</tr>
+<tr>
+  <td>TitleParser</td>
+  <td>100% (1/ 1)</td>
+  <td>100% (4/ 4)</td>
+  <td>100% (7/ 7)</td>
+</tr>
+</tbody></table>
+
+
+<h3 id="cayorkucse2311tab2pdfmodel">ca.yorku.cse2311.tab2pdf.model</h3>
+
+<table>
+<thead>
+<tr>
+  <th>Class</th>
+  <th>Class, %</th>
+  <th>Method, %</th>
+  <th>Line, %</th>
+</tr>
+</thead>
+<tbody><tr>
+  <td>Bar</td>
+  <td>0% (0/ 1)</td>
+  <td>0% (0/ 18)</td>
+  <td>0% (0/ 35)</td>
+</tr>
+<tr>
+  <td>BarLine</td>
+  <td>0% (0/ 1)</td>
+  <td>0% (0/ 7)</td>
+  <td>0% (0/ 12)</td>
+</tr>
+<tr>
+  <td>Dash</td>
+  <td>100% (1/ 1)</td>
+  <td>87.5% (7/ 8)</td>
+  <td>92.3% (12/ 13)</td>
+</tr>
+<tr>
+  <td>DoubleBar</td>
+  <td>100% (1/ 1)</td>
+  <td>53.8% (7/ 13)</td>
+  <td>42.3% (22/ 52)</td>
+</tr>
+<tr>
+  <td>HammerOn</td>
+  <td>100% (1/ 1)</td>
+  <td>53.8% (7/ 13)</td>
+  <td>39.3% (11/ 28)</td>
+</tr>
+<tr>
+  <td>Note</td>
+  <td>100% (1/ 1)</td>
+  <td>80% (8/ 10)</td>
+  <td>71.4% (15/ 21)</td>
+</tr>
+<tr>
+  <td>Pipe</td>
+  <td>100% (1/ 1)</td>
+  <td>85.7% (6/ 7)</td>
+  <td>75% (6/ 8)</td>
+</tr>
+<tr>
+  <td>PullOff</td>
+  <td>100% (1/ 1)</td>
+  <td>53.8% (7/ 13)</td>
+  <td>39.3% (11/ 28)</td>
+</tr>
+<tr>
+  <td>Slide</td>
+  <td>100% (1/ 1)</td>
+  <td>83.3% (10/ 12)</td>
+  <td>72.7% (24/ 33)</td>
+</tr>
+<tr>
+  <td>Spacing</td>
+  <td>100% (1/ 1)</td>
+  <td>60% (6/ 10)</td>
+  <td>44.4% (8/ 18)</td>
+</tr>
+<tr>
+  <td>SquareNote</td>
+  <td>0% (0/ 1)</td>
+  <td>0% (0/ 9)</td>
+  <td>0% (0/ 17)</td>
+</tr>
+<tr>
+  <td>Subtitle</td>
+  <td>100% (1/ 1)</td>
+  <td>60% (6/ 10)</td>
+  <td>47.1% (8/ 17)</td>
+</tr>
+<tr>
+  <td>Tab</td>
+  <td>0% (0/ 1)</td>
+  <td>0% (0/ 11)</td>
+  <td>0% (0/ 15)</td>
+</tr>
+<tr>
+  <td>Title</td>
+  <td>100% (1/ 1)</td>
+  <td>60% (6/ 10)</td>
+  <td>47.1% (8/ 17)</td>
+</tr>
+</tbody></table></div></body>
+</html>
