@@ -14,7 +14,7 @@ Part of the EECS 2311 Winter 2015 Software Project: https://wiki.eecs.yorku.ca/c
 
 # Testing Document
 
-* https://docs.google.com/a/yorku.ca/document/d/1uYmqTa7_vNAHxrpR5urLTv0BjtcPCkTOHjHjM0altPA/edit?usp=sharing
+* https://drive.google.com/a/yorku.ca/file/d/0BxH8iJq_zZmKYlVXbWJabml5bTQ/view?usp=sharing
  
 # Design Document
 
