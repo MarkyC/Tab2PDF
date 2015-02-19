@@ -296,7 +296,7 @@ public class TabParserTest {
             String parsedLine = "";
 
                 //TODO: Fix tester since the way it works is different now. (The parser treats each bar as objects)
-                for (List<ITabNotation> noteSet : parser.parseLine(line)) {  // Go through all the parsed tokens (notes)
+            for (List<ITabNotation> noteSet : TabParser.parseLine(line)) {  // Go through all the parsed tokens (notes)
                         if (parsedLine.endsWith("|")) {
                                 parsedLine = parsedLine.substring(0, parsedLine.length() - 1);
                         }
