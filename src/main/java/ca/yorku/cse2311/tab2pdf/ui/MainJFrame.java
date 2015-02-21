@@ -63,7 +63,7 @@ public class MainJFrame extends JFrame {
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
 
     /**
-     * This ActionListener will fire when the Create PDF button is clicked
+     * This ActionListener will fire when the Preview button is clicked
      */
     private final ActionListener FILE_PREVIEW_LISTENER = new ActionListener() {
         @Override
@@ -74,6 +74,22 @@ public class MainJFrame extends JFrame {
             new Thread(new PdfCreator(new Arguments(getInputFile(), getOutputFile()))).start();
         }
     };
+
+    /**
+     * This ActionListener will fire when the Save button is clicked
+     */
+    private final ActionListener SAVE_LISTENER = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            LOG.log(Level.INFO, e.paramString());
+
+            try {saveFile();}
+            catch (IOException e1) {e1.printStackTrace();}
+        }
+    };
+
+
 
 
 
@@ -281,6 +297,13 @@ public class MainJFrame extends JFrame {
         inputEditor.setText(stringBuilder.toString());
     }
 
+    private void saveFile() throws IOException {
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter(inputFile));
+        writer.write(inputEditor.getText());
+        writer.close();
+    }
+
     public static List<String> getEditorContents() {
 
         //Setup object to store editor contents
@@ -435,6 +458,7 @@ public class MainJFrame extends JFrame {
 
         //Add "Save Changes" button
         JButton saveButton = new JButton("Save Changes");
+        saveButton.addActionListener(SAVE_LISTENER);
         panel.add(saveButton);
 
         return panel;
