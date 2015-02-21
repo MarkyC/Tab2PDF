@@ -1,11 +1,10 @@
 package ca.yorku.cse2311.tab2pdf.ui;
 
 import ca.yorku.cse2311.tab2pdf.Arguments;
+import ca.yorku.cse2311.tab2pdf.PdfHelper;
 import ca.yorku.cse2311.tab2pdf.util.PdfCreator;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,39 +25,43 @@ import java.util.logging.Logger;
  */
 public class MainJFrame extends JFrame {
 
+    /**
+     * Modifiable text pane to which contents of input file are loaded
+     */
     public static JTextPane inputEditor = new JTextPane();
 
-    public static final String EMPTY_FILE_PATH = "Type the file path, or select a file by clicking browse...";
+    /**
+     * Buttons in scaling panel
+     */
+    private JRadioButtonMenuItem radioButtonScaleExtraLarge;
+    private JRadioButtonMenuItem radioButtonScaleLarge;
+    private JRadioButtonMenuItem radioButtonScaleMedium;
+    private JRadioButtonMenuItem radioButtonScaleSmall;
+    private JRadioButtonMenuItem radioButtonScaleExtraSmall;
 
     /**
-     * Minimum size of the window
+     * Buttons in spacing panel
      */
-    public static final Dimension WINDOW_MIN_SIZE = new Dimension(800, 600);
+    private JRadioButtonMenuItem radioButtonSpaceExtraLarge;
+    private JRadioButtonMenuItem radioButtonSpaceLarge;
+    private JRadioButtonMenuItem radioButtonSpaceMedium;
+    private JRadioButtonMenuItem radioButtonSpaceSmall;
+    private JRadioButtonMenuItem radioButtonSpaceExtraSmall;
 
     /**
-     * Size of input editor panel
+     * The Tab File we will be converting to PDF
      */
-    public static final Dimension EDITOR_PANEL_SIZE = new Dimension(640, 480);
+    private File inputFile;
 
     /**
-     * Title of the GUI window
+     * The PDF File to save output to
      */
-    public static final String WINDOW_TITLE = "Tab2PDF";
+    private File outputFile;
 
     /**
-     * Filters *.txt and *.text files
+     * Will show the path to the tab file
      */
-    private static final FileFilter TEXT_FILE_FILTER = new FileNameExtensionFilter("Text Files (*.txt, *.text)", "txt", "text");
-
-    /**
-     * Filters *.tab files
-     */
-    private static final FileFilter TAB_FILE_FILTER = new FileNameExtensionFilter("Tab Files (*.tab)", "tab");
-
-    /**
-     * Filters *.pdf files
-     */
-    private static final FileFilter PDF_FILE_FILTER = new FileNameExtensionFilter("PDF Files (*.pdf)", "pdf");
+    private JTextField inputFilePath = new JTextField(JFrameData.EMPTY_FILE_PATH);
 
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
 
@@ -89,25 +92,6 @@ public class MainJFrame extends JFrame {
         }
     };
 
-
-
-
-
-    /**
-     * The Tab File we will be converting to PDF
-     */
-    private File inputFile;
-
-    /**
-     * The PDF File to save output to
-     */
-    private File outputFile;
-
-    /**
-     * Will show the path to the tab file
-     */
-    private JTextField inputFilePath = new JTextField(EMPTY_FILE_PATH);
-
     /**
      * This ActionListener will listen for clicks to the inputFileButton
      * It will open a file chooser when inputFileButton is clicked
@@ -121,8 +105,8 @@ public class MainJFrame extends JFrame {
             // setup file chooser
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setCurrentDirectory(getInputFile().getParentFile()); //Starts chooser in current directory
-            fileChooser.setFileFilter(TEXT_FILE_FILTER);           // Allow *.txt files (default)
-            fileChooser.addChoosableFileFilter(TAB_FILE_FILTER);   // Allow *.tab files
+            fileChooser.setFileFilter(JFrameData.TEXT_FILE_FILTER);           // Allow *.txt files (default)
+            fileChooser.addChoosableFileFilter(JFrameData.TAB_FILE_FILTER);   // Allow *.tab files
 
             // open the file chooser, showing the open dialog
             if (JFileChooser.APPROVE_OPTION == fileChooser.showOpenDialog(MainJFrame.this)) {
@@ -158,7 +142,7 @@ public class MainJFrame extends JFrame {
     /**
      * Will show the path to the PDF file
      */
-    private JTextField outputFilePath = new JTextField(EMPTY_FILE_PATH);
+    private JTextField outputFilePath = new JTextField(JFrameData.EMPTY_FILE_PATH);
 
     /**
      * This ActionListener will listen for clicks to the outputFileButton
@@ -173,7 +157,7 @@ public class MainJFrame extends JFrame {
             // setup file chooser
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setCurrentDirectory(getOutputFile().getParentFile()); //Starts chooser in current directory
-            fileChooser.setFileFilter(PDF_FILE_FILTER);  // Allow *.pdf files (default)
+            fileChooser.setFileFilter(JFrameData.PDF_FILE_FILTER);  // Allow *.pdf files (default)
 
             // open the file chooser, showing the save dialog
             if (JFileChooser.APPROVE_OPTION == fileChooser.showSaveDialog(MainJFrame.this)) {
@@ -202,6 +186,73 @@ public class MainJFrame extends JFrame {
     };
 
     /**
+     * This action listener will listen for clicks to the radio buttons
+     */
+    private final ActionListener SCALING_LISTENER = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            LOG.log(Level.INFO, e.paramString());
+
+            //If button is clicked change scale
+            if (radioButtonScaleExtraSmall.isSelected())
+                PdfHelper.setLineSpace(JFrameData.EXTRA_SMALL_SCALING);
+            else if (radioButtonScaleSmall.isSelected())
+                PdfHelper.setLineSpace(JFrameData.SMALL_SCALING);
+            else if (radioButtonScaleMedium.isSelected())
+                PdfHelper.setLineSpace(JFrameData.MEDIUM_SCALING);
+            else if (radioButtonScaleLarge.isSelected())
+                PdfHelper.setLineSpace(JFrameData.LARGE_SCALING);
+            else if (radioButtonScaleExtraLarge.isSelected())
+                PdfHelper.setLineSpace(JFrameData.EXTRA_LARGE_SCALING);
+        }
+    };
+
+    /**
+     * This action listener will listen for clicks to the radio buttons in the spacing panel
+     */
+    private final ActionListener SPACING_LISTENER = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            LOG.log(Level.INFO, e.paramString());
+
+            String[] line = inputEditor.getText().split("\\n");
+            String string = line[2];
+
+            //If button is clicked change spacing
+            if (radioButtonSpaceSmall.isSelected()) {
+                line[2] = string.replace(string.charAt(8), '4');
+                String printableText = Arrays.toString(line).replaceAll("[\\[\\]]", "").replaceAll(", ", "\n");
+                inputEditor.setText(printableText);
+            }
+            else if(radioButtonSpaceMedium.isSelected()) {
+                line[2] = string.replace(string.charAt(8), '5');
+                String printableText = Arrays.toString(line).replaceAll("[\\[\\]]", "").replaceAll(", ", "\n");
+                inputEditor.setText(printableText);
+            }
+            else if (radioButtonSpaceLarge.isSelected()){
+                line[2] = string.replace(string.charAt(8), '6');
+                String printableText = Arrays.toString(line).replaceAll("[\\[\\]]", "").replaceAll(", ", "\n");
+                inputEditor.setText(printableText);
+            }
+            else if(radioButtonSpaceExtraSmall.isSelected()){
+                line[2] = string.replace(string.charAt(8), '3');
+                String printableText = Arrays.toString(line).replaceAll("[\\[\\]]", "").replaceAll(", ", "\n");
+                inputEditor.setText(printableText);
+            }
+            else if(radioButtonSpaceExtraLarge.isSelected()){
+                line[2] = string.replace(string.charAt(8), '7');
+                String printableText = Arrays.toString(line).replaceAll("[\\[\\]]", "").replaceAll(", ", "\n");
+                inputEditor.setText(printableText);
+            }
+
+            //Scroll back to the top
+            inputEditor.setCaretPosition(0);
+        }
+    };
+
+    /**
      * Application main frame constructor
      *
      * @param title the window title
@@ -220,10 +271,11 @@ public class MainJFrame extends JFrame {
         //Determines the relative positions of the panels to be added
         this.setLayout(new BorderLayout());
 
-        //Add panels to the frame
-        this.getContentPane().add(topPanel(), BorderLayout.PAGE_START);
-        this.getContentPane().add(leftPanel(), BorderLayout.LINE_START);
-        this.getContentPane().add(centralPanel(), BorderLayout.CENTER);
+        //Add primary panels to the frame
+        Container container = this.getContentPane();
+        container.add(topPanel(), BorderLayout.PAGE_START);
+        container.add(leftPanel(), BorderLayout.LINE_START);
+        container.add(centralPanel(), BorderLayout.CENTER);
     }
 
     /**
@@ -245,13 +297,13 @@ public class MainJFrame extends JFrame {
     /**
      * Creates and shows the main window of our application
      */
-    public static void createAndShow() {createAndShow(WINDOW_TITLE, new Arguments());}
+    public static void createAndShow() {createAndShow(JFrameData.WINDOW_TITLE, new Arguments());}
 
     public static void createAndShow(String title, Arguments args) {
 
         MainJFrame window = new MainJFrame(title, args); // create the window that holds our application
         window.pack(); // compress contents
-        window.setMinimumSize(WINDOW_MIN_SIZE); // set minimum size
+        window.setMinimumSize(JFrameData.WINDOW_MIN_SIZE); // set minimum size
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // exit the app when the JFrame closes
         window.setVisible(true);                // Show the window
     }
@@ -264,7 +316,6 @@ public class MainJFrame extends JFrame {
             public void run() {MainJFrame.createAndShow();}
         });
     }
-
 
     public File getInputFile() {return inputFile;}
 
@@ -295,8 +346,16 @@ public class MainJFrame extends JFrame {
 
         //Put the resulting string into editor
         inputEditor.setText(stringBuilder.toString());
+
+        //Scroll back to the top
+        inputEditor.setCaretPosition(0);
     }
 
+    /**
+     * Saves contents of input editor back into input file
+     *
+     * @throws IOException when input file path is incorrect
+     */
     private void saveFile() throws IOException {
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(inputFile));
@@ -304,6 +363,11 @@ public class MainJFrame extends JFrame {
         writer.close();
     }
 
+    /**
+     * Stores contents of inout editor in a list line by line and returns the list
+     *
+     * @return list containing the contents of input editor
+     */
     public static List<String> getEditorContents() {
 
         //Setup object to store editor contents
@@ -319,6 +383,30 @@ public class MainJFrame extends JFrame {
         }
 
         return editorContents;
+    }
+
+    /**
+     * The primary panel which allows to edit the input file
+     *
+     * @return primary panel containing a modifiable and scrollable text pane
+     */
+    private JPanel centralPanel() {
+
+        //Setup panel
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Input Editor"));
+        panel.setMaximumSize(JFrameData.EDITOR_PANEL_SIZE);
+        panel.setToolTipText("Edit the input file");
+
+        //Setup text editor and add it to the panel
+        //inputEditor.setCaretPosition(0);
+        panel.add(inputEditor);
+        JScrollPane scrollPanel = new JScrollPane(inputEditor);
+        scrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        panel.add(scrollPanel);
+
+        return panel;
     }
 
     /**
@@ -344,6 +432,57 @@ public class MainJFrame extends JFrame {
     }
 
     /**
+     * The secondary panel which belongs to the top primary panel hosts the input file chooser
+     *
+     * @return secondary panel which allows for browsing input files
+     */
+    private JPanel fileInputPanel() {
+
+        //Setup panel
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+
+        //Setup input file text field
+        inputFilePath.addFocusListener(INPUT_FOCUS_LISTENER);
+
+        //Setup browse button
+        JButton browseButton = new JButton("Browse For Input File  ");
+        browseButton.setActionCommand("Browse For Input File");
+        browseButton.addActionListener(INPUT_LISTENER);
+
+        //Add input file text field and browse button to the panel
+        panel.add(inputFilePath);    // add the input file text field to the panel
+        panel.add(browseButton);    // add the browse button to the panel
+
+        return panel;
+    }
+
+    /**
+     * The secondary panel which belongs to the top primary panel and hosts the output file chooser
+     * @return secondary panel which allows for browsing output files
+     */
+    private JPanel fileOutputPanel() {
+
+        //Setup panel
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+
+        //Setup input file text field
+        outputFilePath.addFocusListener(OUTPUT_FOCUS_LISTENER);
+
+        //Setup browse button
+        JButton browseButton = new JButton("Browse For Output File");
+        browseButton.setActionCommand("Browse For Output File");
+        browseButton.addActionListener(OUTPUT_LISTENER);
+
+        //Add output file text field and browse button to the panel
+        panel.add(outputFilePath);
+        panel.add(browseButton);
+
+        return panel;
+    }
+
+    /**
      * The primary panel which allows for Pdf preview, saving the text file, and resizing Pdf components
      *
      * @return leftmost primary panel
@@ -360,79 +499,6 @@ public class MainJFrame extends JFrame {
         //Add Scaling/Spacing secondary panels
         panel.add(scalingPanel());
         panel.add(spacingPanel());
-
-        return panel;
-    }
-
-    /**
-     * The primary panel which allows to edit the input file
-     *
-     * @return primary panel containing a modifiable and scrollable text pane
-     */
-    private JPanel centralPanel() {
-
-        //Setup panel
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
-        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Input Editor"));
-        panel.setMaximumSize(EDITOR_PANEL_SIZE);
-        panel.setToolTipText("Edit the input file");
-
-        //Setup text editor and add it to the panel
-        panel.add(inputEditor);
-        JScrollPane scrollPanel = new JScrollPane(inputEditor);
-        scrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        panel.add(scrollPanel);
-
-        return panel;
-    }
-
-    /**
-     * The secondary panel which belongs to the top primary panel hosts the input file chooser
-     *
-     * @return secondary panel which allows for browsing input files
-     */
-    private JPanel fileInputPanel() {
-
-        //Setup panel
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-
-        // Setup input file text field
-        inputFilePath.addFocusListener(INPUT_FOCUS_LISTENER);
-
-        // Setup browse button
-        JButton browseButton = new JButton("Browse For Input File  ");
-        browseButton.setActionCommand("Browse For Input File");
-        browseButton.addActionListener(INPUT_LISTENER);
-
-        //Add input file text field and browse button to the panel
-        panel.add(inputFilePath);    // add the input file text field to the panel
-        panel.add(browseButton);    // add the browse button to the panel
-
-        return panel;
-    }
-    /**
-     * The secondary panel which belongs to the top primary panel and hosts the output file chooser
-     * @return secondary panel which allows for browsing output files
-     */
-    private JPanel fileOutputPanel() {
-
-        //Setup panel
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-
-        // Setup input file text field
-        outputFilePath.addFocusListener(OUTPUT_FOCUS_LISTENER);
-
-        // Setup browse button
-        JButton browseButton = new JButton("Browse For Output File");
-        browseButton.setActionCommand("Browse For Output File");
-        browseButton.addActionListener(OUTPUT_LISTENER);
-
-        //Add output file text field and browse button to the panel
-        panel.add(outputFilePath);
-        panel.add(browseButton);
 
         return panel;
     }
@@ -478,30 +544,48 @@ public class MainJFrame extends JFrame {
         panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Scaling Panel"));
         panel.setToolTipText("Select the overall size of the Pdf elements");
 
+        //Setup buttons
+        createScalingButtons(panel);
+
+        return panel;
+    }
+
+    /**
+     * Creates 5 radio buttons which will determine the scale of the Pdf file
+     *
+     * @param panel panel to which buttons will be added
+     */
+    private void createScalingButtons(JPanel panel) {
+
         //Create radio buttons
-        JRadioButtonMenuItem radioButtonExtraLarge = new JRadioButtonMenuItem("Large+", false);
-        radioButtonExtraLarge.setToolTipText("Select the overall size of the Pdf elements");
-        JRadioButtonMenuItem radioButtonLarge = new JRadioButtonMenuItem("Large", false);
-        JRadioButtonMenuItem radioButtonMedium = new JRadioButtonMenuItem("Medium", true);
-        JRadioButtonMenuItem radioButtonSmall = new JRadioButtonMenuItem("Small", false);
-        JRadioButtonMenuItem radioButtonExtraSmall = new JRadioButtonMenuItem("Small-", false);
+        radioButtonScaleExtraLarge = new JRadioButtonMenuItem("Large+", false);
+        radioButtonScaleExtraLarge.setToolTipText("Select the overall size of the Pdf elements");
+        radioButtonScaleLarge = new JRadioButtonMenuItem("Large", false);
+        radioButtonScaleMedium = new JRadioButtonMenuItem("Medium", true);
+        radioButtonScaleSmall = new JRadioButtonMenuItem("Small", false);
+        radioButtonScaleExtraSmall = new JRadioButtonMenuItem("Small-", false);
 
         //Group the buttons
         ButtonGroup buttonGroup = new ButtonGroup();
-        buttonGroup.add(radioButtonExtraLarge);
-        buttonGroup.add(radioButtonLarge);
-        buttonGroup.add(radioButtonMedium);
-        buttonGroup.add(radioButtonSmall);
-        buttonGroup.add(radioButtonExtraSmall);
+        buttonGroup.add(radioButtonScaleExtraLarge);
+        buttonGroup.add(radioButtonScaleLarge);
+        buttonGroup.add(radioButtonScaleMedium);
+        buttonGroup.add(radioButtonScaleSmall);
+        buttonGroup.add(radioButtonScaleExtraSmall);
+
+        //Add action listeners
+        radioButtonScaleExtraLarge.addActionListener(SCALING_LISTENER);
+        radioButtonScaleLarge.addActionListener(SCALING_LISTENER);
+        radioButtonScaleMedium.addActionListener(SCALING_LISTENER);
+        radioButtonScaleSmall.addActionListener(SCALING_LISTENER);
+        radioButtonScaleExtraSmall.addActionListener(SCALING_LISTENER);
 
         //Add buttons to panel
-        panel.add(radioButtonExtraLarge);
-        panel.add(radioButtonLarge);
-        panel.add(radioButtonMedium);
-        panel.add(radioButtonSmall);
-        panel.add(radioButtonExtraSmall);
-
-        return panel;
+        panel.add(radioButtonScaleExtraLarge);
+        panel.add(radioButtonScaleLarge);
+        panel.add(radioButtonScaleMedium);
+        panel.add(radioButtonScaleSmall);
+        panel.add(radioButtonScaleExtraSmall);
     }
 
     /**
@@ -518,29 +602,47 @@ public class MainJFrame extends JFrame {
         panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Spacing Panel"));
         panel.setToolTipText("Select the horizontal spacing between the Pdf elements");
 
+        //Setup buttons
+        createSpacingButtons(panel);
+
+        return panel;
+    }
+
+    /**
+     * Creates 5 radio buttons which will determine the spacing of the Pdf file
+     *
+     * @param panel panel to which buttons will be added
+     */
+    private void createSpacingButtons(JPanel panel) {
+
         //Create radio buttons
-        JRadioButtonMenuItem radioButtonExtraLarge = new JRadioButtonMenuItem("Large+", false);
-        JRadioButtonMenuItem radioButtonLarge = new JRadioButtonMenuItem("Large", false);
-        JRadioButtonMenuItem radioButtonMedium = new JRadioButtonMenuItem("Medium", true);
-        JRadioButtonMenuItem radioButtonSmall = new JRadioButtonMenuItem("Small", false);
-        JRadioButtonMenuItem radioButtonExtraSmall = new JRadioButtonMenuItem("Small-", false);
+        radioButtonSpaceExtraLarge = new JRadioButtonMenuItem("Large+", false);
+        radioButtonSpaceLarge = new JRadioButtonMenuItem("Large", false);
+        radioButtonSpaceMedium = new JRadioButtonMenuItem("Medium", true);
+        radioButtonSpaceSmall = new JRadioButtonMenuItem("Small", false);
+        radioButtonSpaceExtraSmall = new JRadioButtonMenuItem("Small-", false);
 
         //Group the buttons
         ButtonGroup buttonGroup = new ButtonGroup();
-        buttonGroup.add(radioButtonExtraLarge);
-        buttonGroup.add(radioButtonLarge);
-        buttonGroup.add(radioButtonMedium);
-        buttonGroup.add(radioButtonSmall);
-        buttonGroup.add(radioButtonExtraSmall);
+        buttonGroup.add(radioButtonSpaceExtraLarge);
+        buttonGroup.add(radioButtonSpaceLarge);
+        buttonGroup.add(radioButtonSpaceMedium);
+        buttonGroup.add(radioButtonSpaceSmall);
+        buttonGroup.add(radioButtonSpaceExtraSmall);
+
+        //Add action listeners
+        radioButtonSpaceExtraLarge.addActionListener(SPACING_LISTENER);
+        radioButtonSpaceLarge.addActionListener(SPACING_LISTENER);
+        radioButtonSpaceMedium.addActionListener(SPACING_LISTENER);
+        radioButtonSpaceSmall.addActionListener(SPACING_LISTENER);
+        radioButtonSpaceExtraSmall.addActionListener(SPACING_LISTENER);
 
         //Add buttons to panel
-        panel.add(radioButtonExtraLarge);
-        panel.add(radioButtonLarge);
-        panel.add(radioButtonMedium);
-        panel.add(radioButtonSmall);
-        panel.add(radioButtonExtraSmall);
-
-        return panel;
+        panel.add(radioButtonSpaceExtraLarge);
+        panel.add(radioButtonSpaceLarge);
+        panel.add(radioButtonSpaceMedium);
+        panel.add(radioButtonSpaceSmall);
+        panel.add(radioButtonSpaceExtraSmall);
     }
 
 }
