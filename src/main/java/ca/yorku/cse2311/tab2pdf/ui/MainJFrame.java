@@ -395,12 +395,12 @@ public class MainJFrame extends JFrame {
         //Setup panel
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
-        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Input Editor"));
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), JFrameData.EDITOR_PANEL_NAME));
         panel.setMaximumSize(JFrameData.EDITOR_PANEL_SIZE);
-        panel.setToolTipText("Edit the input file");
+        panel.setToolTipText(JFrameData.EDITOR_TOOLTIP_TEXT);
 
         //Setup text editor and add it to the panel
-        //inputEditor.setCaretPosition(0);
+        inputEditor.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         panel.add(inputEditor);
         JScrollPane scrollPanel = new JScrollPane(inputEditor);
         scrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -419,10 +419,10 @@ public class MainJFrame extends JFrame {
         //Set up panel
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setToolTipText("Select the input and output files for the program");
+        panel.setToolTipText(JFrameData.IO_TOOLTIP_TEXT);
 
         //Add border to panel
-        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "File Selection"));
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), JFrameData.IO_PANEL_NAME));
 
         //Add IO Selection panels
         panel.add(fileInputPanel());
@@ -446,8 +446,8 @@ public class MainJFrame extends JFrame {
         inputFilePath.addFocusListener(INPUT_FOCUS_LISTENER);
 
         //Setup browse button
-        JButton browseButton = new JButton("Browse For Input File  ");
-        browseButton.setActionCommand("Browse For Input File");
+        JButton browseButton = new JButton(JFrameData.INPUT_BUTTON_NAME);
+        browseButton.setActionCommand(JFrameData.INPUT_BUTTON_NAME);
         browseButton.addActionListener(INPUT_LISTENER);
 
         //Add input file text field and browse button to the panel
@@ -471,8 +471,8 @@ public class MainJFrame extends JFrame {
         outputFilePath.addFocusListener(OUTPUT_FOCUS_LISTENER);
 
         //Setup browse button
-        JButton browseButton = new JButton("Browse For Output File");
-        browseButton.setActionCommand("Browse For Output File");
+        JButton browseButton = new JButton(JFrameData.OUTPUT_BUTTON_NAME);
+        browseButton.setActionCommand(JFrameData.OUTPUT_BUTTON_NAME);
         browseButton.addActionListener(OUTPUT_LISTENER);
 
         //Add output file text field and browse button to the panel
@@ -514,16 +514,16 @@ public class MainJFrame extends JFrame {
         //Setup panel
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Control Panel"));
-        panel.setToolTipText("Preview the Pdf file or save the changes to the input file");
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), JFrameData.CONTROL_PANEL_NAME));
+        panel.setToolTipText(JFrameData.CONVERT_TOOLTIP_TEXT);
 
         //Add "Create Pdf" button
-        JButton previewButton = new JButton("File Preview   ");
-        previewButton.addActionListener(FILE_PREVIEW_LISTENER);
-        panel.add(previewButton);
+        JButton convertButton = new JButton(JFrameData.CONVERT_BUTTON_NAME);
+        convertButton.addActionListener(FILE_PREVIEW_LISTENER);
+        panel.add(convertButton);
 
         //Add "Save Changes" button
-        JButton saveButton = new JButton("Save Changes");
+        JButton saveButton = new JButton(JFrameData.SAVE_BUTTON_NAME);
         saveButton.addActionListener(SAVE_LISTENER);
         panel.add(saveButton);
 
@@ -541,8 +541,8 @@ public class MainJFrame extends JFrame {
         //Setup panel
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Scaling Panel"));
-        panel.setToolTipText("Select the overall size of the Pdf elements");
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), JFrameData.SCALING_PANEL_NAME));
+        panel.setToolTipText(JFrameData.SCALING_TOOLTIP_TEXT);
 
         //Setup buttons
         createScalingButtons(panel);
@@ -558,12 +558,11 @@ public class MainJFrame extends JFrame {
     private void createScalingButtons(JPanel panel) {
 
         //Create radio buttons
-        radioButtonScaleExtraLarge = new JRadioButtonMenuItem("Large+", false);
-        radioButtonScaleExtraLarge.setToolTipText("Select the overall size of the Pdf elements");
-        radioButtonScaleLarge = new JRadioButtonMenuItem("Large", false);
-        radioButtonScaleMedium = new JRadioButtonMenuItem("Medium", true);
-        radioButtonScaleSmall = new JRadioButtonMenuItem("Small", false);
-        radioButtonScaleExtraSmall = new JRadioButtonMenuItem("Small-", false);
+        radioButtonScaleExtraLarge = new JRadioButtonMenuItem(JFrameData.EXTRA_LARGE_BUTTON_NAME, false);
+        radioButtonScaleLarge = new JRadioButtonMenuItem(JFrameData.LARGE_BUTTON_NAME, false);
+        radioButtonScaleMedium = new JRadioButtonMenuItem(JFrameData.MEDIUM_BUTTON_NAME, true);
+        radioButtonScaleSmall = new JRadioButtonMenuItem(JFrameData.SMALL_BUTTON_NAME, false);
+        radioButtonScaleExtraSmall = new JRadioButtonMenuItem(JFrameData.EXTRA_SMALL_BUTTON_NAME, false);
 
         //Group the buttons
         ButtonGroup buttonGroup = new ButtonGroup();
@@ -599,8 +598,8 @@ public class MainJFrame extends JFrame {
         //Setup panel
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Spacing Panel"));
-        panel.setToolTipText("Select the horizontal spacing between the Pdf elements");
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), JFrameData.SPACING_PANEL_NAME));
+        panel.setToolTipText(JFrameData.SPACING_TOOLTIP_TEXT);
 
         //Setup buttons
         createSpacingButtons(panel);
@@ -616,11 +615,11 @@ public class MainJFrame extends JFrame {
     private void createSpacingButtons(JPanel panel) {
 
         //Create radio buttons
-        radioButtonSpaceExtraLarge = new JRadioButtonMenuItem("Large+", false);
-        radioButtonSpaceLarge = new JRadioButtonMenuItem("Large", false);
-        radioButtonSpaceMedium = new JRadioButtonMenuItem("Medium", true);
-        radioButtonSpaceSmall = new JRadioButtonMenuItem("Small", false);
-        radioButtonSpaceExtraSmall = new JRadioButtonMenuItem("Small-", false);
+        radioButtonSpaceExtraLarge = new JRadioButtonMenuItem(JFrameData.EXTRA_LARGE_BUTTON_NAME, false);
+        radioButtonSpaceLarge = new JRadioButtonMenuItem(JFrameData.LARGE_BUTTON_NAME, false);
+        radioButtonSpaceMedium = new JRadioButtonMenuItem(JFrameData.MEDIUM_BUTTON_NAME, true);
+        radioButtonSpaceSmall = new JRadioButtonMenuItem(JFrameData.SMALL_BUTTON_NAME, false);
+        radioButtonSpaceExtraSmall = new JRadioButtonMenuItem(JFrameData.EXTRA_SMALL_BUTTON_NAME, false);
 
         //Group the buttons
         ButtonGroup buttonGroup = new ButtonGroup();
