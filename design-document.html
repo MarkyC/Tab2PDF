@@ -27,6 +27,8 @@ Sitkovets, Anton</p>
 
 <p>The program operates by being given a plain text guitar tab file as input from the user and converting it to a pretty-printed PDF. A Graphical User Interface is used to select the tab, as well as where to save the PDF. When the conversion process is complete, the final PDF is opened for the user to view.</p>
 
+
+
 <h2 id="high-level-design">High-Level Design</h2>
 
 <p>As per project requirements, we use the iTextPDF library to convert a user’s tab files to a formatted PDF version of the sheet music. The user of this application interacts only with our graphical user interface, which abstracts away the inner workings of the system. The result is a user-friendly application that is quick and easy to use.</p>
@@ -49,5 +51,64 @@ Sitkovets, Anton</p>
 <li>Iterator Pattern, to traverse collections of <code>ITabNotation</code> Objects</li>
 <li>Factory Pattern: our <code>IParser</code> Objects are factories that create <code>ITabNotation</code> Objects</li>
 <li>Visitor Pattern: our <code>PDFCreator</code> visits each <code>ITabNotation</code> Object to construct the PDF.</li>
-</ul></div></body>
+</ul>
+
+
+
+<h2 id="class-diagram">Class Diagram</h2>
+
+<p><img src="http://i.imgur.com/Sg3EDht.png" alt="Imgur" title=""></p>
+
+
+
+<h2 id="package-overview">Package Overview</h2>
+
+
+
+<h3 id="cayorkucse2311tab2pdf">ca.yorku.cse2311.tab2pdf</h3>
+
+<p>The main package of this application. It consists of <code>Main</code> and <code>Arguments</code>. The first class is the entry point of the application. It is responsible for creating and showing the GUI, as well as parsing command line arguments. The second class is a helper class that will hold program arguments. Currently, there is command line support for setting the input (tab) and output (PDF) files via command line arguments, though this can also be easily accomplished via the GUI.</p>
+
+<table>
+<thead>
+<tr>
+  <th>Short Argument</th>
+  <th>Long Argument</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+  <td><code>-i &lt;file.txt&gt;</code></td>
+  <td><code>--input &lt;file.txt&gt;</code></td>
+  <td>Sets the input (tab) file</td>
+</tr>
+<tr>
+  <td><code>-o &lt;file.pdf&gt;</code></td>
+  <td><code>--output &lt;file.pdf&gt;</code></td>
+  <td>Sets the output (pdf) file</td>
+</tr>
+</tbody></table>
+
+
+<h3 id="cayorkucse2311tab2pdfmodel">ca.yorku.cse2311.tab2pdf.model</h3>
+
+<p>This package holds the business models of this application. Most models implement <code>ITabNotation</code>, which describes a set of methods we expect all tab models to have, such as the ability to <code>draw()</code> to the PDF, the <code>size()</code> of the drawn symbol, and <code>toString()</code>, which must return the exact String that was used to create the object. This means models are reflexive and symmetric. “3” should parse into a <code>Note</code> with value 3, and calling <code>toString()</code> on this <code>Note</code> should yield “3”.</p>
+
+<blockquote>
+  <p><em>Technical Note:</em> This is accomplished programmatically, rather than by storing the String that was used to create the object.</p>
+</blockquote>
+
+<h3 id="cayorkucse2311tab2pdfparser">ca.yorku.cse2311.tab2pdf.parser</h3>
+
+<p>This package holds parsers capable of creating our models. All parsers implement <code>IParser</code>, which requires parsers to have a <code>getPattern()</code> method which returns the <code>Pattern</code> (Java’s Regular Expression class) the parser will use internally to create the model object, a <code>canParse()</code> method, signifying the parser can indeed construct a model out of a specified String token, and <code>parse()</code>, which actually parses the token into the model.</p>
+
+<p><code>TabParser</code> holds all <code>IParser</code> objects, and is concerned with parsing the entirety of the tab using these objects. If a new symbol is needed, one must write a model, implementing <code>ITabNotation</code>; a parser, implementing <code>IParser</code>; and finally they must add the parser to <code>TabParser</code>, making it aware of the new symbol.</p>
+
+<h3 id="cayorkucse2311tab2pdfui">ca.yorku.cse2311.tab2pdf.ui</h3>
+
+<p>This package holds the GUI of the program, in one file <code>MainJFrame</code>. Controllers are simple for our GUI, so they are implemented as final member variables (typically <code>ActionListener</code>s) that can be easily tested, and extracted out if they grow too large. </p>
+
+<h3 id="cayorkucse2311tab2pdfutil">ca.yorku.cse2311.tab2pdf.util</h3>
+
+<p>This package holds small utilities that contain helper methods to aid in development. <code>FileUtils</code> contains utilities to help with <code>File</code>s, such as reading a <code>File</code> and returning a <code>List&lt;String&gt;</code> consisting of each line in the <code>File</code>. <code>TabRepair</code> is used to repair malformed tabs, and <code>PDFCreator</code> is used to create the final, formatted PDF.</p></div></body>
 </html>
