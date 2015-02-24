@@ -5,6 +5,7 @@ import ca.yorku.cse2311.tab2pdf.PdfHelper;
 import ca.yorku.cse2311.tab2pdf.model.*;
 import ca.yorku.cse2311.tab2pdf.parser.TabParser;
 import com.itextpdf.text.Document;
+import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
@@ -79,7 +80,8 @@ public class PdfCreator implements Runnable {
         document.open();
 
         //Title
-        Paragraph title = new Paragraph(tab.getTitle().getValue());
+        Paragraph title = new Paragraph(
+                tab.getTitle().getValue(), new Font(Font.FontFamily.TIMES_ROMAN, 24f));
         title.setAlignment(Paragraph.ALIGN_CENTER);
         document.add(title);     // The Tab's Title
 
