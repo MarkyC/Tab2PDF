@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.List;
 import java.util.logging.Level;
@@ -74,6 +75,21 @@ public class MainJFrame extends JFrame {
 
             LOG.log(Level.INFO, e.paramString());
 
+            if ( (null == getInputFile()) || !getInputFile().exists() || !getInputFile().canRead() ) {
+                JOptionPane.showMessageDialog(MainJFrame.this, "Input file does not exist or cannot be read.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if ( null == getOutputFile() ) {
+                JOptionPane.showMessageDialog(MainJFrame.this, "No Output File Specified. A temporary file will be created.", "Error", JOptionPane.ERROR_MESSAGE);
+                try {
+                    setOutputFile(Files.createTempFile("tab2pdf-", ".pdf").toFile());
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(MainJFrame.this, "Could not create temporary file. Application will now close", "Error", JOptionPane.ERROR_MESSAGE);
+                    System.exit(-1);
+                }
+            }
+
             new Thread(new PdfCreator(new Arguments(getInputFile(), getOutputFile()))).start();
         }
     };
@@ -86,6 +102,21 @@ public class MainJFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
 
             LOG.log(Level.INFO, e.paramString());
+
+            if ( (null == getInputFile()) || !getInputFile().exists() || !getInputFile().canRead() ) {
+                JOptionPane.showMessageDialog(MainJFrame.this, "Input file does not exist or cannot be read.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if ( null == getOutputFile() ) {
+                JOptionPane.showMessageDialog(MainJFrame.this, "No Output File Specified. A temporary file will be created.", "Error", JOptionPane.ERROR_MESSAGE);
+                try {
+                    setOutputFile(Files.createTempFile("tab2pdf-", ".pdf").toFile());
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(MainJFrame.this, "Could not create temporary file. Application will now close", "Error", JOptionPane.ERROR_MESSAGE);
+                    System.exit(-1);
+                }
+            }
 
             try {saveFile();}
             catch (IOException e1) {e1.printStackTrace();}
@@ -156,7 +187,7 @@ public class MainJFrame extends JFrame {
 
             // setup file chooser
             JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setCurrentDirectory(getOutputFile().getParentFile()); //Starts chooser in current directory
+            if (null != getOutputFile()) fileChooser.setCurrentDirectory(getOutputFile().getParentFile()); //Starts chooser in current directory
             fileChooser.setFileFilter(JFrameData.PDF_FILE_FILTER);  // Allow *.pdf files (default)
 
             // open the file chooser, showing the save dialog
