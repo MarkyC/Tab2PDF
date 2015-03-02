@@ -14,6 +14,8 @@ public class JFramePanel extends JPanel {
 
     public static final String PREVIEW_PANEL_NAME = "Pdf Preview";
 
+    public static final String STATUS_BAR_NAME = "Status Bar";
+
     public static JButton openButton = new JButton("Open File");
 
     public static JButton saveButton = new JButton("Save File");
@@ -52,6 +54,10 @@ public class JFramePanel extends JPanel {
 
             case PREVIEW_PANEL_NAME:
                 super.add(previewPanel());
+                break;
+
+            case STATUS_BAR_NAME:
+                super.add(statusBar());
                 break;
         }
     }
@@ -125,6 +131,18 @@ public class JFramePanel extends JPanel {
         panel.setMaximumSize(JFrameData.VIEW_PANEL_SIZE);
 
         //TODO: make the panel display current state of Pdf file to be created
+
+        return panel;
+    }
+
+    private JPanel statusBar() {
+
+        // create a new panel
+        JPanel panel = newPanel(STATUS_BAR_NAME, true);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setPreferredSize(JFrameData.TOOLBAR_SIZE);
+
+        panel.add(new JLabel("This is status bar"));
 
         return panel;
     }
