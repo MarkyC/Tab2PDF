@@ -70,7 +70,7 @@ public class JFramePanel extends JPanel {
         // setup toolbar
         JToolBar toolBar = new JToolBar();
         toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.X_AXIS));
-        toolBar.setPreferredSize(JFrameData.TOOLBAR_SIZE);
+        toolBar.setPreferredSize(JFrameData.BAR_SIZE);
         toolBar.setFloatable(false);
 
         // set button size
@@ -139,10 +139,9 @@ public class JFramePanel extends JPanel {
 
         // create a new panel
         JPanel panel = newPanel(STATUS_BAR_NAME, true);
-        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-        panel.setPreferredSize(JFrameData.TOOLBAR_SIZE);
+        panel.setPreferredSize(JFrameData.BAR_SIZE);
 
-        panel.add(new JLabel("This is status bar"));
+        panel.add(new JLabel(" This is status bar. It will show all kinds of useful stuff."));
 
         return panel;
     }
