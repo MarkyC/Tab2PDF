@@ -6,6 +6,8 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.Serializable;
+import java.util.Dictionary;
+import java.util.Enumeration;
 
 /**
  * JFrameData
@@ -16,7 +18,19 @@ import java.io.Serializable;
  */
 public final class JFrameData {
 
+    /**
+     * Slider data
+     */
+    static final int SLIDER_MIN = 5;
+
+    static final int SLIDER_MAX = 15;
+
+    static final int SLIDER_INIT = 7;
+
+
     public static final String EMPTY_FILE_PATH = "Type the file path, or select a file by clicking browse...";
+
+    public static final Dimension BUTTON_SIZE = new Dimension(170, 170);
 
     /**
      * Minimum size of the window
@@ -26,7 +40,10 @@ public final class JFrameData {
     /**
      * Size of input editor panel
      */
-    public static final Dimension EDITOR_PANEL_SIZE = new Dimension(640, 480);
+    public static final Dimension VIEW_PANEL_SIZE = new Dimension(500, 500);
+
+    public static final Dimension TOOLBAR_SIZE = new Dimension(1020, 50);
+
 
     /**
      * Title of the GUI window

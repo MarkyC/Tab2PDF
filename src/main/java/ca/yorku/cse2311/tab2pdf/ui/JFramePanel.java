@@ -2,13 +2,7 @@ package ca.yorku.cse2311.tab2pdf.ui;
 
 import javax.swing.*;
 import java.awt.*;
-//TODO for Varsha: Add listeners from MainJFrame to buttons, make sure everything works as with old design
-//There is no file selection text fields now, so you need to modify input and output listeners
-//Keep listeners in MainJFrame
-//You might need to make buttons public to connect them to listeners
-//Don't worry about sliders, i'll make them work later
-// create a method that adds the listeners and call method in MainJframe constructor
-//You'll have to work in MainJFrame to do this task
+
 /**
  * Created by Glib Sitiugin on 2015-02-25.
  */
@@ -20,17 +14,17 @@ public class JFramePanel extends JPanel {
 
     public static final String PREVIEW_PANEL_NAME = "Pdf Preview";
 
-    public static JButton openButton = new JButton("Open File"); //TODO for Varsha: add INPUT_LISTENER to this
+    public static JButton openButton = new JButton("Open File");
 
-    private JButton saveButton = new JButton("Save File"); //TODO for Varsha: add SAVE_LISTENER to this
+    public static JButton saveButton = new JButton("Save File");
 
-    private JButton convertButton = new JButton("Convert to Pdf"); //TODO for Varsha: add CONVERT_LISTENER to this
+    public static JButton convertButton = new JButton("Convert to Pdf");
 
-    private JButton helpButton = new JButton("Help"); //TODO for Varsha: create a listener that will listen to this button and will open a window with text in it.
+    public static JButton helpButton = new JButton("Help");
 
-    private JSlider verticalSlider = new JSlider();
+    public static JSlider verticalSlider = new JSlider(JSlider.HORIZONTAL, JFrameData.SLIDER_MIN, JFrameData.SLIDER_MAX, JFrameData.SLIDER_INIT);
 
-    private JSlider horizontalSlider = new JSlider();
+    public static JSlider horizontalSlider = new JSlider(JSlider.HORIZONTAL, JFrameData.SLIDER_MIN, JFrameData.SLIDER_MAX, JFrameData.SLIDER_INIT);
 
     private JTextPane editor = MainJFrame.inputEditor;
 
@@ -85,8 +79,8 @@ public class JFramePanel extends JPanel {
         toolBar.add(convertButton);
         toolBar.add(helpButton);
 
-        //TODO: add numbers under sliders
         // add sliders to toolbar
+        setupSliders();
         toolBar.add(new JLabel("    Vertical Scaling:"));
         toolBar.add(verticalSlider);
         toolBar.add(new JLabel("    Horizontal Spacing:"));
@@ -158,5 +152,20 @@ public class JFramePanel extends JPanel {
 
         button.setPreferredSize(JFrameData.BUTTON_SIZE);
         button.setMaximumSize(JFrameData.BUTTON_SIZE);
+    }
+
+    private void setupSliders() {
+
+        // setup vertical slider
+        verticalSlider.setMajorTickSpacing(5);
+        verticalSlider.setMinorTickSpacing(1);
+        verticalSlider.setPaintTicks(true);
+        verticalSlider.setPaintLabels(true);
+
+        // setup horizontal slider
+        horizontalSlider.setMajorTickSpacing(5);
+        horizontalSlider.setMinorTickSpacing(1);
+        horizontalSlider.setPaintTicks(true);
+        horizontalSlider.setPaintLabels(true);
     }
 }

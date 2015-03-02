@@ -33,6 +33,8 @@ public class SubtitleParserTest {
             , "TITLE="
             , "TITLE=Something"
             , "T=Remembering Rain"
+            , "S=Remembering Rain"
+            , "Remembering Rain"
     };
 
     public SubtitleParser parser;
