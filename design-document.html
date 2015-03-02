@@ -55,11 +55,13 @@ Sitkovets, Anton</p>
 
 
 
-<h2 id="class-diagram">Class Diagram</h2>
+<h2 id="simple-class-diagram">Simple Class Diagram</h2>
+
+<p><img src="http://i.imgur.com/fb1ScK9.png" alt="simple" title=""></p>
+
+<h2 id="complete-class-diagram">Complete Class Diagram</h2>
 
 <p><img src="http://i.imgur.com/Sg3EDht.png" alt="Imgur" title=""></p>
-
-
 
 <h2 id="package-overview">Package Overview</h2>
 
@@ -90,6 +92,8 @@ Sitkovets, Anton</p>
 </tbody></table>
 
 
+
+
 <h3 id="cayorkucse2311tab2pdfmodel">ca.yorku.cse2311.tab2pdf.model</h3>
 
 <p>This package holds the business models of this application. Most models implement <code>ITabNotation</code>, which describes a set of methods we expect all tab models to have, such as the ability to <code>draw()</code> to the PDF, the <code>size()</code> of the drawn symbol, and <code>toString()</code>, which must return the exact String that was used to create the object. This means models are reflexive and symmetric. “3” should parse into a <code>Note</code> with value 3, and calling <code>toString()</code> on this <code>Note</code> should yield “3”.</p>
@@ -98,15 +102,21 @@ Sitkovets, Anton</p>
   <p><em>Technical Note:</em> This is accomplished programmatically, rather than by storing the String that was used to create the object.</p>
 </blockquote>
 
+
+
 <h3 id="cayorkucse2311tab2pdfparser">ca.yorku.cse2311.tab2pdf.parser</h3>
 
 <p>This package holds parsers capable of creating our models. All parsers implement <code>IParser</code>, which requires parsers to have a <code>getPattern()</code> method which returns the <code>Pattern</code> (Java’s Regular Expression class) the parser will use internally to create the model object, a <code>canParse()</code> method, signifying the parser can indeed construct a model out of a specified String token, and <code>parse()</code>, which actually parses the token into the model.</p>
 
 <p><code>TabParser</code> holds all <code>IParser</code> objects, and is concerned with parsing the entirety of the tab using these objects. If a new symbol is needed, one must write a model, implementing <code>ITabNotation</code>; a parser, implementing <code>IParser</code>; and finally they must add the parser to <code>TabParser</code>, making it aware of the new symbol.</p>
 
+
+
 <h3 id="cayorkucse2311tab2pdfui">ca.yorku.cse2311.tab2pdf.ui</h3>
 
 <p>This package holds the GUI of the program, in one file <code>MainJFrame</code>. Controllers are simple for our GUI, so they are implemented as final member variables (typically <code>ActionListener</code>s) that can be easily tested, and extracted out if they grow too large. </p>
+
+
 
 <h3 id="cayorkucse2311tab2pdfutil">ca.yorku.cse2311.tab2pdf.util</h3>
 
