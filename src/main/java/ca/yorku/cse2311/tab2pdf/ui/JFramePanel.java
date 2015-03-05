@@ -16,19 +16,25 @@ public class JFramePanel extends JPanel {
 
     public static final String STATUS_BAR_NAME = "Status Bar";
 
-    public static JButton openButton = new JButton("Open File");
+    public static final JButton OPEN_BUTTON = new JButton("Open File");
 
-    public static JButton saveButton = new JButton("Save File");
+    public static final JButton SAVE_BUTTON = new JButton("Save File");
 
-    public static JButton convertButton = new JButton("Convert to Pdf");
+    public static final JButton CONVERT_BUTTON = new JButton("Convert to Pdf");
 
-    public static JButton helpButton = new JButton("Help");
+    public static final JButton HELP_BUTTON = new JButton("Help");
 
-    public static JSlider verticalSlider = new JSlider(JSlider.HORIZONTAL, JFrameData.SLIDER_MIN, JFrameData.SLIDER_MAX, JFrameData.SLIDER_INIT);
+    public static final JSlider SCALING_SLIDER = new JSlider(JSlider.HORIZONTAL, JFrameData.SCALING_SLIDER_MIN, JFrameData.SCALING_SLIDER_MAX, JFrameData.SCALING_SLIDER_INIT);
 
-    public static JSlider horizontalSlider = new JSlider(JSlider.HORIZONTAL, JFrameData.SLIDER_MIN, JFrameData.SLIDER_MAX, JFrameData.SLIDER_INIT);
+    public static final JSlider SPACING_SLIDER = new JSlider(JSlider.HORIZONTAL, JFrameData.SPACING_SLIDER_MIN, JFrameData.SPACING_SLIDER_MAX, JFrameData.SPACING_SLIDER_INIT);
 
-    private JTextPane editor = MainJFrame.inputEditor;
+    private static final JTextPane EDITOR = MainJFrame.inputEditor;
+
+    private static JLabel inputFilePath = new JLabel("No File Selected");
+
+    private static JLabel symbolsNumber = new JLabel("0");
+
+    private static JProgressBar progressBar = new JProgressBar();
 
 
     /**
@@ -74,41 +80,41 @@ public class JFramePanel extends JPanel {
         toolBar.setFloatable(false);
 
         // set button size
-        setButtonSize(openButton);
-        setButtonSize(saveButton);
-        setButtonSize(convertButton);
-        setButtonSize(helpButton);
+        setButtonSize(OPEN_BUTTON);
+        setButtonSize(SAVE_BUTTON);
+        setButtonSize(CONVERT_BUTTON);
+        setButtonSize(HELP_BUTTON);
 
         // add buttons to toolbar
-        toolBar.add(openButton);
-        toolBar.add(saveButton);
-        toolBar.add(convertButton);
-        toolBar.add(helpButton);
+        toolBar.add(OPEN_BUTTON);
+        toolBar.add(SAVE_BUTTON);
+        toolBar.add(CONVERT_BUTTON);
+        toolBar.add(HELP_BUTTON);
 
         // add sliders to toolbar
         setupSliders();
         toolBar.add(new JLabel("    Vertical Scaling:"));
-        toolBar.add(verticalSlider);
+        toolBar.add(SCALING_SLIDER);
         toolBar.add(new JLabel("    Horizontal Spacing:"));
-        toolBar.add(horizontalSlider);
+        toolBar.add(SPACING_SLIDER);
 
         return toolBar;
     }
 
     /**
-     * @return a panel containing input editor
+     * @return a panel containing input EDITOR
      */
     private JPanel editorPanel() {
 
         // create a new panel
         JPanel panel = newPanel(INPUT_EDITOR_NAME, true);
 
-        // setup editor
-        panel.add(editor);
-        editor.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        // setup EDITOR
+        panel.add(EDITOR);
+        EDITOR.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 
         // setup scroll pane
-        JScrollPane scrollPane = new JScrollPane(editor);
+        JScrollPane scrollPane = new JScrollPane(EDITOR);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         panel.add(scrollPane);
 
@@ -137,14 +143,33 @@ public class JFramePanel extends JPanel {
 
     private JPanel statusBar() {
 
+        //TODO: make progress bar work
         // create a new panel
         JPanel panel = newPanel(STATUS_BAR_NAME, true);
         panel.setPreferredSize(JFrameData.BAR_SIZE);
 
-        panel.add(new JLabel(" This is status bar. It will show all kinds of useful stuff."));
+        setupProgressBar();
+        panel.add(progressBar);
+        panel.add(new JPopupMenu.Separator());
+        panel.add(new JLabel("Source File: "));
+        panel.add(inputFilePath);
+        panel.add(new JPopupMenu.Separator());
+        panel.add(new JLabel("Symbols Number: "));
+        panel.add(symbolsNumber);
 
         return panel;
     }
+
+    public static void setInputFilePath(String filePath) {
+
+        inputFilePath.setText(filePath);
+    }
+
+    public static void setSymbolsNumber(int number) {
+
+        symbolsNumber.setText(String.valueOf(number));
+    }
+
 
     /**
      * Instantiates a new JPanel with a given name and border
@@ -173,16 +198,23 @@ public class JFramePanel extends JPanel {
 
     private void setupSliders() {
 
-        // setup vertical slider
-        verticalSlider.setMajorTickSpacing(5);
-        verticalSlider.setMinorTickSpacing(1);
-        verticalSlider.setPaintTicks(true);
-        verticalSlider.setPaintLabels(true);
+        // setup scaling slider
+        SCALING_SLIDER.setMajorTickSpacing(5);
+        SCALING_SLIDER.setMinorTickSpacing(1);
+        SCALING_SLIDER.setPaintTicks(true);
+        SCALING_SLIDER.setPaintLabels(true);
 
-        // setup horizontal slider
-        horizontalSlider.setMajorTickSpacing(5);
-        horizontalSlider.setMinorTickSpacing(1);
-        horizontalSlider.setPaintTicks(true);
-        horizontalSlider.setPaintLabels(true);
+        // setup spacing slider
+        SPACING_SLIDER.setMajorTickSpacing(3);
+        SPACING_SLIDER.setMinorTickSpacing(1);
+        SPACING_SLIDER.setPaintTicks(true);
+        SPACING_SLIDER.setPaintLabels(true);
     }
+
+    private void setupProgressBar() {
+
+        //progressBar.setPreferredSize(JFrameData.PROGRESS_BAR_SIZE);
+        progressBar.setMaximumSize(JFrameData.PROGRESS_BAR_SIZE);
+    }
+
 }

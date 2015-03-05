@@ -8,10 +8,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.event.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
@@ -51,6 +48,21 @@ public class MainJFrame extends JFrame {
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
 
     /**
+     * Updates the symbols number in the status bar whenever user changes the contents of input file
+     */
+    public final KeyListener EDITOR_LISTENER = new KeyListener() {
+
+        @Override
+        public void keyTyped(KeyEvent e) {}
+
+        @Override
+        public void keyPressed(KeyEvent e) {JFramePanel.setSymbolsNumber(getSymbolsNumber());}
+
+        @Override
+        public void keyReleased(KeyEvent e) {JFramePanel.setSymbolsNumber(getSymbolsNumber());}
+    };
+
+    /**
      * This ActionListener will fire when the Help button is clicked
      */
     public final ActionListener HELP_LISTENER = new ActionListener() {
@@ -66,7 +78,6 @@ public class MainJFrame extends JFrame {
             helpFrame.add(label);
             helpFrame.setVisible(true);
         }
-
     };
 
     /**
@@ -94,6 +105,8 @@ public class MainJFrame extends JFrame {
             }
 
             new Thread(new PdfCreator(new Arguments(getInputFile(), getOutputFile()))).start();
+
+            //new Thread(String.valueOf(JFramePanel.startProgressBar())).start();
         }
     };
 
@@ -149,11 +162,13 @@ public class MainJFrame extends JFrame {
                 // Set the file path in the text field to that of the users chosen file
                 File selectedFile = fileChooser.getSelectedFile();
                 inputFilePath.setText(selectedFile.getPath());
+                JFramePanel.setInputFilePath(selectedFile.getPath());
 
-                //Load file contents into editor
+                //Load file contents into editor, change symbol number in toolbar
                 setInputFile(selectedFile);
                 try {loadEditorFile(selectedFile);}
                 catch (IOException e1) {e1.printStackTrace();}
+                JFramePanel.setSymbolsNumber(getSymbolsNumber());
             }
 
         }
@@ -231,7 +246,7 @@ public class MainJFrame extends JFrame {
 
             LOG.log(Level.INFO, e.toString());
 
-            PdfHelper.setLineSpace(JFramePanel.verticalSlider.getValue());
+            PdfHelper.setLineSpace(JFramePanel.SCALING_SLIDER.getValue());
         }
     };
 
@@ -249,9 +264,15 @@ public class MainJFrame extends JFrame {
             String[] line = inputEditor.getText().split("\\n");
             String string = line[2];
 
-            line[2] = string.replace(string.charAt(8), (char) JFramePanel.horizontalSlider.getValue());
+            //TODO: make method work when no spacing is shown
+
+            line[2] = "SPACING=" + JFramePanel.SPACING_SLIDER.getValue();
+
             String printableText = Arrays.toString(line).replaceAll("[\\[\\]]", "").replaceAll(", ", "\n");
             inputEditor.setText(printableText);
+
+            // update symbols number in status bar
+            JFramePanel.setSymbolsNumber(getSymbolsNumber());
 
             //Scroll back to the top
             inputEditor.setCaretPosition(0);
@@ -283,6 +304,7 @@ public class MainJFrame extends JFrame {
         container.add(new JFramePanel(JFramePanel.TOOLBAR_PANEL_NAME), BorderLayout.PAGE_START);
         container.add(new JFramePanel(JFramePanel.INPUT_EDITOR_NAME), BorderLayout.LINE_START);
         container.add(new JFramePanel(JFramePanel.PREVIEW_PANEL_NAME), BorderLayout.LINE_END);
+        container.add(new JFramePanel(JFramePanel.STATUS_BAR_NAME), BorderLayout.PAGE_END);
 
         // add listeners to the toolbar elements
         addListeners();
@@ -327,11 +349,14 @@ public class MainJFrame extends JFrame {
     public void setOutputFile(File outputFile) {this.outputFile = outputFile;}
 
     /**
-     * Loads contents of the input file into input editor
+     * Loads contents of the input file into input editor, returns number of symbols in the input file
      *
      * @param sourceFile input file whose contents are to be loaded
+     * @return number of symbols in the input file
+     * @throws IOException if file can not be loaded
      */
     private void loadEditorFile(File sourceFile) throws IOException {
+
 
         //Setup file reader
         BufferedReader bufferedReader = new BufferedReader(new FileReader(sourceFile));
@@ -350,6 +375,7 @@ public class MainJFrame extends JFrame {
 
         //Scroll back to the top
         inputEditor.setCaretPosition(0);
+
     }
 
     /**
@@ -387,19 +413,22 @@ public class MainJFrame extends JFrame {
     }
 
     /**
-     * Adds ActionListeners to the toolbar elements
+     * Adds Action/Change Listeners to the toolbar elements
      */
     public void addListeners(){
 
         // add action listeners to buttons
-        JFramePanel.openButton.addActionListener(INPUT_LISTENER);
-        JFramePanel.saveButton.addActionListener(SAVE_LISTENER);
-        JFramePanel.convertButton.addActionListener(CONVERT_LISTENER);
-        JFramePanel.helpButton.addActionListener(HELP_LISTENER);
+        JFramePanel.OPEN_BUTTON.addActionListener(INPUT_LISTENER);
+        JFramePanel.SAVE_BUTTON.addActionListener(SAVE_LISTENER);
+        JFramePanel.CONVERT_BUTTON.addActionListener(CONVERT_LISTENER);
+        JFramePanel.HELP_BUTTON.addActionListener(HELP_LISTENER);
 
         // add change listeners to sliders
-        JFramePanel.verticalSlider.addChangeListener(SCALING_LISTENER);
-        JFramePanel.horizontalSlider.addChangeListener(SPACING_LISTENER);
+        JFramePanel.SCALING_SLIDER.addChangeListener(SCALING_LISTENER);
+        JFramePanel.SPACING_SLIDER.addChangeListener(SPACING_LISTENER);
+
+        // add key listener to input editor
+        inputEditor.addKeyListener(EDITOR_LISTENER);
     }
 
     public static void main(String[] args) {
@@ -409,5 +438,10 @@ public class MainJFrame extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {MainJFrame.createAndShow();}
         });
+    }
+
+    private int getSymbolsNumber() {
+
+        return inputEditor.getText().length();
     }
 }
