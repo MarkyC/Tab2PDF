@@ -18,8 +18,10 @@ import java.util.Enumeration;
  */
 public final class JFrameData {
 
+    //TODO: perhaps this class is not needed and it's better to put constants into respective classes.
+    //TODO: needs documentation comments
     /**
-     * Slider data
+     * Toolbar sliders data
      */
     static final int SCALING_SLIDER_MIN = 5;
 
@@ -76,15 +78,23 @@ public final class JFrameData {
      */
     public static final FileFilter PDF_FILE_FILTER = new FileNameExtensionFilter("PDF Files (*.pdf)", "pdf");
 
-    public static final String EDITOR_TOOLTIP_TEXT = "Edit the input file";
+    /**
+     * Status panel hints text
+     */
+    public static final String EMPTY_HINT = "Select Any Object to Get a Hint";
 
-    public static final String IO_TOOLTIP_TEXT = "Select the input and output files for the program";
+    public static final String INPUT_EDITOR_HINT = "You can edit the input file before converting it to PDF";
 
-    public static final String CONVERT_TOOLTIP_TEXT = "Preview the Pdf file or save the changes to the input file";
+    public static final String OPEN_FILE_HINT = "Select the input file for the program";
 
-    public static final String SCALING_TOOLTIP_TEXT = "Select the overall size of the Pdf elements";
+    public static final String SAVE_FILE_HINT = "Save changes you made with editor back into the input file";
 
-    public static final String SPACING_TOOLTIP_TEXT = "Select the horizontal spacing between the Pdf elements";
+    public static final String CONVERT_PDF_HINT = "Preview the Pdf file or save the changes to the input file";
+
+    public static final String SCALING_SLIDER_HINT = "Select the overall size of the Pdf elements";
+
+    public static final String SPACING_SLIDER_HINT = "Select the horizontal spacing between the Pdf elements";
+
 
 
 
