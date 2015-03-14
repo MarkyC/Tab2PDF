@@ -17,7 +17,6 @@ import java.util.logging.Level;
  * Created by Glib Sitiugin on 2015-03-06.
  */
 public class HelpListener extends JFrameListener implements EventListener, ActionListener {
-	//public final URI uri = new URI("http://markyc.github.io/Tab2PDF/user-manual.pdf");
 	
     /**
      * Constructor
@@ -52,7 +51,7 @@ public class HelpListener extends JFrameListener implements EventListener, Actio
         button.setOpaque(false);
         button.setBackground(Color.WHITE);
         
-        //button.addActionListener(new OpenUrlAction());
+        button.addActionListener(new OpenUrlAction());
         container.add(button);
         helpFrame.setVisible(true);
         
@@ -63,15 +62,5 @@ public class HelpListener extends JFrameListener implements EventListener, Actio
         
     }
  
-    public static void open(URI uri){
-    	if (Desktop.isDesktopSupported()){
-    		try{
-    			Desktop.getDesktop().browse(uri);
-    		}catch (IOException e){
-    			//TODO
-    		}
-    	}else{
-    		//TODO
-    	}
-    }
+    
 }
