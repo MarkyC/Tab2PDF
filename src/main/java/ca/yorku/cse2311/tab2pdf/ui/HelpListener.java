@@ -39,16 +39,14 @@ public class HelpListener extends JFrameListener implements EventListener, Actio
         
         // create a new frame with an embedded user manual
         JFrame helpFrame = new JFrame("Help");
-        helpFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         helpFrame.setSize(500, 500);
         Container container = helpFrame.getContentPane();
         container.setLayout(new GridBagLayout());
         JButton button = new JButton();
-        button.setText("<HTML>Click the <FONT color=\"#000099\"><U>link</U></FONT>"
-            + " to view the User Manual.</HTML>");
+        button.setText("<HTML>User Manual</HTML>");
         button.setHorizontalAlignment(SwingConstants.LEFT);
         button.setBorderPainted(false);
-        button.setOpaque(false);
+        button.setOpaque(true);
         button.setBackground(Color.WHITE);
         
         button.addActionListener(new OpenUrlAction());
