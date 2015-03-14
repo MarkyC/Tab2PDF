@@ -11,18 +11,17 @@ public class OpenUrlAction implements ActionListener
 {
 	private final String LINK = "http://markyc.github.io/Tab2PDF/user-manual.pdf";
 	
-	
+	/**
+	 * Creates a new URI object with the link of the User Manual web page and opens the page using the user's browser.
+	 */
 	public void actionPerformed(ActionEvent e){
-		try{
-			URI uri = new URI(LINK);
-			open(uri);
-			System.out.println("URI parsed succesfully!");
-		}catch (URISyntaxException m){
-			m.printStackTrace();
-		}
+		open(createURI(LINK));
 		
 	}
-	
+	/**
+	 * Opens the URI in the URI object using the desktop's default browser
+	 * @param URI uri
+	 */
 	public static void open(URI uri){
     	if (Desktop.isDesktopSupported()){
     		try{
@@ -34,5 +33,17 @@ public class OpenUrlAction implements ActionListener
     		//TODO
     	}
     }
+	
+	public URI createURI(String link){
+		URI uri;
+		try{
+			uri = new URI(link);
+			
+		}catch (URISyntaxException m){
+			uri= null;
+			m.printStackTrace();
+		}
+		return uri;
+	}
 	
 }

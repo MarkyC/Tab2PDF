@@ -30,11 +30,7 @@ public class HelpListener extends JFrameListener implements EventListener, Actio
     
     @Override
     public void actionPerformed(ActionEvent e) {
-    	JMenu helpMenu;
-    	JButton manualButton ; 
-    	JMenuItem userManual;
-    	JRadioButtonMenuItem rbUserManual;
-    	
+
     	LOGGER.log(Level.INFO, e.paramString());
         
         // create a new frame with an embedded user manual
@@ -42,21 +38,21 @@ public class HelpListener extends JFrameListener implements EventListener, Actio
         helpFrame.setSize(500, 500);
         Container container = helpFrame.getContentPane();
         container.setLayout(new GridBagLayout());
-        JButton button = new JButton();
-        button.setText("<HTML>User Manual</HTML>");
-        button.setHorizontalAlignment(SwingConstants.LEFT);
-        button.setBorderPainted(false);
-        button.setOpaque(true);
-        button.setBackground(Color.WHITE);
+        JButton manualButton = new JButton();
+        manualButton.setText("<HTML>User Manual</HTML>");
+        manualButton.setHorizontalAlignment(SwingConstants.LEFT);
+        manualButton.setBorderPainted(false);
+        manualButton.setOpaque(true);
+        manualButton.setBackground(Color.WHITE);
+        manualButton.addActionListener(new OpenUrlAction());
         
-        button.addActionListener(new OpenUrlAction());
-        container.add(button);
+        
+        
+        
+        container.add(manualButton);
         helpFrame.setVisible(true);
         
-       // manualButton = new JButton("User Manual");
-       // manualButton.setSize(JFrameData.BUTTON_SIZE);
-        
-       // helpFrame.add(manualButton);
+
         
     }
  
