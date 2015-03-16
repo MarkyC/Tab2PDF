@@ -1,6 +1,6 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
-import com.itextpdf.text.pdf.PdfWriter;
+import ca.yorku.cse2311.tab2pdf.PdfHelper;
 
 /**
  * Title
@@ -29,7 +29,7 @@ public class Title implements ITabNotation {
         return title;
     }
 
-    public void draw(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer) {
+    public void draw(PdfHelper helper, int staveNumber, int lineNumber, float xCoordinate) {
         //Do Nothing
     }
 

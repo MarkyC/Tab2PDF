@@ -1,6 +1,6 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
-import com.itextpdf.text.pdf.PdfWriter;
+import ca.yorku.cse2311.tab2pdf.PdfHelper;
 
 /**
  * ILongDraw
@@ -12,5 +12,5 @@ import com.itextpdf.text.pdf.PdfWriter;
  */
 public interface ILongDraw extends IDrawable {
 
-    public void drawLong(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer, int oldStave, int OldLine, float oldXCoordinate, String oldString);
+    public void drawLong(PdfHelper helper, int staveNumber, int lineNumber, float xCoordinate, int oldStave, int OldLine, float oldXCoordinate, String oldString);
 }

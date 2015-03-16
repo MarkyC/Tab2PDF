@@ -1,9 +1,6 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
 import ca.yorku.cse2311.tab2pdf.PdfHelper;
-import com.itextpdf.text.pdf.PdfWriter;
-
-import static ca.yorku.cse2311.tab2pdf.PdfHelper.thinLine;
 
 /**
  * Pipe

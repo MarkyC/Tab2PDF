@@ -51,7 +51,7 @@ public class PdfHelper {
 //        this(writer, lineSpace, 0.6f);
 //    }
     
-    private PdfHelper(PdfWriter writer, int lineSpace, float lineWidth) {
+    public PdfHelper(PdfWriter writer, int lineSpace, float lineWidth) {
         this.writer = writer;
         this.lineSpace = lineSpace;
         this.staveHeight = lineSpace * 5;
@@ -587,37 +587,4 @@ public class PdfHelper {
         thinLine(staveNumber, xCoordinate - spacing / 2f);
         filledCircles(staveNumber, xCoordinate - spacing * 1.1f);
     }
-
-    public class Builder {
-
-        private PdfWriter writer;
-
-        private int lineSpacing = 7;
-
-        private float lineWidth = 0.6f;
-
-        private Builder() {
-
-        }
-
-        public Builder withPdfWriter(PdfWriter writer) {
-            this.writer = writer;
-            return this;
-        }
-
-        public Builder withLineSpacing(int lineSpacing) {
-            this.lineSpacing = lineSpacing;
-            return this;
-        }
-
-        public Builder withLineWidth(float lineWidth) {
-            this.lineWidth = lineWidth;
-            return this;
-        }
-
-        public PdfHelper build() {
-            return new PdfHelper(writer, lineSpacing, lineWidth);
-        }
-    }
-
 }

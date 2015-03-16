@@ -1,10 +1,6 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
 import ca.yorku.cse2311.tab2pdf.PdfHelper;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.pdf.PdfWriter;
-
-import java.io.IOException;
 
 /**
  * Created by Brody Atto on 25/01/2015.
@@ -22,14 +18,12 @@ public class SquareNote implements ITabNotation {
         return note;
     }
 
-    public void draw(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer) {
+    public void draw(PdfHelper helper, int staveNumber, int lineNumber, float xCoordinate) {
 
         try {
-            PdfHelper.drawSquareNote(staveNumber, lineNumber, xCoordinate, this, writer);
-        } catch (IOException e) {
-            //TODO: What should we do on an IOExeption?
-        } catch (DocumentException e) {
-            //TODO: What should we do on an DocumentExecption?
+            helper.drawSquareNote(staveNumber, lineNumber, xCoordinate, this);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
