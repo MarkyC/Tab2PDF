@@ -4,13 +4,16 @@ import ca.yorku.cse2311.tab2pdf.model.HammerOn;
 import ca.yorku.cse2311.tab2pdf.model.PullOff;
 import ca.yorku.cse2311.tab2pdf.model.Slide;
 import ca.yorku.cse2311.tab2pdf.model.SquareNote;
+import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.GrayColor;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 /**
  * The class implements a set of methods to draw a stave, thin/thick lines, circles,
@@ -23,6 +26,10 @@ import java.io.IOException;
 public class PdfHelper {
 
     private final PdfWriter writer;
+
+    private final Document document;
+
+    private final File file;
 
     /**
      * Space between the lines of the stave in pixels
@@ -42,29 +49,51 @@ public class PdfHelper {
      * Size of the digits in stave
      */
     private int digitSize;
-
-//    private PdfHelper(PdfWriter writer) {
-//        this(writer, 7);
-//    }
-//
-//    private PdfHelper(PdfWriter writer, int lineSpace) {
-//        this(writer, lineSpace, 0.6f);
-//    }
     
-    public PdfHelper(PdfWriter writer, int lineSpace, float lineWidth) {
-        this.writer = writer;
+    public PdfHelper(Document document, File output, int lineSpace, float lineWidth) throws IOException, DocumentException {
+        this.document = document;
+        this.writer = PdfWriter.getInstance(document, Files.newOutputStream(output.toPath()));
+        this.file = output;
         this.lineSpace = lineSpace;
         this.staveHeight = lineSpace * 5;
         this.lineWidth = lineWidth;
         this.digitSize = (int)(lineSpace * 1.3);
     }
 
-    /**
-     * TODO: Needs to be replaced with the ability to scale vertical spaceing
-     *
-     * @return Gets separation between lines
-     */
-    public int getLineSpace() {return lineSpace;}
+    public PdfWriter getWriter() {
+
+        return writer;
+    }
+
+    public Document getDocument() {
+
+        return document;
+    }
+
+    public int getLineSpace() {
+
+        return lineSpace;
+    }
+
+    public File getFile() {
+
+        return file;
+    }
+
+    public int getStaveHeight() {
+
+        return staveHeight;
+    }
+
+    public float getLineWidth() {
+
+        return lineWidth;
+    }
+
+    public int getDigitSize() {
+
+        return digitSize;
+    }
 
     /**
      * Draws a circle at the specified coordinates.
