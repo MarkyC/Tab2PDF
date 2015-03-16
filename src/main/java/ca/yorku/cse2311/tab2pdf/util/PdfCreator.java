@@ -13,10 +13,11 @@ import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.*;
 import java.io.File;
 import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Logger;
-
-import static ca.yorku.cse2311.tab2pdf.PdfHelper.stave;
 
 /**
  * pdfCreator
@@ -27,29 +28,22 @@ import static ca.yorku.cse2311.tab2pdf.PdfHelper.stave;
  */
 public class PdfCreator implements Runnable {
 
-    private static java.util.List<ILongDraw> longNotes = new LinkedList<>();
+    private List<? extends ILongDraw> longNotes = Collections.unmodifiableList(Arrays.asList(
+            new PullOff(new Note()),
+            new HammerOn(new Note())
+    ));
 
-    static {
-        longNotes.add(new PullOff(new Note()));
-        longNotes.add(new HammerOn(new Note()));
-    }
+    private static List<? extends IDrawable> ignoreNotes = Collections.unmodifiableList(Arrays.asList(
+            new Dash(),
+            new Pipe(),
+            new DoubleBar()
+    ));
 
-    private static java.util.List<IDrawable> ignoreNotes = new LinkedList<>();
+    private static List<? extends IDrawable> bars = Collections.unmodifiableList(Arrays.asList(
+            new Pipe(),
+            new DoubleBar()
+    ));
 
-    static {
-        ignoreNotes.add(new Dash());
-        ignoreNotes.add(new Pipe());
-        ignoreNotes.add(new DoubleBar());
-        //ignoreNotes.add()
-    }
-
-    private static java.util.List<IDrawable> bars = new LinkedList<>();
-
-    static {
-        bars.add(new Pipe());
-        bars.add(new DoubleBar());
-        //bars.add()
-    }
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
     private Arguments args;
 
@@ -62,6 +56,10 @@ public class PdfCreator implements Runnable {
 
         try {
             //Tab tab = TabParser.parse(FileUtils.readFile(args.getInputFile()));
+            PdfHelper pdfHelper = new PdfHelper.Builder().withPdfWriter(
+                    PdfWriter.getInstance(new Document(), Files.newOutputStream(args.getOutputFile().toPath()),
+
+            );
             Tab tab = TabParser.parse(MainJFrame.getEditorContents());
             createPdf(tab, args.getOutputFile());
             Desktop.getDesktop().open(args.getOutputFile());
@@ -72,12 +70,12 @@ public class PdfCreator implements Runnable {
         }
     }
 
-    public void createPdf(Tab tab, File out) throws Exception {
+    public void createPdf(PdfHelper pdfHelper, Tab tab, File out) throws Exception {
 
         // Create document
-        Document document = new Document();
+        //Document document = new Document();
         // get writer
-        PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(out.toPath()));
+        PdfWriter writer = pdfHelper.getPdfWriter();
         // open document
         document.open();
 
