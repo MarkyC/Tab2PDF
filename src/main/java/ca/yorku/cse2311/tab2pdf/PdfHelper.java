@@ -49,7 +49,16 @@ public class PdfHelper {
      * Size of the digits in stave
      */
     private int digitSize;
-    
+
+    public PdfHelper(int lineSpace, float lineWidth) throws IOException, DocumentException {
+        this(Files.createTempFile("tab2pdf", ".pdf").toFile(), lineSpace, lineWidth);
+    }
+
+    public PdfHelper(File output, int lineSpace, float lineWidth) throws IOException, DocumentException {
+        this(new Document(), output, lineSpace, lineWidth);
+    }
+
+
     public PdfHelper(Document document, File output, int lineSpace, float lineWidth) throws IOException, DocumentException {
         this.document = document;
         this.writer = PdfWriter.getInstance(document, Files.newOutputStream(output.toPath()));
