@@ -1,4 +1,7 @@
-package ca.yorku.cse2311.tab2pdf.ui;
+package ca.yorku.cse2311.tab2pdf.ui.listener;
+
+import ca.yorku.cse2311.tab2pdf.ui.component.InputEditorTab;
+import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
 
 import javax.swing.*;
 import java.io.File;
@@ -9,26 +12,23 @@ import java.util.logging.Logger;
  *
  * Created by Glib Sitiugin on 2015-03-06.
  */
-public class JFrameListener {
+public abstract class AbstractListener {
 
     private static MainJFrame jFrame;
 
-    private static JTextPane editor = EditorPanel.EDITOR;
+    private static JTextPane editor = InputEditorTab.EDITOR;
 
     private static File inputFile;
 
     private static File outputFile;
 
-    private static JLabel symbolsNumber = new JLabel("0");
-
-    //TODO: log all events
     protected final Logger LOGGER = Logger.getLogger(this.getClass().getName());
 
     /**
      * Constructor
      * @param frame we are working with
      */
-    public JFrameListener(MainJFrame frame) {
+    public AbstractListener(MainJFrame frame) {
 
         jFrame = frame;
         setInputFile(inputFile);
@@ -51,14 +51,6 @@ public class JFrameListener {
 
     protected void setInputEditor(JTextPane inputEditor) { editor = inputEditor; }
 
-    /*public int getSymbolsNumber() {
-
-        return getEditor().getText().length();
-    }
-
-    public static void setSymbolsNumber(int number) {
-
-        symbolsNumber.setText(String.valueOf(number));
-    }*/
+    public abstract void enableComponents();
 
 }
