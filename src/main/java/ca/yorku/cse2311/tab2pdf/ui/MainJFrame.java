@@ -59,13 +59,17 @@ public class MainJFrame extends JFrame {
      */
     public void setFile(File file) {
 
+        LOG.info("Opening file: "+file.getAbsolutePath());
+
         try { // Put this file in the editor
             this.EDITOR_TAB.setFile(file);
             this.file = file;
+            update(String.format("Opened %s", file.getName()));
         } catch (IOException e) {
             LOG.severe(e.getMessage());
-            // TODO: Show error dialog explaining we could no open the file
+            // TODO: Show error dialog explaining we could not open the file
         }
+
     }
 
     /**
@@ -140,7 +144,12 @@ public class MainJFrame extends JFrame {
         this.TOOLBAR.getOpenButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                update();
+                JFileChooser fc = new JFileChooser();
+                int returnVal = fc.showOpenDialog(MainJFrame.this);
+
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    setFile(fc.getSelectedFile());
+                }
             }
         });
         this.TOOLBAR.getSaveButton().addActionListener(new ActionListener() {
