@@ -1,14 +1,27 @@
 package ca.yorku.cse2311.tab2pdf.ui;
 
 import ca.yorku.cse2311.tab2pdf.Arguments;
-import ca.yorku.cse2311.tab2pdf.ui.component.*;
-import ca.yorku.cse2311.tab2pdf.ui.listener.*;
-import ca.yorku.cse2311.tab2pdf.ui.support.JFrameTool;
+import ca.yorku.cse2311.tab2pdf.PdfHelper;
+import ca.yorku.cse2311.tab2pdf.ui.component.EditorTab;
+import ca.yorku.cse2311.tab2pdf.ui.component.PreviewTab;
+import ca.yorku.cse2311.tab2pdf.ui.component.StatusBar;
+import ca.yorku.cse2311.tab2pdf.ui.component.ToolBar;
+import ca.yorku.cse2311.tab2pdf.ui.listener.HelpListener;
+import ca.yorku.cse2311.tab2pdf.util.PdfCreator;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * MainJFrame
@@ -18,6 +31,42 @@ import java.util.List;
  * @since 2015-01-21
  */
 public class MainJFrame extends JFrame {
+
+    private final static Logger LOG = Logger.getLogger(MainJFrame.class.getName());
+
+    private final ToolBar TOOLBAR;
+
+    private final EditorTab EDITOR_TAB;
+
+    private final StatusBar STATUS_BAR;
+
+    /**
+     * The tab we are editing
+     */
+    private File file;
+
+    /**
+     * @return the tab we are editing
+     */
+    public File getFile() {
+
+        return file;
+    }
+
+    /**
+     * sets the tab file we are editing
+     * @param file the new tab file to set
+     */
+    public void setFile(File file) {
+
+        try { // Put this file in the editor
+            this.EDITOR_TAB.setFile(file);
+            this.file = file;
+        } catch (IOException e) {
+            LOG.severe(e.getMessage());
+            // TODO: Show error dialog explaining we could no open the file
+        }
+    }
 
     /**
      * Title of the GUI window
@@ -33,14 +82,10 @@ public class MainJFrame extends JFrame {
 
         super(title);
 
-        // setup size
-        //this.setPreferredSize(JFrameData.SCREEN_SIZE);
-
         // setup location and make its size fixed
         this.setLocation(0, 0);
-        //this.setResizable(false);
 
-        // makes the frame look native to your computer (it: Windows, or Mac looking)
+        // makes the frame look native to your computer (ie: Windows, or Mac looking)
         try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
         catch (Exception e) {e.printStackTrace();}
 
@@ -49,17 +94,16 @@ public class MainJFrame extends JFrame {
 
         // add primary panels to the frame
         Container container = this.getContentPane();
-        container.add(new ToolBar(), BorderLayout.NORTH);
-        //container.add(new InputEditorTab(), BorderLayout.LINE_START);
-        //container.add(new PreviewTab(), BorderLayout.LINE_END);
+        container.add(this.TOOLBAR = new ToolBar(), BorderLayout.NORTH);
 
-        JTabbedPane pane = tabbedPane("Switch to Text File Editor", new InputEditorTab(), "Switch to Pdf Preview Panel", new PreviewTab());
+        JTabbedPane pane = tabbedPane("Switch to Text File Editor", this.EDITOR_TAB = new EditorTab(), "Switch to Pdf Preview Panel", new PreviewTab());
         container.add(pane, BorderLayout.CENTER);
-        container.add(new StatusBar(), BorderLayout.SOUTH);
+        container.add(this.STATUS_BAR = new StatusBar(), BorderLayout.SOUTH);
         // add listeners to the toolbar elements
         addListeners();
 
-        blockComponents();
+        update();
+
     }
 
     /**
@@ -71,9 +115,6 @@ public class MainJFrame extends JFrame {
     private MainJFrame(String title, Arguments args) {
 
         this(title);
-
-        AbstractListener.setInputFile(args.getInputFile());
-        AbstractListener.setOutputFile(args.getOutputFile());
     }
 
     /**
@@ -96,18 +137,74 @@ public class MainJFrame extends JFrame {
     public void addListeners() {
 
         // add action listeners to the toolbar buttons
-        JFrameTool.getOpenButton().addActionListener(new OpenFileListener(this));
-        JFrameTool.getSaveTextFileButon().addActionListener(new SaveTextFileListener(this));
-        JFrameTool.getConvertButton().addActionListener(new ConvertToPdfListener(this));
-        JFrameTool.getHelpButton().addActionListener(new HelpListener(this));
+        this.TOOLBAR.getOpenButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                update();
+            }
+        });
+        this.TOOLBAR.getSaveButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
 
-        // add change listeners to toolbar sliders
-        JFrameTool.getScalingSlider().addChangeListener(new ScalingSliderListener(this));
-        JFrameTool.getSpacingSlider().addChangeListener(new SpacingSliderListener(this));
+                try {
+                    BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+                    writer.write(EDITOR_TAB.getText());
+                    writer.close();
+                } catch (IOException e) {
+                    LOG.severe(e.getMessage());
+                    // TODO: Show "could not save file, make sure it is not opened in another process" dialog
+                }
+            }
+        });
+        this.TOOLBAR.getExportButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+
+                try {
+                    new PdfCreator(
+                            new PdfHelper(EDITOR_TAB.getSpacingValue(), EDITOR_TAB.getScalingValue()),
+                            getEditorContents()
+                    );
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        this.TOOLBAR.getHelpButton().addActionListener(new HelpListener(this));
 
         // add key listener to the input editor
         // the listener is needed to update symbols number in status panel
-        JFrameTool.getEditor().addKeyListener(new InputEditorListener(this));
+        this.EDITOR_TAB.getEditor().addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+                update();
+                super.keyPressed(e);
+            }
+        });
+    }
+
+    public void update() {
+
+        update("Welcome to Tab2Pdf");
+    }
+
+    public void update(String status) {
+
+        this.STATUS_BAR.setHint(status);
+
+        if (null != file) {
+            this.STATUS_BAR.setInputFilePath(file.getAbsolutePath());   // The file we're currently editing
+            this.STATUS_BAR.setSymbolsNumber(this.EDITOR_TAB.getEditor().getText().length()); // Size of the file
+
+            // If a file is loaded, we should enable certain stuff
+            this.TOOLBAR.getSaveButton().setEnabled(true);
+            this.TOOLBAR.getExportButton().setEnabled(true);
+            this.EDITOR_TAB.setEnabled(true);
+        } else {
+            blockComponents();
+        }
     }
 
     /**
@@ -116,12 +213,14 @@ public class MainJFrame extends JFrame {
      *
      * @return list containing the contents of input editor
      */
-    public static List<String> getEditorContents() {
+    public List<String> getEditorContents() {
+
+        // TODO: refactor this method into EditorTab.getEditorText()
 
         //Setup object to store editor contents
         List<String> editorContents = new ArrayList<>();
 
-        String contents = JFrameTool.getEditor().getText();
+        String contents = this.EDITOR_TAB.getEditor().getText();
         if (!contents.isEmpty()) {
             String lines[] = contents.split("\\r?\\n");
 
@@ -146,15 +245,12 @@ public class MainJFrame extends JFrame {
     /**
      * Disables components which are not supposed to be used yet
      */
-    private static void blockComponents() {
+    private void blockComponents() {
 
-        JFrameTool.enableComponent(JFrameTool.getSavePdfButton(), false);
-        JFrameTool.enableComponent(JFrameTool.getConvertButton(), false);
-        JFrameTool.enableComponent(JFrameTool.getTitle(), false);
-        JFrameTool.enableComponent(JFrameTool.getSubtitle(), false);
-        JFrameTool.enableComponent(JFrameTool.getScalingSlider(), false);
-        JFrameTool.enableComponent(JFrameTool.getSpacingSlider(), false);
-        JFrameTool.enableComponent(JFrameTool.getSaveTextFileButon(), false);
+        this.TOOLBAR.getSaveButton().setEnabled(false);
+        this.TOOLBAR.getExportButton().setEnabled(false);
+
+        this.EDITOR_TAB.setEnabled(false);
     }
 
     /**

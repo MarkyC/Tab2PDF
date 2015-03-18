@@ -1,15 +1,22 @@
 package ca.yorku.cse2311.tab2pdf.ui.component;
 
 import ca.yorku.cse2311.tab2pdf.ui.support.JFrameTool;
+import ca.yorku.cse2311.tab2pdf.util.FileUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 /**
- * Created by Glib Sitiugin on 2015-03-07.
+ * EditorTab
+ *
+ * This tab allows users to edit the guitar tabulature file
+ *
+ * @author Glib Sitiugin, Marco Cirllo
+ * @since 2015-03-18
  */
-public class InputEditorTab extends JPanel {
-
+ public class EditorTab extends JPanel {
 
     /**
      * Toolbar sliders data
@@ -57,25 +64,57 @@ public class InputEditorTab extends JPanel {
     /**
      * Tab components
      */
-    public static final JTextPane EDITOR = new JTextPane();
+    private final JTextPane EDITOR = new JTextPane();
 
-    public static final JTextField TITLE = new JTextField("Not Implemented");
+    private final JTextField TITLE = new JTextField("Not Implemented");
 
-    public static final JTextField SUBTITLE = new JTextField("Not Implemented");
+    private final JTextField SUBTITLE = new JTextField("Not Implemented");
 
-    //public static final JTextField SPACING = new JTextField("0");
+    private final JSlider SCALING_SLIDER = new JSlider(JSlider.HORIZONTAL, SCALING_SLIDER_MIN, SCALING_SLIDER_MAX, SCALING_SLIDER_INIT);
 
-    public static final JSlider SCALING_SLIDER = new JSlider(JSlider.HORIZONTAL, SCALING_SLIDER_MIN, SCALING_SLIDER_MAX, SCALING_SLIDER_INIT);
+    private final JSlider SPACING_SLIDER = new JSlider(JSlider.HORIZONTAL, SPACING_SLIDER_MIN, SPACING_SLIDER_MAX, SPACING_SLIDER_INIT);
 
-    public static final JSlider SPACING_SLIDER = new JSlider(JSlider.HORIZONTAL, SPACING_SLIDER_MIN, SPACING_SLIDER_MAX, SPACING_SLIDER_INIT);
+    public JTextPane getEditor() {
 
-    public static final JButton SAVE_TEXT_FILE_BUTTON = new JButton("Save Changes to Text File");
+        return EDITOR;
+    }
 
+    public String getTitle() {
+
+        return TITLE.getText();
+    }
+
+    public String getSubtitle() {
+
+        return SUBTITLE.getText();
+    }
+
+    public Integer getScalingValue() {
+
+        return SCALING_SLIDER.getValue();
+    }
+
+    public Integer getSpacingValue() {
+
+        return SPACING_SLIDER.getValue();
+    }
+
+    public String getText() {
+        return EDITOR.getText();
+    }
+
+    /**
+     * Sets the file we are editting
+     * @param f The new file we are editting
+     */
+    public void setFile(File f) throws IOException {
+        this.getEditor().setText(FileUtils.readFile(f));
+    }
 
     /**
      * Constructs a new Editor tab composed of control panel and input editor
      */
-    public InputEditorTab() {
+    public EditorTab() {
 
         super();
 
@@ -111,15 +150,6 @@ public class InputEditorTab extends JPanel {
         setupSliders();
         panel.add(panel(SCALING_PANEL_NAME, SCALING_SLIDER));
         panel.add(panel(SPACING_PANEL_NAME, SPACING_SLIDER));
-
-        // add save button
-        JToolBar toolBar = new JToolBar();
-        toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.X_AXIS));
-        toolBar.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), SAVE_PANEL_NAME));
-        toolBar.add(SAVE_TEXT_FILE_BUTTON);
-        SAVE_TEXT_FILE_BUTTON.setMaximumSize(new Dimension(400, 200));
-        toolBar.setFloatable(false);
-        panel.add(toolBar);
 
         return panel;
     }

@@ -1,7 +1,6 @@
 package ca.yorku.cse2311.tab2pdf.ui.listener;
 
 import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
-import ca.yorku.cse2311.tab2pdf.ui.component.StatusBar;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -33,7 +32,6 @@ public class HelpListener extends AbstractListener implements EventListener, Act
     public void actionPerformed(ActionEvent e) {
 
         LOGGER.log(Level.INFO, e.paramString());
-        StatusBar.setHint("Help Button Clicked");
 
         //TODO: make user manual work
         // create a new frame with an embedded user manual

@@ -1,9 +1,7 @@
 package ca.yorku.cse2311.tab2pdf.ui.listener;
 
-import ca.yorku.cse2311.tab2pdf.ui.component.InputEditorTab;
 import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
 
-import javax.swing.*;
 import java.io.File;
 import java.util.logging.Logger;
 
@@ -15,8 +13,6 @@ import java.util.logging.Logger;
 public abstract class AbstractListener {
 
     private static MainJFrame jFrame;
-
-    private static JTextPane editor = InputEditorTab.EDITOR;
 
     private static File inputFile;
 
@@ -33,7 +29,6 @@ public abstract class AbstractListener {
         jFrame = frame;
         setInputFile(inputFile);
         setOutputFile(outputFile);
-        setInputEditor(editor);
     }
 
 
@@ -46,10 +41,6 @@ public abstract class AbstractListener {
     public static void setOutputFile(File file) { outputFile = file; }
 
     protected MainJFrame getJFrame() { return jFrame; }
-
-    protected JTextPane getEditor() { return editor; }
-
-    protected void setInputEditor(JTextPane inputEditor) { editor = inputEditor; }
 
     public abstract void enableComponents();
 

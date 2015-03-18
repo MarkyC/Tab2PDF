@@ -52,17 +52,17 @@ public class StatusBar extends JPanel {
     }
 
 
-    public static void setInputFilePath(String path) {
+    public void setInputFilePath(String path) {
 
         INPUT_FILE_PATH.setText(path);
     }
 
-    public static void setSymbolsNumber(int number) {
+    public void setSymbolsNumber(int number) {
 
         SYMBOLS_NUMBER.setText(String.valueOf(number));
     }
 
-    public static void setHint(String hint) {
+    public void setHint(String hint) {
 
         HINT_LABEL.setText(hint);
     }
