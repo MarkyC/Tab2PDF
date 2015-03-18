@@ -1,14 +1,14 @@
 package ca.yorku.cse2311.tab2pdf.ui;
 
 import ca.yorku.cse2311.tab2pdf.Arguments;
+import ca.yorku.cse2311.tab2pdf.ui.component.*;
+import ca.yorku.cse2311.tab2pdf.ui.listener.*;
+import ca.yorku.cse2311.tab2pdf.ui.support.JFrameTool;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.util.*;
 import java.util.List;
-
-import static ca.yorku.cse2311.tab2pdf.ui.JFrameData.WINDOW_TITLE;
 
 /**
  * MainJFrame
@@ -20,6 +20,11 @@ import static ca.yorku.cse2311.tab2pdf.ui.JFrameData.WINDOW_TITLE;
 public class MainJFrame extends JFrame {
 
     /**
+     * Title of the GUI window
+     */
+    public static final String WINDOW_TITLE = "Tab2PDF";
+
+    /**
      * Main frame constructor
      *
      * @param title the window title
@@ -28,9 +33,12 @@ public class MainJFrame extends JFrame {
 
         super(title);
 
+        // setup size
+        //this.setPreferredSize(JFrameData.SCREEN_SIZE);
+
         // setup location and make its size fixed
         this.setLocation(0, 0);
-        this.setResizable(false);
+        //this.setResizable(false);
 
         // makes the frame look native to your computer (it: Windows, or Mac looking)
         try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
@@ -41,13 +49,17 @@ public class MainJFrame extends JFrame {
 
         // add primary panels to the frame
         Container container = this.getContentPane();
-        container.add(new ToolBar(), BorderLayout.PAGE_START);
-        container.add(new EditorPanel(), BorderLayout.LINE_START);
-        container.add(new PreviewPanel(), BorderLayout.LINE_END);
-        container.add(new StatusBar(), BorderLayout.PAGE_END);
+        container.add(new ToolBar(), BorderLayout.NORTH);
+        //container.add(new InputEditorTab(), BorderLayout.LINE_START);
+        //container.add(new PreviewTab(), BorderLayout.LINE_END);
 
+        JTabbedPane pane = tabbedPane("Switch to Text File Editor", new InputEditorTab(), "Switch to Pdf Preview Panel", new PreviewTab());
+        container.add(pane, BorderLayout.CENTER);
+        container.add(new StatusBar(), BorderLayout.SOUTH);
         // add listeners to the toolbar elements
         addListeners();
+
+        blockComponents();
     }
 
     /**
@@ -60,8 +72,8 @@ public class MainJFrame extends JFrame {
 
         this(title);
 
-        JFrameListener.setInputFile(args.getInputFile());
-        JFrameListener.setOutputFile(args.getOutputFile());
+        AbstractListener.setInputFile(args.getInputFile());
+        AbstractListener.setOutputFile(args.getOutputFile());
     }
 
     /**
@@ -84,18 +96,18 @@ public class MainJFrame extends JFrame {
     public void addListeners() {
 
         // add action listeners to the toolbar buttons
-        ToolBar.OPEN_BUTTON.addActionListener(new OpenFileListener(this));
-        ToolBar.SAVE_BUTTON.addActionListener(new SaveFileListener(this));
-        ToolBar.CONVERT_BUTTON.addActionListener(new ConvertToPdfListener(this));
-        ToolBar.HELP_BUTTON.addActionListener(new HelpListener(this));
+        JFrameTool.getOpenButton().addActionListener(new OpenFileListener(this));
+        JFrameTool.getSaveTextFileButon().addActionListener(new SaveTextFileListener(this));
+        JFrameTool.getConvertButton().addActionListener(new ConvertToPdfListener(this));
+        JFrameTool.getHelpButton().addActionListener(new HelpListener(this));
 
         // add change listeners to toolbar sliders
-        ToolBar.SCALING_SLIDER.addChangeListener(new ScalingSliderListener(this));
-        ToolBar.SPACING_SLIDER.addChangeListener(new SpacingSliderListener(this));
+        JFrameTool.getScalingSlider().addChangeListener(new ScalingSliderListener(this));
+        JFrameTool.getSpacingSlider().addChangeListener(new SpacingSliderListener(this));
 
         // add key listener to the input editor
         // the listener is needed to update symbols number in status panel
-        EditorPanel.EDITOR.addKeyListener(new InputEditorListener(this));
+        JFrameTool.getEditor().addKeyListener(new InputEditorListener(this));
     }
 
     /**
@@ -109,7 +121,7 @@ public class MainJFrame extends JFrame {
         //Setup object to store editor contents
         List<String> editorContents = new ArrayList<>();
 
-        String contents = EditorPanel.EDITOR.getText();
+        String contents = JFrameTool.getEditor().getText();
         if (!contents.isEmpty()) {
             String lines[] = contents.split("\\r?\\n");
 
@@ -118,6 +130,31 @@ public class MainJFrame extends JFrame {
                 editorContents.add(i, lines[i]);
         }
         return editorContents;
+    }
+
+    private JTabbedPane tabbedPane(String tab1Name, JComponent tab1, String tab2Name, JComponent tab2) {
+
+        JTabbedPane pane = new JTabbedPane();
+
+        pane.addTab(tab1Name, tab1);
+        pane.addTab(tab2Name, tab2);
+
+        return pane;
+
+    }
+
+    /**
+     * Disables components which are not supposed to be used yet
+     */
+    private static void blockComponents() {
+
+        JFrameTool.enableComponent(JFrameTool.getSavePdfButton(), false);
+        JFrameTool.enableComponent(JFrameTool.getConvertButton(), false);
+        JFrameTool.enableComponent(JFrameTool.getTitle(), false);
+        JFrameTool.enableComponent(JFrameTool.getSubtitle(), false);
+        JFrameTool.enableComponent(JFrameTool.getScalingSlider(), false);
+        JFrameTool.enableComponent(JFrameTool.getSpacingSlider(), false);
+        JFrameTool.enableComponent(JFrameTool.getSaveTextFileButon(), false);
     }
 
     /**

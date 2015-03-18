@@ -1,6 +1,8 @@
-package ca.yorku.cse2311.tab2pdf.ui;
+package ca.yorku.cse2311.tab2pdf.ui.listener;
 
 import ca.yorku.cse2311.tab2pdf.Arguments;
+import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
+import ca.yorku.cse2311.tab2pdf.ui.component.StatusBar;
 import ca.yorku.cse2311.tab2pdf.util.PdfCreator;
 
 import javax.swing.*;
@@ -14,7 +16,7 @@ import java.util.logging.Level;
 /**
  * Created by Glib Sitiugin on 2015-03-06.
  */
-public class ConvertToPdfListener extends JFrameListener implements EventListener, ActionListener {
+public class ConvertToPdfListener extends AbstractListener implements EventListener, ActionListener {
 
     private int tempFileNumber = 0;
 
@@ -24,9 +26,15 @@ public class ConvertToPdfListener extends JFrameListener implements EventListene
     }
 
     @Override
+    public void enableComponents() {
+        // do nothing
+    }
+
+    @Override
     public void actionPerformed(ActionEvent e) {
 
         LOGGER.log(Level.INFO, e.paramString());
+        StatusBar.setHint("Convert Button Clicked");
 
         // check if the file can be read
         if ( (null == getInputFile()) || !getInputFile().exists() || !getInputFile().canRead() ) {
@@ -41,8 +49,10 @@ public class ConvertToPdfListener extends JFrameListener implements EventListene
                 System.exit(-1);
             }
 
+        // increment temporary file number for future use
         tempFileNumber++;
-        // launch PDF creator in a new thread
+
+        // start PDF creator in a new thread
         new Thread(new PdfCreator(new Arguments(getInputFile(), getOutputFile()))).start();
     }
 }
