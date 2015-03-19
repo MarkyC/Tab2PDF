@@ -16,12 +16,6 @@ import java.util.logging.Logger;
 
     private final static Logger LOG = Logger.getLogger(ToolBar.class.getName());
 
-
-    /**
-     * Size of toolbar buttons
-     */
-    //private static final Dimension BUTTON_SIZE = new Dimension(400, 200);
-
     /**
      * Toolbar elements
      */
@@ -71,6 +65,15 @@ import java.util.logging.Logger;
         this.add(this.HELP_BUTTON = createButton("help.png", "Help", "Opens the Help Manual"));
     }
 
+    /**
+     * Creates a toolbar button
+     *
+     * @param rawImage  The filename of the image to use. Must be in the `resources/toolbar` directory
+     * @param text      The Text to show alongside the image
+     * @param tooltip   The tooltip for the button
+     *
+     * @return  a toolbar button
+     */
     private JButton createButton(String rawImage, String text, String tooltip) {
 
         final JButton button = new JButton(text);
