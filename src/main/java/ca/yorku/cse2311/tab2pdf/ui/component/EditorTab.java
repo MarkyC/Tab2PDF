@@ -198,7 +198,6 @@ import java.io.IOException;
 
         panel.add(EDITOR);
         // setup input editor
-        //this.add(EDITOR, BorderLayout.CENTER);
         EDITOR.setFont(EDITOR_FONT);
         JScrollPane scrollPane = new JScrollPane(EDITOR);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);

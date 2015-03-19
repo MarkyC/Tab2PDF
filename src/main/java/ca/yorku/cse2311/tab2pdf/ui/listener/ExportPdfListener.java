@@ -7,6 +7,7 @@ import ca.yorku.cse2311.tab2pdf.util.PdfCreator;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
@@ -32,14 +33,24 @@ public class ExportPdfListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent evt) {
 
+
         try {
-            new PdfCreator(
-                    new PdfHelper(
-                            window.getEditorTab().getSpacingValue(),
-                            window.getEditorTab().getScalingValue()
-                    ),
-                    Arrays.asList(window.getEditorTab().getText().split("\\r?\\n"))
-            );
+
+            JFileChooser fc = new JFileChooser();
+            fc.setDialogTitle("Export to PDF");
+            if (JFileChooser.APPROVE_OPTION == fc.showSaveDialog(window)) {
+                // User has chosen a file to save
+                File out = fc.getSelectedFile();
+                LOG.info("Exporting PDF to "+out.getAbsolutePath());
+                new Thread(new PdfCreator(
+                        new PdfHelper(
+                                createPdfFile(out),
+                                window.getEditorTab().getSpacingValue(),
+                                window.getEditorTab().getScalingValue()
+                        ),
+                        Arrays.asList(window.getEditorTab().getText().split("\\r?\\n"))
+                )).start();
+            }
         } catch (Exception e) {
             LOG.severe(e.getMessage());
             JOptionPane.showMessageDialog(
@@ -48,6 +59,14 @@ public class ExportPdfListener implements ActionListener {
                     "Error",
                     JOptionPane.ERROR_MESSAGE
             );
+        }
+    }
+
+    private File createPdfFile(File out) {
+        if (out.getName().endsWith(".pdf")) {
+            return out;
+        } else {
+            return new File(out.getAbsolutePath() + ".pdf");
         }
     }
 }
