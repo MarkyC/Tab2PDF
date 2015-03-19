@@ -7,21 +7,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * HelpListener
+ * AboutListener
  *
- * Opens the User Manual for the user to peruse
+ * Opens the About Us Window
  *
  * @author Glib Sitiugin, Anton Sitkovets, Marco Cirillo
  * @since 2015-03-19
  */
- public class HelpListener implements ActionListener {
+ public class AboutListener implements ActionListener {
 
     private final MainJFrame window;
 
     /**
      * @param window    the window we are working with
      */
-    public HelpListener(MainJFrame window) {
+    public AboutListener(MainJFrame window) {
 
         super();
 
@@ -31,9 +31,7 @@ import java.awt.event.ActionListener;
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        //TODO: make user manual work
-        // create a new frame with an embedded user manual
-        JFrame helpFrame = new JFrame("User Manual");
+        JFrame helpFrame = new JFrame("About Us");
         helpFrame.setSize(500, 500);
         JLabel label = new JLabel("Will be implemented soon!", JLabel.CENTER);
         helpFrame.add(label);

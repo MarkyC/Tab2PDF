@@ -3,40 +3,40 @@ package ca.yorku.cse2311.tab2pdf.ui.listener;
 import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * HelpListener
+ * SettingsListener
  *
- * Opens the User Manual for the user to peruse
+ * Opens the settings window for the user to edit settings
  *
- * @author Glib Sitiugin, Anton Sitkovets, Marco Cirillo
+ * @author Glib Sitiugin, Marco Cirillo
  * @since 2015-03-19
  */
- public class HelpListener implements ActionListener {
+ public class SettingsListener implements ActionListener {
 
     private final MainJFrame window;
 
     /**
      * @param window    the window we are working with
      */
-    public HelpListener(MainJFrame window) {
+    public SettingsListener(MainJFrame window) {
 
         super();
 
         this.window = window;
     }
 
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        //TODO: make user manual work
-        // create a new frame with an embedded user manual
-        JFrame helpFrame = new JFrame("User Manual");
+        JFrame helpFrame = new JFrame("Settings");
         helpFrame.setSize(500, 500);
-        JLabel label = new JLabel("Will be implemented soon!", JLabel.CENTER);
-        helpFrame.add(label);
+        JLabel label = new JLabel("Settings ideas: \n* Show/Hide toolbar text", JLabel.CENTER);
+        helpFrame.add(label, BorderLayout.CENTER);
         helpFrame.setVisible(true);
     }
 }

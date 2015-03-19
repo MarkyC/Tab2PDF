@@ -1,86 +1,99 @@
 package ca.yorku.cse2311.tab2pdf.ui.component;
 
-import ca.yorku.cse2311.tab2pdf.ui.support.JFrameTool;
-
+import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
+import java.util.logging.Logger;
 
 /**
- * Created by Glib Sitiugin on 2015-03-07.
+ * ToolBar
+ *
+ * The toolbar of our GUI
+ *
+ * @author Glib Sitiugin, Marco Cirillo
+ * @since 2015-03-19
  */
-public class ToolBar extends JToolBar {
+ public class ToolBar extends JToolBar {
 
-    /**
-     * Size of toolbar buttons
-     */
-    private static final Dimension BUTTON_SIZE = new Dimension(400, 200);
+    private final static Logger LOG = Logger.getLogger(ToolBar.class.getName());
 
     /**
      * Toolbar elements
      */
-    public static final JButton OPEN_BUTTON = new JButton("Open Text File");
+    private final JButton OPEN_BUTTON;
 
-    public static final JButton SAVE_PDF_BUTTON = new JButton("Save Pdf File");
+    private final JButton SAVE_BUTTON;
 
-    public static final JButton CONVERT_BUTTON = new JButton("Convert to Pdf");
+    private final JButton EXPORT_BUTTON;
 
-    public static final JButton SETTINGS_BUTTON = new JButton("Settings");
+    private final JButton SETTINGS_BUTTON;
 
-    public static final JButton HELP_BUTTON = new JButton("Help");
+    private final JButton HELP_BUTTON;
 
+    public JButton getHelpButton() {
+
+        return HELP_BUTTON;
+    }
+
+    public JButton getSettingsButton() {
+
+        return SETTINGS_BUTTON;
+    }
+
+    public JButton getExportButton() {
+
+        return EXPORT_BUTTON;
+    }
+
+    public JButton getSaveButton() {
+
+        return SAVE_BUTTON;
+    }
+
+    public JButton getOpenButton() {
+
+        return OPEN_BUTTON;
+    }
 
     public ToolBar() {
 
         super();
 
-        // setup toolbar
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.setPreferredSize(JFrameTool.BAR_SIZE);
-        this.setFloatable(false);
+        this.setFloatable(false);   // Don't let user detach (float) this toolbar
 
-        setupButtons();
-
+        // add buttons
+        this.add(this.OPEN_BUTTON = createButton("folder-open.png", "Open", "Open a Tab File"));
+        this.add(this.SAVE_BUTTON = createButton("document-save.png", "Save", "Save the Tab File"));
+        this.addSeparator();
+        this.add(this.EXPORT_BUTTON = createButton("application-pdf.png", "Export to PDF", "Export the Tab to a PDF"));
+        this.addSeparator();
+        this.add(this.SETTINGS_BUTTON = createButton("settings.png", "Settings", "Edit User Settings"));
+        this.add(this.HELP_BUTTON = createButton("help.png", "Help", "Opens the Help Manual"));
     }
 
+    /**
+     * Creates a toolbar button
+     *
+     * @param rawImage  The filename of the image to use. Must be in the `resources/toolbar` directory
+     * @param text      The Text to show alongside the image
+     * @param tooltip   The tooltip for the button
+     *
+     * @return  a toolbar button
+     */
+    private JButton createButton(String rawImage, String text, String tooltip) {
 
+        final JButton button = new JButton(text);
+        button.setToolTipText(tooltip);
 
-    private void setupButtons() {
+        try {   // try to give this button an icon
+            LOG.info("loading image: resources/toolbar/"+rawImage);
+            button.setIcon(new ImageIcon(
+                    ImageIO.read(ClassLoader.getSystemResource("toolbar/" + rawImage)),
+                    tooltip
+            ));
+        } catch (Exception e) {
+            LOG.severe("Failed to load image: "+e.getMessage());
+        }
 
-        // set button size
-        setButtonSize(OPEN_BUTTON);
-        setButtonSize(SAVE_PDF_BUTTON);
-        setButtonSize(CONVERT_BUTTON);
-        setButtonSize(SETTINGS_BUTTON);
-        setButtonSize(HELP_BUTTON);
-
-        // disable buttons which are not to be clicked yet
-        //enableComponents(SAVE_PDF_BUTTON, false);
-        //enableComponents(CONVERT_BUTTON, false);
-
-        // add buttons to toolbar
-        this.add(OPEN_BUTTON);
-        this.add(createSeparator());
-        this.add(SAVE_PDF_BUTTON);
-        this.add(createSeparator());
-        this.add(CONVERT_BUTTON);
-        this.add(createSeparator());
-        this.add(SETTINGS_BUTTON);
-        this.add(createSeparator());
-        this.add(HELP_BUTTON);
+        return button;
     }
-
-    private void setButtonSize(JButton button) {
-
-        button.setPreferredSize(BUTTON_SIZE);
-        button.setMaximumSize(BUTTON_SIZE);
-    }
-
-    private static JSeparator createSeparator() {
-
-        JSeparator separator = new JSeparator();
-        separator.setOrientation(JSeparator.VERTICAL);
-
-        return separator;
-    }
-
 }

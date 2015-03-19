@@ -4,13 +4,16 @@ import ca.yorku.cse2311.tab2pdf.model.HammerOn;
 import ca.yorku.cse2311.tab2pdf.model.PullOff;
 import ca.yorku.cse2311.tab2pdf.model.Slide;
 import ca.yorku.cse2311.tab2pdf.model.SquareNote;
+import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.GrayColor;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 /**
  * The class implements a set of methods to draw a stave, thin/thick lines, circles,
@@ -22,39 +25,83 @@ import java.io.IOException;
 
 public class PdfHelper {
 
+    private final PdfWriter writer;
+
+    private final Document document;
+
+    private final File file;
+
     /**
      * Space between the lines of the stave in pixels
      * Set lineSpace to other value if needed
      */
-    private static int lineSpace = 7;
+    private int lineSpace;
 
     /**
      * Width of one stave in pixels
      * Determined based on lineSpace
      */
-    private static int staveHeight = lineSpace * 5;
+    private int staveHeight;
 
-    private static final float LINE_WIDTH = 0.6f;
+    private float lineWidth;
 
     /**
      * Size of the digits in stave
      */
-    private static int digitSize = (int)(lineSpace * 1.3);
+    private int digitSize;
 
-    /**
-     * TODO: Needs to be replaced with the ability to scale vertical spaceing
-     *
-     * @return Gets separation between lines
-     */
-    public static int getLineSpace() {return lineSpace;}
+    public PdfHelper(int lineSpace, float lineWidth) throws IOException, DocumentException {
+        this(Files.createTempFile("tab2pdf", ".pdf").toFile(), lineSpace, lineWidth);
+    }
 
-    public static int setLineSpace(int x) {
+    public PdfHelper(File output, int lineSpace, float lineWidth) throws IOException, DocumentException {
+        this(new Document(), output, lineSpace, lineWidth);
+    }
 
-        lineSpace = x;
-        staveHeight = lineSpace * 5;
-        digitSize = (int)(lineSpace * 1.3);
+
+    public PdfHelper(Document document, File output, int lineSpace, float lineWidth) throws IOException, DocumentException {
+        this.document = document;
+        this.writer = PdfWriter.getInstance(document, Files.newOutputStream(output.toPath()));
+        this.file = output;
+        this.lineSpace = lineSpace;
+        this.staveHeight = lineSpace * 5;
+        this.lineWidth = lineWidth;
+        this.digitSize = (int)(lineSpace * 1.3);
+    }
+
+    public PdfWriter getWriter() {
+
+        return writer;
+    }
+
+    public Document getDocument() {
+
+        return document;
+    }
+
+    public int getLineSpace() {
 
         return lineSpace;
+    }
+
+    public File getFile() {
+
+        return file;
+    }
+
+    public int getStaveHeight() {
+
+        return staveHeight;
+    }
+
+    public float getLineWidth() {
+
+        return lineWidth;
+    }
+
+    public int getDigitSize() {
+
+        return digitSize;
     }
 
     /**
@@ -64,9 +111,8 @@ public class PdfHelper {
      * @param y      The y position of the circle
      * @param radius The radius of the circle
      * @param filled True if the circle is filled
-     * @param writer Pdf writer for the document
      */
-    private static void circle(float x, float y, float radius, boolean filled, PdfWriter writer) {
+    private void circle(float x, float y, float radius, boolean filled) {
 
         PdfContentByte canvas = writer.getDirectContent();
 
@@ -90,9 +136,8 @@ public class PdfHelper {
      * @param y        The y position of the diamond
      * @param radius   The radius of the circle
      * @param hollowed True if the circle is filled
-     * @param writer   Pdf writer for the document
      */
-    private static void diamond(float x, float y, float radius, boolean hollowed, PdfWriter writer) {
+    private void diamond(float x, float y, float radius, boolean hollowed) {
 
         PdfContentByte canvas = writer.getDirectContent();
 
@@ -132,9 +177,8 @@ public class PdfHelper {
      * @param x2     X coordinate of the second point
      * @param y2     Y coordinate of the second point
      * @param width  Thickness of the line
-     * @param writer Pdf writer for the document
      */
-    private static void line(float x1, float y1, float x2, float y2, float width, PdfWriter writer) {
+    private void line(float x1, float y1, float x2, float y2, float width) {
 
         PdfContentByte canvas = writer.getDirectContent();
 
@@ -160,9 +204,8 @@ public class PdfHelper {
      * @param y2     Y coordinate of the second point
      * @param width  Thickness of the line
      * @param height Height of the Arc
-     * @param writer Pdf writer for the document
      */
-    private static void arc(float x1, float y1, float x2, float y2, float width, float height, PdfWriter writer) {
+    private void arc(float x1, float y1, float x2, float y2, float width, float height) {
 
         float leftHandleX = x1 - (x1 - x2) / 4;
         float leftHandleY = (y1 + y2) / 2 + height;
@@ -192,28 +235,25 @@ public class PdfHelper {
      * @param staveNumber the number of stave to work with
      * @return the Y coordinate of the line to draw
      */
-    public static int determineYCoordinate(int staveNumber) {
+    public int determineYCoordinate(int staveNumber) {
 
-        final int STAVE_SPACE = PdfHelper.lineSpace * 10; //Space between the staves
-        int yCoordinate = 600 - staveNumber * STAVE_SPACE;
-
-        return yCoordinate;
+        final int STAVE_SPACE = lineSpace * 10; //Space between the staves
+        return 600 - staveNumber * STAVE_SPACE;
     }
 
     /**
      * Draws one stave consisting of 6 horizontal lines
      *
      * @param staveNumber the number of stave to draw (top stave is #1)
-     * @param writer      Pdf writer for the document
      */
-    public static void stave(int staveNumber, PdfWriter writer) {
+    public void stave(int staveNumber) {
 
         int yCoordinate = determineYCoordinate(staveNumber);
 
         for (int i = 0; i < 6; i++) {
 
-            PdfHelper.line(0, yCoordinate, 600, yCoordinate, .5f, writer);
-            yCoordinate += PdfHelper.lineSpace;
+            line(0, yCoordinate, 600, yCoordinate, .5f);
+            yCoordinate += lineSpace;
         }
     }
 
@@ -222,13 +262,12 @@ public class PdfHelper {
      *
      * @param staveNumber the number of stave to work with
      * @param xCoordinate the X coordinate of the line
-     * @param writer      Pdf writer for the document
      */
-    public static void thinLine(int staveNumber, float xCoordinate, PdfWriter writer) {
+    public void thinLine(int staveNumber, float xCoordinate) {
 
         int yCoordinate = determineYCoordinate(staveNumber);
 
-        PdfHelper.line(xCoordinate, yCoordinate, xCoordinate, yCoordinate + PdfHelper.staveHeight, .5f, writer);
+        line(xCoordinate, yCoordinate, xCoordinate, yCoordinate + staveHeight, .5f);
     }
 
     /**
@@ -236,12 +275,11 @@ public class PdfHelper {
      *
      * @param staveNumber the number of stave to work with
      * @param xCoordinate the X coordinate of the line
-     * @param writer      Pdf writer for the document
      */
-    public static void thickLine(int staveNumber, float xCoordinate, PdfWriter writer) {
+    public void thickLine(int staveNumber, float xCoordinate) {
 
         int yCoordinate = determineYCoordinate(staveNumber);
-        PdfHelper.line(xCoordinate, yCoordinate, xCoordinate, yCoordinate + PdfHelper.staveHeight, 1.5f, writer);
+        line(xCoordinate, yCoordinate, xCoordinate, yCoordinate + staveHeight, 1.5f);
     }
 
     /**
@@ -249,14 +287,13 @@ public class PdfHelper {
      *
      * @param staveNumber the number of stave to work with
      * @param xCoordinate the X coordinate of the circles
-     * @param writer      Pdf writer for the document
      */
-    public static void filledCircles(int staveNumber, float xCoordinate, PdfWriter writer) {
+    public void filledCircles(int staveNumber, float xCoordinate) {
 
-        int yCoordinate = determineYCoordinate(staveNumber) + 2 * PdfHelper.lineSpace;
-        PdfHelper.circle(xCoordinate, yCoordinate, 1f, true, writer);
-        yCoordinate += PdfHelper.lineSpace;
-        PdfHelper.circle(xCoordinate, yCoordinate, 1f, true, writer);
+        int yCoordinate = determineYCoordinate(staveNumber) + 2 * lineSpace;
+        circle(xCoordinate, yCoordinate, 1f, true);
+        yCoordinate += lineSpace;
+        circle(xCoordinate, yCoordinate, 1f, true);
 
     }
 
@@ -267,13 +304,12 @@ public class PdfHelper {
      *
      * @param staveNumber the number of stave to work with
      * @param xCoordinate the X coordinate of the leftmost element of the combination
-     * @param writer      Pdf writer for the document
      */
-    public static void linesCircles(int staveNumber, int xCoordinate, PdfWriter writer) {
+    public void linesCircles(int staveNumber, int xCoordinate) {
 
-        thickLine(staveNumber, xCoordinate, writer);
-        thinLine(staveNumber, xCoordinate + 3, writer);
-        filledCircles(staveNumber, xCoordinate + 6, writer);
+        thickLine(staveNumber, xCoordinate);
+        thinLine(staveNumber, xCoordinate + 3);
+        filledCircles(staveNumber, xCoordinate + 6);
 
     }
 
@@ -284,13 +320,12 @@ public class PdfHelper {
      *
      * @param staveNumber the number of stave to work with
      * @param xCoordinate the X coordinate of the leftmost element of the combination
-     * @param writer      Pdf writer for the document
      */
-    public static void circlesLines(int staveNumber, int xCoordinate, PdfWriter writer) {
+    public void circlesLines(int staveNumber, int xCoordinate) {
 
-        filledCircles(staveNumber, xCoordinate - 6, writer);
-        thinLine(staveNumber, xCoordinate - 3, writer);
-        thickLine(staveNumber, xCoordinate, writer);
+        filledCircles(staveNumber, xCoordinate - 6);
+        thinLine(staveNumber, xCoordinate - 3);
+        thickLine(staveNumber, xCoordinate);
 
     }
 
@@ -300,12 +335,11 @@ public class PdfHelper {
      *
      * @param staveNumber the number of stave to work with
      * @param xCoordinate the X coordinate of the middle of the combination
-     * @param writer      Pdf writer for the document
      */
-    public static void doubleFigure(int staveNumber, int xCoordinate, PdfWriter writer) {
+    public void doubleFigure(int staveNumber, int xCoordinate) {
 
-        circlesLines(staveNumber, xCoordinate, writer);
-        linesCircles(staveNumber, xCoordinate, writer);
+        circlesLines(staveNumber, xCoordinate);
+        linesCircles(staveNumber, xCoordinate);
     }
 
     /**
@@ -313,11 +347,10 @@ public class PdfHelper {
      * @param staveNumber the number of stave to work with
      * @param lineNumber  the number of line to work with (from 1 to 6)
      * @param xCoordinate the X coordinate of the middle of the combination
-     * @param writer      Pdf writer for the document
      */
-    private static void blankSpace(int staveNumber, int lineNumber, float xCoordinate, int digitWidth, PdfWriter writer) {
+    private void blankSpace(int staveNumber, int lineNumber, float xCoordinate, int digitWidth) {
 
-        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * PdfHelper.lineSpace;
+        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * lineSpace;
 
         PdfContentByte canvas = writer.getDirectContent();
 
@@ -340,11 +373,10 @@ public class PdfHelper {
      * @param lineNumber  the number of line to work with (from 1 to 6)
      * @param xCoordinate the X coordinate of the middle of the combination
      * @param digit       the digit to be printed
-     * @param writer      Pdf writer for the document
      * @throws IOException
      * @throws DocumentException
      */
-    public static void drawDigit(int staveNumber, int lineNumber, float xCoordinate, int digit, PdfWriter writer) throws DocumentException, IOException {
+    public void drawDigit(int staveNumber, int lineNumber, float xCoordinate, int digit) throws DocumentException, IOException {
 
         BaseFont font = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1257, BaseFont.EMBEDDED);
         //Distance from the middle of the digit to the digit border
@@ -356,8 +388,8 @@ public class PdfHelper {
             digitRadius = (int) font.getWidthPoint(' ', digitSize);
         }
         //Clears a space for the digit and determines the Y coordinate of the digit to be printed
-        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * PdfHelper.lineSpace;
-        blankSpace(staveNumber, lineNumber, xCoordinate, digitRadius, writer);
+        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * lineSpace;
+        blankSpace(staveNumber, lineNumber, xCoordinate, digitRadius);
         PdfContentByte canvas = writer.getDirectContent();
 
         canvas.saveState();
@@ -376,11 +408,10 @@ public class PdfHelper {
      * @param xCoordinate the X coordinate of the middle of the combination
      * @param yCoordinate the Y coordinate of the middle of the combination
      * @param text        the text to be printed
-     * @param writer      Pdf writer for the document
      * @throws IOException
      * @throws DocumentException
      */
-    public static void drawText(float xCoordinate, int yCoordinate, String text, int size, PdfWriter writer) throws DocumentException, IOException {
+    public void drawText(float xCoordinate, int yCoordinate, String text, int size) throws DocumentException, IOException {
 
         BaseFont font = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1257, BaseFont.EMBEDDED);
         //Distance from the middle of the digit to the digit border
@@ -406,11 +437,10 @@ public class PdfHelper {
      * @param lineNumber  the number of line to work with (from 1 to 6)
      * @param xCoordinate the X coordinate of the middle of the combination
      * @param repeat       the repeat to be printed
-     * @param writer      Pdf writer for the document
      * @throws IOException
      * @throws DocumentException
      */
-    public static void drawRepeat(int staveNumber, int lineNumber, float xCoordinate, int repeat, PdfWriter writer) throws DocumentException, IOException {
+    public void drawRepeat(int staveNumber, int lineNumber, float xCoordinate, int repeat) throws DocumentException, IOException {
 
         BaseFont font = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1257, BaseFont.EMBEDDED);
 
@@ -421,9 +451,9 @@ public class PdfHelper {
 
         xCoordinate -= repeatMsg.length() * fontHeight / 2;
 
-        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * PdfHelper.lineSpace;
+        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * lineSpace;
 
-        drawText(xCoordinate, yCoordinate, repeatMsg, 6, writer);
+        drawText(xCoordinate, yCoordinate, repeatMsg, 6);
     }
 
     /**
@@ -431,29 +461,28 @@ public class PdfHelper {
      * @param lineNumber  the number of line to work with (from 1 to 6)
      * @param xCoordinate the X coordinate of the middle of the combination
      * @param slide       the slide to be printed
-     * @param writer      Pdf writer for the document
      * @throws IOException
      * @throws DocumentException
      */
-    public static void drawSlide(int staveNumber, int lineNumber, float xCoordinate, Slide slide, PdfWriter writer) throws DocumentException, IOException {
+    public void drawSlide(int staveNumber, int lineNumber, float xCoordinate, Slide slide) throws DocumentException, IOException {
 
         BaseFont font = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1257, BaseFont.EMBEDDED);
 
         //Distance from the middle of the digit to the digit border
         int fontHeight = (int) font.getWidthPoint(' ', digitSize);
 
-        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * PdfHelper.lineSpace;
+        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * lineSpace;
 
         if (slide.getStart().getValue() != 0) {
-            drawDigit(staveNumber, lineNumber, xCoordinate - fontHeight * 2, slide.getStart().getValue(), writer);
+            drawDigit(staveNumber, lineNumber, xCoordinate - fontHeight * 2, slide.getStart().getValue());
         }
 
         if (slide.getEnd().getValue() != 0) {
-            drawDigit(staveNumber, lineNumber, xCoordinate + fontHeight * 2, slide.getEnd().getValue(), writer);
+            drawDigit(staveNumber, lineNumber, xCoordinate + fontHeight * 2, slide.getEnd().getValue());
         }
         float xlen = 1.4f;
         float ylen = 1.2f;
-        line(xCoordinate - fontHeight * xlen * 0.9f, yCoordinate - fontHeight * ylen, xCoordinate + fontHeight * xlen * 0.9f, yCoordinate + fontHeight * ylen, LINE_WIDTH, writer);
+        line(xCoordinate - fontHeight * xlen * 0.9f, yCoordinate - fontHeight * ylen, xCoordinate + fontHeight * xlen * 0.9f, yCoordinate + fontHeight * ylen, lineWidth);
 
     }
 
@@ -462,11 +491,10 @@ public class PdfHelper {
      * @param lineNumber  the number of line to work with (from 1 to 6)
      * @param xCoordinate the X coordinate of the middle of the combination
      * @param squareNote  the squareNote to be printed
-     * @param writer      Pdf writer for the document
      * @throws IOException
      * @throws DocumentException
      */
-    public static void drawSquareNote(int staveNumber, int lineNumber, float xCoordinate, SquareNote squareNote, PdfWriter writer) throws DocumentException, IOException {
+    public void drawSquareNote(int staveNumber, int lineNumber, float xCoordinate, SquareNote squareNote) throws DocumentException, IOException {
 
         BaseFont font = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1257, BaseFont.EMBEDDED);
 
@@ -479,11 +507,11 @@ public class PdfHelper {
             digitRadius = (int) font.getWidthPoint(' ', digitSize);
         }
 
-        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * PdfHelper.lineSpace;
+        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * lineSpace;
 
-        drawDigit(staveNumber, lineNumber, xCoordinate, squareNote.getNote().getValue(), writer);
+        drawDigit(staveNumber, lineNumber, xCoordinate, squareNote.getNote().getValue());
 
-        diamond(xCoordinate + digitRadius * 2.5f + fontHeight, yCoordinate, fontHeight, true, writer);
+        diamond(xCoordinate + digitRadius * 2.5f + fontHeight, yCoordinate, fontHeight, true);
 
     }
 
@@ -494,7 +522,6 @@ public class PdfHelper {
      * @param lineNumber            the number of the line to work with
      * @param xCoordinate           the X coordinate of the middle of right note
      * @param pullOff               the pull off note
-     * @param writer                Pdf writer for the document
      * @param connectingStave       the stave number of the previous connecting note
      * @param connectingLine        the line number of the previous connecting note
      * @param connectingXCoordinate the X coordinate of the previous connecting note
@@ -502,7 +529,7 @@ public class PdfHelper {
      * @throws DocumentException
      * @throws IOException
      */
-    public static void drawPull(int staveNumber, int lineNumber, float xCoordinate, PullOff pullOff, PdfWriter writer,
+    public void drawPull(int staveNumber, int lineNumber, float xCoordinate, PullOff pullOff,
                                 int connectingStave, int connectingLine, float connectingXCoordinate, String connectingNote) throws DocumentException, IOException {
 
         BaseFont font = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1257, BaseFont.EMBEDDED);
@@ -517,14 +544,14 @@ public class PdfHelper {
 
         int oldDigitRadius = (int) font.getWidthPoint(' ', digitSize * connectingNote.length()); //compensate for larger than 1 length
 
-        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * PdfHelper.lineSpace;
-        int oldyCoordinate = determineYCoordinate(connectingStave) + (6 - connectingLine) * PdfHelper.lineSpace;
+        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * lineSpace;
+        int oldyCoordinate = determineYCoordinate(connectingStave) + (6 - connectingLine) * lineSpace;
 
 
         //drawDigit(staveNumber, lineNumber, xCoordinate - fontHeight * 2, pullOff.getEnd().getValue(), writer);
-        drawText(((xCoordinate + digitRadius * 2.0f) + connectingXCoordinate) / 2, yCoordinate + 8, "p", 6, writer);
+        drawText(((xCoordinate + digitRadius * 2.0f) + connectingXCoordinate) / 2, yCoordinate + 8, "p", 6);
 
-        arc(xCoordinate + digitRadius * 1.5f, yCoordinate + 3, connectingXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, LINE_WIDTH, 2.0f, writer);
+        arc(xCoordinate + digitRadius * 1.5f, yCoordinate + 3, connectingXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, lineWidth, 2.0f);
 
 
     }
@@ -535,7 +562,6 @@ public class PdfHelper {
      * @param lineNumber the number of the line to work with
      * @param xCoordinate the X coordinate of the middle of right note
      * @param hammerOn the hammer on note
-     * @param writer Pdf writer for the document
      * @param connectingStave the stave number of the previous connecting note
      * @param connectingLine the line number of the previous connecting note
      * @param connectingXCoordinate the X coordinate of the previous connecting note
@@ -543,7 +569,7 @@ public class PdfHelper {
      * @throws DocumentException
      * @throws IOException
      */
-    public static void drawHammer(int staveNumber, int lineNumber, float xCoordinate, HammerOn hammerOn, PdfWriter writer,
+    public void drawHammer(int staveNumber, int lineNumber, float xCoordinate, HammerOn hammerOn,
                                   int connectingStave, int connectingLine, float connectingXCoordinate, String connectingNote) throws DocumentException, IOException {
 
         BaseFont font = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.CP1257, BaseFont.EMBEDDED);
@@ -558,14 +584,14 @@ public class PdfHelper {
 
         int oldDigitRadius = (int) font.getWidthPoint(' ', digitSize * connectingNote.length()); //compensate for larger than 1 length
 
-        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * PdfHelper.lineSpace;
-        int oldyCoordinate = determineYCoordinate(connectingStave) + (6 - connectingLine) * PdfHelper.lineSpace;
+        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * lineSpace;
+        int oldyCoordinate = determineYCoordinate(connectingStave) + (6 - connectingLine) * lineSpace;
 
 
         //drawDigit(staveNumber, lineNumber, xCoordinate + fontHeight / 4f, hammerOn.getEnd().getValue(), writer);
-        drawText(((xCoordinate + digitRadius * 2.0f) + connectingXCoordinate) / 2, yCoordinate + 7, "h", 6, writer);
+        drawText(((xCoordinate + digitRadius * 2.0f) + connectingXCoordinate) / 2, yCoordinate + 7, "h", 6);
 
-        arc(xCoordinate + digitRadius * 1.5f, yCoordinate + 3, connectingXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, LINE_WIDTH, 2.0f, writer);
+        arc(xCoordinate + digitRadius * 1.5f, yCoordinate + 3, connectingXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, lineWidth, 2.0f);
 
 
     }
@@ -577,13 +603,12 @@ public class PdfHelper {
      * @param staveNumber the number of stave to work with
      * @param xCoordinate the X coordinate of the line
      * @param spacing     the documents horizontal spacing constant
-     * @param writer      Pdf writer for the document
      */
-    public static void startRepeat(int staveNumber, float xCoordinate, float spacing, PdfWriter writer) {
+    public void startRepeat(int staveNumber, float xCoordinate, float spacing) {
 
-        thickLine(staveNumber, xCoordinate, writer);
-        thinLine(staveNumber, xCoordinate + spacing / 2f, writer);
-        filledCircles(staveNumber, xCoordinate + spacing * 1.1f, writer);
+        thickLine(staveNumber, xCoordinate);
+        thinLine(staveNumber, xCoordinate + spacing / 2f);
+        filledCircles(staveNumber, xCoordinate + spacing * 1.1f);
     }
 
 
@@ -593,13 +618,11 @@ public class PdfHelper {
      * @param staveNumber the number of stave to work with
      * @param xCoordinate the X coordinate of the line
      * @param spacing     the documents horizontal spacing constant
-     * @param writer      Pdf writer for the document
      */
-    public static void endRepeat(int staveNumber, float xCoordinate, float spacing, PdfWriter writer) {
+    public void endRepeat(int staveNumber, float xCoordinate, float spacing) {
 
-        thickLine(staveNumber, xCoordinate, writer);
-        thinLine(staveNumber, xCoordinate - spacing / 2f, writer);
-        filledCircles(staveNumber, xCoordinate - spacing * 1.1f, writer);
+        thickLine(staveNumber, xCoordinate);
+        thinLine(staveNumber, xCoordinate - spacing / 2f);
+        filledCircles(staveNumber, xCoordinate - spacing * 1.1f);
     }
-
 }

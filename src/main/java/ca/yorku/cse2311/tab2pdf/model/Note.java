@@ -1,11 +1,6 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.pdf.PdfWriter;
-
-import java.io.IOException;
-
-import static ca.yorku.cse2311.tab2pdf.PdfHelper.drawDigit;
+import ca.yorku.cse2311.tab2pdf.PdfHelper;
 
 /**
  * Note
@@ -31,13 +26,11 @@ public class Note implements ITabNotation, IDrawable {
         return note;
     }
 
-    public void draw(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer) {
+    public void draw(PdfHelper helper, int staveNumber, int lineNumber, float xCoordinate) {
         try {
-            drawDigit(staveNumber, lineNumber, xCoordinate, note, writer);
-        } catch (IOException e) {
-            //TODO: What should we do on an IOExeption?
-        } catch (DocumentException e) {
-            //TODO: What should we do on an DocumentExecption?
+            helper.drawDigit(staveNumber, lineNumber, xCoordinate, note);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

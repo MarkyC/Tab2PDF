@@ -44,17 +44,15 @@ public class HammerOn implements ITabNotation, ILongDraw {
         return end;
     }
 
-    public void draw(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer) {
+    public void draw(PdfHelper helper, int staveNumber, int lineNumber, float xCoordinate) {
         //Do Nothing
     }
 
-    public void drawLong(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer, int oldStave, int oldLine, float oldXCoordinate, String oldString) {
+    public void drawLong(PdfHelper helper, int staveNumber, int lineNumber, float xCoordinate, int oldStave, int oldLine, float oldXCoordinate, String oldString) {
         try {
-            PdfHelper.drawHammer(staveNumber, lineNumber, xCoordinate, this, writer, oldStave, oldLine, oldXCoordinate, oldString);
-        } catch (DocumentException e) {
-            //e.printStackTrace();
-        } catch (IOException e) {
-            //e.printStackTrace();
+            helper.drawHammer(staveNumber, lineNumber, xCoordinate, this, oldStave, oldLine, oldXCoordinate, oldString);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

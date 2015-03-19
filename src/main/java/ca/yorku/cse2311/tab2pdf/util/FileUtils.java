@@ -2,8 +2,6 @@ package ca.yorku.cse2311.tab2pdf.util;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Files
@@ -54,26 +52,24 @@ public class FileUtils {
     }
 
     /**
-     * Reads a File into a List
+     * Reads a File into a String
      *
      * @param f the File to read
-     * @return A List of Strings, each element is one line in the file
+     * @return A String containing the entire File
      * @throws IOException if there's a problem reading the file
      */
-    public static List<String> readFile(File f) throws IOException {
-
-        // Creates an empty list.
-        List<String> lines = new ArrayList<>();
+    public static String readFile(File f) throws IOException {
 
         // Opens and reads the file.
         BufferedReader in = new BufferedReader(new FileReader(f));
-
-        // This is a standard Java idiom for reading a file line-by-line into a List
-        String line = "";
-        while ((line = in.readLine()) != null) {
-            lines.add(line);
+        StringBuilder sb = new StringBuilder();
+        for (String line = in.readLine(); null != line; line = in.readLine()) {
+            sb.append(line);
+            sb.append(System.lineSeparator());
         }
 
-        return lines;
+        in.close(); // close the File
+
+        return sb.toString();
     }
 }

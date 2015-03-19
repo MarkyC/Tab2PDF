@@ -1,8 +1,6 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
-import com.itextpdf.text.pdf.PdfWriter;
-
-import static ca.yorku.cse2311.tab2pdf.PdfHelper.thinLine;
+import ca.yorku.cse2311.tab2pdf.PdfHelper;
 
 /**
  * Pipe
@@ -53,7 +51,7 @@ public class Pipe implements ITabNotation {
         return obj instanceof Pipe;
     }
 
-    public void draw(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer) {
-        thinLine(staveNumber, xCoordinate, writer);
+    public void draw(PdfHelper helper, int staveNumber, int lineNumber, float xCoordinate) {
+        helper.thinLine(staveNumber, xCoordinate);
     }
 }

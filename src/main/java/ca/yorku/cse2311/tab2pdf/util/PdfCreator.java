@@ -1,22 +1,18 @@
 package ca.yorku.cse2311.tab2pdf.util;
 
-import ca.yorku.cse2311.tab2pdf.Arguments;
 import ca.yorku.cse2311.tab2pdf.PdfHelper;
 import ca.yorku.cse2311.tab2pdf.model.*;
 import ca.yorku.cse2311.tab2pdf.parser.TabParser;
-import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import java.awt.*;
-import java.io.File;
-import java.nio.file.Files;
-import java.util.LinkedList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
-
-import static ca.yorku.cse2311.tab2pdf.PdfHelper.stave;
 
 /**
  * pdfCreator
@@ -27,44 +23,39 @@ import static ca.yorku.cse2311.tab2pdf.PdfHelper.stave;
  */
 public class PdfCreator implements Runnable {
 
-    private static java.util.List<ILongDraw> longNotes = new LinkedList<>();
+    private final PdfHelper helper;
 
-    static {
-        longNotes.add(new PullOff(new Note()));
-        longNotes.add(new HammerOn(new Note()));
-    }
+    private final List<String> lines;
 
-    private static java.util.List<IDrawable> ignoreNotes = new LinkedList<>();
+    private List<? extends ILongDraw> longNotes = Collections.unmodifiableList(Arrays.asList(
+            new PullOff(new Note()),
+            new HammerOn(new Note())
+    ));
 
-    static {
-        ignoreNotes.add(new Dash());
-        ignoreNotes.add(new Pipe());
-        ignoreNotes.add(new DoubleBar());
-        //ignoreNotes.add()
-    }
+    private static List<? extends IDrawable> ignoreNotes = Collections.unmodifiableList(Arrays.asList(
+            new Dash(),
+            new Pipe(),
+            new DoubleBar()
+    ));
 
-    private static java.util.List<IDrawable> bars = new LinkedList<>();
+    private static List<? extends IDrawable> bars = Collections.unmodifiableList(Arrays.asList(
+            new Pipe(),
+            new DoubleBar()
+    ));
 
-    static {
-        bars.add(new Pipe());
-        bars.add(new DoubleBar());
-        //bars.add()
-    }
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
-    private Arguments args;
 
+    public PdfCreator(PdfHelper helper, List<String> lines) {
 
-    public PdfCreator(Arguments args) {
-        this.args = args;
+        this.helper = helper;
+        this.lines = lines;
     }
 
     public void run() {
 
         try {
-            //Tab tab = TabParser.parse(FileUtils.readFile(args.getInputFile()));
-            Tab tab = TabParser.parse(MainJFrame.getEditorContents());
-            createPdf(tab, args.getOutputFile());
-            Desktop.getDesktop().open(args.getOutputFile());
+            createPdf(TabParser.parse(lines));
+            Desktop.getDesktop().open(helper.getFile());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,12 +63,12 @@ public class PdfCreator implements Runnable {
         }
     }
 
-    public void createPdf(Tab tab, File out) throws Exception {
+    public void createPdf(Tab tab) throws Exception {
 
         // Create document
-        Document document = new Document();
+        Document document = this.helper.getDocument();
         // get writer
-        PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(out.toPath()));
+        PdfWriter writer = this.helper.getWriter();
         // open document
         document.open();
 
@@ -93,7 +84,7 @@ public class PdfCreator implements Runnable {
         document.add(subTitle);     // The Tab's Subtitle
 
         //print first stave
-        stave(0, writer);
+        helper.stave(0);
 
         //Initialising variables
 
@@ -134,7 +125,7 @@ public class PdfCreator implements Runnable {
                 stave++;
                 xBarPos = MARGIN;
 
-                double projectedHeight = PdfHelper.determineYCoordinate(stave + 1) + (6) * PdfHelper.getLineSpace();
+                double projectedHeight = helper.determineYCoordinate(stave + 1) + (6) * helper.getLineSpace();
                 if (projectedHeight < 0) { // if the stave would go of the page make a new page and reset the positions
                     writer.setPageEmpty(false);
                     document.newPage();
@@ -142,7 +133,7 @@ public class PdfCreator implements Runnable {
                     stave = -1;
                 }
 
-                stave(stave, writer);
+                helper.stave(stave);
             }
 
             //reset x position to be used by the next loop
@@ -150,10 +141,10 @@ public class PdfCreator implements Runnable {
 
             //add start of bar
             if (bar.getBeginRepeat()) {
-                PdfHelper.startRepeat(stave, xPos, spacing, writer);
+                helper.startRepeat(stave, xPos, spacing);
                 xBarPos += spacing; //Double bars get an extra space
             } else {
-                new Pipe().draw(stave, 1, xPos, writer);
+                new Pipe().draw(helper, stave, 1, xPos);
             }
             xBarPos += spacing; //Add a space after the bar
 
@@ -169,9 +160,9 @@ public class PdfCreator implements Runnable {
                     //Draw the note
                     for (IDrawable longNoteType : longNotes) {
                         if (longNoteType.getClass() == note.getClass()) { //If it is a long draw we have to do something special
-                            ((ILongDraw) note).drawLong(stave, lineNumber, xPos, writer, lastStave[i], lastLine[i], lastXPos[i], lastString[i]); //They get the information of the last symbol on the line
+                            ((ILongDraw) note).drawLong(helper, stave, lineNumber, xPos, lastStave[i], lastLine[i], lastXPos[i], lastString[i]); //They get the information of the last symbol on the line
                         } else {
-                            note.draw(stave, lineNumber, xPos, writer); //if not it is just a normal draw
+                            note.draw(helper, stave, lineNumber, xPos); //if not it is just a normal draw
                         }
                     }
 
@@ -198,12 +189,12 @@ public class PdfCreator implements Runnable {
             //add end of bar
             if (bar.getEndRepeat()) {
                 xPos += spacing;
-                PdfHelper.endRepeat(stave, xPos, spacing, writer);
+                helper.endRepeat(stave, xPos, spacing);
                 if (bar.getRepeat() != 1) {
-                    PdfHelper.drawRepeat(stave, 0, xPos, bar.getRepeat(), writer);
+                    helper.drawRepeat(stave, 0, xPos, bar.getRepeat());
                 }
             } else {
-                new Pipe().draw(stave, 1, xPos, writer);
+                new Pipe().draw(helper, stave, 1, xPos);
             }
 
             xBarPos = xPos;

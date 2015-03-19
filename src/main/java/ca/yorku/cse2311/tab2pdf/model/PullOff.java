@@ -1,10 +1,6 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
 import ca.yorku.cse2311.tab2pdf.PdfHelper;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.pdf.PdfWriter;
-
-import java.io.IOException;
 
 /**
  * PullOff
@@ -44,17 +40,15 @@ public class PullOff implements ITabNotation, ILongDraw {
         return end;
     }
 
-    public void draw(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer) {
+    public void draw(PdfHelper helper, int staveNumber, int lineNumber, float xCoordinate) {
         //Do Nothing
     }
 
-    public void drawLong(int staveNumber, int lineNumber, float xCoordinate, PdfWriter writer, int oldStave, int oldLine, float oldXCoordinate, String oldString) {
+    public void drawLong(PdfHelper helper, int staveNumber, int lineNumber, float xCoordinate, int oldStave, int oldLine, float oldXCoordinate, String oldString) {
         try {
-            PdfHelper.drawPull(staveNumber, lineNumber, xCoordinate, this, writer, oldStave, oldLine, oldXCoordinate, oldString);
-        } catch (DocumentException e) {
-            //e.printStackTrace();
-        } catch (IOException e) {
-            //e.printStackTrace();
+            helper.drawPull(staveNumber, lineNumber, xCoordinate, this, oldStave, oldLine, oldXCoordinate, oldString);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
