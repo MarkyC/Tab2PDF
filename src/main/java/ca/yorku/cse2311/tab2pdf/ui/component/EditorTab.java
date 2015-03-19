@@ -140,6 +140,16 @@ import java.io.IOException;
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
+        // prevent JTextFields from scaling vertically
+        TITLE.setMaximumSize(new Dimension(
+                (int) TITLE.getMaximumSize().getWidth(),
+                (int) TITLE.getPreferredSize().getHeight()
+        ));
+        SUBTITLE.setMaximumSize(new Dimension(
+                (int) TITLE.getMaximumSize().getWidth(),
+                (int) TITLE.getPreferredSize().getHeight()
+        ));
+
         // add title and subtitle editors
         panel.add(panel(TITLE_PANEL_NAME, TITLE));
         panel.add(panel(SUBTITLE_PANEL_NAME, SUBTITLE));
@@ -150,6 +160,8 @@ import java.io.IOException;
         setupSliders();
         panel.add(panel(SCALING_PANEL_NAME, SCALING_SLIDER));
         panel.add(panel(SPACING_PANEL_NAME, SPACING_SLIDER));
+
+        panel.add(Box.createVerticalGlue());
 
         return panel;
     }
