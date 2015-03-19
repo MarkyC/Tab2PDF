@@ -215,5 +215,14 @@ import java.io.IOException;
         return panel;
     }
 
+    /**
+     * TODO: Disable the text editor if this panel is not enabled yet
+     * Also put a string like "click open to choose a file first" or something
+     * @param enabled
+     */
+    @Override
+    public void setEnabled(boolean enabled) {
 
+        super.setEnabled(enabled);
+    }
 }

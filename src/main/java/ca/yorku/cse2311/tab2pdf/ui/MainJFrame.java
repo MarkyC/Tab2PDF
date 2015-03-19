@@ -57,15 +57,19 @@ public class MainJFrame extends JFrame {
      */
     public void setFile(File file) {
 
-        LOG.info("Opening file: "+file.getAbsolutePath());
-
         try { // Put this file in the editor
             getEditorTab().setFile(file);
             this.file = file;
             update(String.format("Opened %s", file.getName()));
         } catch (IOException e) {
             LOG.severe(e.getMessage());
-            // TODO: Show error dialog explaining we could not open the file
+            String filePath = null == file ? "" : file.getAbsolutePath();
+            JOptionPane.showMessageDialog(
+                    MainJFrame.this,
+                    String.format("Could not open file %s. Error: %s", filePath, e.getMessage()),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
 
     }
@@ -97,7 +101,7 @@ public class MainJFrame extends JFrame {
         Container container = this.getContentPane();
         container.add(this.TOOLBAR = new ToolBar(), BorderLayout.NORTH);
 
-        JTabbedPane pane = tabbedPane("Switch to Text File Editor", this.EDITOR_TAB = new EditorTab(), "Switch to Pdf Preview Panel", new PreviewTab());
+        JTabbedPane pane = tabbedPane("Editor", this.EDITOR_TAB = new EditorTab(), "Preview", new PreviewTab());
         container.add(pane, BorderLayout.CENTER);
         container.add(this.STATUS_BAR = new StatusBar(), BorderLayout.SOUTH);
 
@@ -171,6 +175,16 @@ public class MainJFrame extends JFrame {
         update("Welcome to Tab2Pdf");
     }
 
+    /**
+     * This makes the GUI tick. It's updated after events like
+     *
+     * * key press
+     * * file opening
+     * * file saved
+     * * PDF exported
+     *
+     * @param status    The new status to put at the bottom
+     */
     public void update(String status) {
 
         this.STATUS_BAR.setHint(status);
@@ -181,7 +195,9 @@ public class MainJFrame extends JFrame {
 
             // If a file is loaded, we should enable certain stuff
             this.TOOLBAR.getSaveButton().setEnabled(true);
+            this.MENU_BAR.getSaveMenuItem().setEnabled(true);
             this.TOOLBAR.getExportButton().setEnabled(true);
+            this.MENU_BAR.getExportMenuItem().setEnabled(true);
             getEditorTab().setEnabled(true);
         } else {
             blockComponents();
@@ -195,10 +211,20 @@ public class MainJFrame extends JFrame {
 
     private JTabbedPane tabbedPane(String tab1Name, JComponent tab1, String tab2Name, JComponent tab2) {
 
-        JTabbedPane pane = new JTabbedPane();
+        final JTabbedPane pane = new JTabbedPane();
 
-        pane.addTab(tab1Name, tab1);
-        pane.addTab(tab2Name, tab2);
+        pane.addTab(String.format(
+                "<html><body><table width='150'><tr><td align='center'>%s</td></tr></table></body></html>",
+                tab1Name
+                ),
+            tab1
+        );
+        pane.addTab(String.format(
+                "<html><body><table width='150'><tr><td align='center'>%s</td></tr></table></body></html>",
+                tab2Name
+                ),
+            tab2
+        );
 
         return pane;
 
@@ -210,7 +236,9 @@ public class MainJFrame extends JFrame {
     private void blockComponents() {
 
         this.TOOLBAR.getSaveButton().setEnabled(false);
+        this.MENU_BAR.getSaveMenuItem().setEnabled(false);
         this.TOOLBAR.getExportButton().setEnabled(false);
+        this.MENU_BAR.getExportMenuItem().setEnabled(false);
 
         getEditorTab().setEnabled(false);
     }
