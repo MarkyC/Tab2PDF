@@ -37,6 +37,7 @@ public class MainJFrame extends JFrame {
     private final ExportPdfListener EXPORT_PDF_LISTENER = new ExportPdfListener(this);
     private final SettingsListener SETTINGS_LISTENER = new SettingsListener(this);
     private final HelpListener HELP_LISTENER = new HelpListener(this);
+    private final AboutListener ABOUT_LISTENER = new AboutListener(this);
 
     /**
      * The tab we are editing
@@ -157,6 +158,8 @@ public class MainJFrame extends JFrame {
 
         this.TOOLBAR.getHelpButton().addActionListener(HELP_LISTENER);
         this.MENU_BAR.getUserManualMenuItem().addActionListener(HELP_LISTENER);
+
+        this.MENU_BAR.getAboutMenuItem().addActionListener(ABOUT_LISTENER);
 
         this.MENU_BAR.getExitMenuItem().addActionListener(new ExitListener(this));
 
