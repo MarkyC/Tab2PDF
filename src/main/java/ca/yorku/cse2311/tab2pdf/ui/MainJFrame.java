@@ -7,6 +7,7 @@ import ca.yorku.cse2311.tab2pdf.ui.component.PreviewTab;
 import ca.yorku.cse2311.tab2pdf.ui.component.StatusBar;
 import ca.yorku.cse2311.tab2pdf.ui.component.ToolBar;
 import ca.yorku.cse2311.tab2pdf.ui.listener.HelpListener;
+import ca.yorku.cse2311.tab2pdf.ui.listener.OpenFileListener;
 import ca.yorku.cse2311.tab2pdf.util.PdfCreator;
 
 import javax.swing.*;
@@ -141,17 +142,7 @@ public class MainJFrame extends JFrame {
     public void addListeners() {
 
         // add action listeners to the toolbar buttons
-        this.TOOLBAR.getOpenButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fc = new JFileChooser();
-                int returnVal = fc.showOpenDialog(MainJFrame.this);
-
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    setFile(fc.getSelectedFile());
-                }
-            }
-        });
+        this.TOOLBAR.getOpenButton().addActionListener(new OpenFileListener(this));
         this.TOOLBAR.getSaveButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {

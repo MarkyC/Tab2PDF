@@ -6,9 +6,14 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created by Glib Sitiugin on 2015-03-07.
+ * ToolBar
+ *
+ * The toolbar of our GUI
+ *
+ * @author Glib Sitiugin, Marco Cirillo
+ * @since 2015-03-19
  */
-public class ToolBar extends JToolBar {
+ public class ToolBar extends JToolBar {
 
     /**
      * Size of toolbar buttons
