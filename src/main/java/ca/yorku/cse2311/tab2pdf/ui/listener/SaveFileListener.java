@@ -13,6 +13,8 @@ import java.util.logging.Logger;
 /**
  * SaveFileListener
  *
+ * Saves the tab file
+ *
  * @author Marco Cirillo, Glib Sitiugin
  * @since 2015-03-19
  */
