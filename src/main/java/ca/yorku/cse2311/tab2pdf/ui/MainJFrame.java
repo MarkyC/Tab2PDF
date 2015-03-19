@@ -158,6 +158,8 @@ public class MainJFrame extends JFrame {
         this.TOOLBAR.getHelpButton().addActionListener(HELP_LISTENER);
         this.MENU_BAR.getUserManualMenuItem().addActionListener(HELP_LISTENER);
 
+        this.MENU_BAR.getExitMenuItem().addActionListener(new ExitListener(this));
+
         // add key listener to the input editor
         // the listener is needed to update symbols number in status panel
         getEditorTab().getEditor().addKeyListener(new KeyAdapter() {
