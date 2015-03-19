@@ -34,6 +34,11 @@ import java.util.logging.Logger;
         return HELP_BUTTON;
     }
 
+    public JButton getSettingsButton() {
+
+        return SETTINGS_BUTTON;
+    }
+
     public JButton getExportButton() {
 
         return EXPORT_BUTTON;

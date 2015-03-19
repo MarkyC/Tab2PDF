@@ -1,14 +1,9 @@
 package ca.yorku.cse2311.tab2pdf.ui;
 
 import ca.yorku.cse2311.tab2pdf.Arguments;
-import ca.yorku.cse2311.tab2pdf.ui.component.EditorTab;
-import ca.yorku.cse2311.tab2pdf.ui.component.PreviewTab;
-import ca.yorku.cse2311.tab2pdf.ui.component.StatusBar;
-import ca.yorku.cse2311.tab2pdf.ui.component.ToolBar;
-import ca.yorku.cse2311.tab2pdf.ui.listener.ExportPdfListener;
-import ca.yorku.cse2311.tab2pdf.ui.listener.HelpListener;
-import ca.yorku.cse2311.tab2pdf.ui.listener.OpenFileListener;
-import ca.yorku.cse2311.tab2pdf.ui.listener.SaveFileListener;
+import ca.yorku.cse2311.tab2pdf.ui.component.*;
+import ca.yorku.cse2311.tab2pdf.ui.component.MenuBar;
+import ca.yorku.cse2311.tab2pdf.ui.listener.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,6 +29,14 @@ public class MainJFrame extends JFrame {
     private final EditorTab EDITOR_TAB;
 
     private final StatusBar STATUS_BAR;
+
+    private final MenuBar MENU_BAR;
+
+    private final OpenFileListener OPEN_FILE_LISTENER = new OpenFileListener(this);
+    private final SaveFileListener SAVE_FILE_LISTENER = new SaveFileListener(this);
+    private final ExportPdfListener EXPORT_PDF_LISTENER = new ExportPdfListener(this);
+    private final SettingsListener SETTINGS_LISTENER = new SettingsListener(this);
+    private final HelpListener HELP_LISTENER = new HelpListener(this);
 
     /**
      * The tab we are editing
@@ -88,8 +91,7 @@ public class MainJFrame extends JFrame {
         try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
         catch (Exception e) {e.printStackTrace();}
 
-        // determines the relative positions of the panels to be added
-        this.setLayout(new BorderLayout());
+        this.setJMenuBar(this.MENU_BAR = new MenuBar());
 
         // add primary panels to the frame
         Container container = this.getContentPane();
@@ -136,11 +138,21 @@ public class MainJFrame extends JFrame {
      */
     public void addListeners() {
 
-        // add action listeners to the toolbar buttons
-        this.TOOLBAR.getOpenButton().addActionListener(new OpenFileListener(this));
-        this.TOOLBAR.getSaveButton().addActionListener(new SaveFileListener(this));
-        this.TOOLBAR.getExportButton().addActionListener(new ExportPdfListener(this));
-        this.TOOLBAR.getHelpButton().addActionListener(new HelpListener(this));
+        // add action listeners to the toolbar and menu buttons
+        this.TOOLBAR.getOpenButton().addActionListener(OPEN_FILE_LISTENER);
+        this.MENU_BAR.getOpenMenuItem().addActionListener(OPEN_FILE_LISTENER);
+
+        this.TOOLBAR.getSaveButton().addActionListener(SAVE_FILE_LISTENER);
+        this.MENU_BAR.getSaveMenuItem().addActionListener(SAVE_FILE_LISTENER);
+
+        this.TOOLBAR.getExportButton().addActionListener(EXPORT_PDF_LISTENER);
+        this.MENU_BAR.getExportMenuItem().addActionListener(EXPORT_PDF_LISTENER);
+
+        this.TOOLBAR.getSettingsButton().addActionListener(SETTINGS_LISTENER);
+        this.MENU_BAR.getSettingsMenuItem().addActionListener(SETTINGS_LISTENER);
+
+        this.TOOLBAR.getHelpButton().addActionListener(HELP_LISTENER);
+        this.MENU_BAR.getUserManualMenuItem().addActionListener(HELP_LISTENER);
 
         // add key listener to the input editor
         // the listener is needed to update symbols number in status panel
