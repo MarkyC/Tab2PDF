@@ -8,6 +8,7 @@ import ca.yorku.cse2311.tab2pdf.ui.component.StatusBar;
 import ca.yorku.cse2311.tab2pdf.ui.component.ToolBar;
 import ca.yorku.cse2311.tab2pdf.ui.listener.HelpListener;
 import ca.yorku.cse2311.tab2pdf.ui.listener.OpenFileListener;
+import ca.yorku.cse2311.tab2pdf.ui.listener.SaveFileListener;
 import ca.yorku.cse2311.tab2pdf.util.PdfCreator;
 
 import javax.swing.*;
@@ -16,12 +17,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 /**
@@ -143,20 +141,7 @@ public class MainJFrame extends JFrame {
 
         // add action listeners to the toolbar buttons
         this.TOOLBAR.getOpenButton().addActionListener(new OpenFileListener(this));
-        this.TOOLBAR.getSaveButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-
-                try {
-                    BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-                    writer.write(EDITOR_TAB.getText());
-                    writer.close();
-                } catch (IOException e) {
-                    LOG.severe(e.getMessage());
-                    // TODO: Show "could not save file, make sure it is not opened in another process" dialog
-                }
-            }
-        });
+        this.TOOLBAR.getSaveButton().addActionListener(new SaveFileListener(this));
         this.TOOLBAR.getExportButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -164,7 +149,7 @@ public class MainJFrame extends JFrame {
                 try {
                     new PdfCreator(
                             new PdfHelper(EDITOR_TAB.getSpacingValue(), EDITOR_TAB.getScalingValue()),
-                            getEditorContents()
+                            Arrays.asList(getEditorText().split("\\r?\\n"))
                     );
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -207,28 +192,9 @@ public class MainJFrame extends JFrame {
         }
     }
 
-    /**
-     * Stores contents of input editor in a list line by line and returns the list
-     * Method is needed to supply a list to parse
-     *
-     * @return list containing the contents of input editor
-     */
-    public List<String> getEditorContents() {
+    public String getEditorText() {
 
-        // TODO: refactor this method into EditorTab.getEditorText()
-
-        //Setup object to store editor contents
-        List<String> editorContents = new ArrayList<>();
-
-        String contents = this.EDITOR_TAB.getEditor().getText();
-        if (!contents.isEmpty()) {
-            String lines[] = contents.split("\\r?\\n");
-
-            //Store contents into object
-            for (int i = 0; i < lines.length; i++)
-                editorContents.add(i, lines[i]);
-        }
-        return editorContents;
+        return EDITOR_TAB.getText();
     }
 
     private JTabbedPane tabbedPane(String tab1Name, JComponent tab1, String tab2Name, JComponent tab2) {
