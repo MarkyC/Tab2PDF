@@ -1,6 +1,5 @@
 package ca.yorku.cse2311.tab2pdf.ui.component;
 
-import ca.yorku.cse2311.tab2pdf.ui.support.JFrameTool;
 import ca.yorku.cse2311.tab2pdf.util.FileUtils;
 
 import javax.swing.*;
@@ -60,6 +59,8 @@ import java.io.IOException;
     private static final String EDITOR_PANEL_NAME = "Input Editor";
 
     private static final String SAVE_PANEL_NAME = "Save Panel";
+
+    public static final Dimension TAB_SIZE = new Dimension(500, 500);
 
     /**
      * Tab components
@@ -127,7 +128,7 @@ import java.io.IOException;
         this.add(editorPanel(), BorderLayout.CENTER);
 
         // set size
-        this.setPreferredSize(JFrameTool.TAB_SIZE);
+        this.setPreferredSize(TAB_SIZE);
     }
 
     /**

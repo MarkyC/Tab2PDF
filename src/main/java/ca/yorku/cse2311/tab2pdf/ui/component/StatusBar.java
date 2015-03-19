@@ -1,8 +1,7 @@
 package ca.yorku.cse2311.tab2pdf.ui.component;
 
-import ca.yorku.cse2311.tab2pdf.ui.support.JFrameTool;
-
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Created by Glib Sitiugin on 2015-03-07.
@@ -19,7 +18,9 @@ public class StatusBar extends JPanel {
 
     public static final JLabel SYMBOLS_NUMBER = new JLabel("0");
 
-    public static final JLabel HINT_LABEL = new JLabel(JFrameTool.EMPTY_HINT);
+    public static final JLabel HINT_LABEL = new JLabel("");
+
+    public static final Dimension BAR_SIZE = new Dimension(1020, 50);
 
     /**
      * Constructs a new status bar
@@ -31,7 +32,7 @@ public class StatusBar extends JPanel {
         // setup new panel
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), STATUS_BAR_NAME));
-        this.setPreferredSize(JFrameTool.BAR_SIZE);
+        this.setPreferredSize(BAR_SIZE);
 
         // handle display of input file
         this.add(new JLabel(SOURCE_FILE_LABEL_NAME));
