@@ -57,7 +57,7 @@ public class MainJFrame extends JFrame {
         LOG.info("Opening file: "+file.getAbsolutePath());
 
         try { // Put this file in the editor
-            this.EDITOR_TAB.setFile(file);
+            getEditorTab().setFile(file);
             this.file = file;
             update(String.format("Opened %s", file.getName()));
         } catch (IOException e) {
@@ -144,7 +144,7 @@ public class MainJFrame extends JFrame {
 
         // add key listener to the input editor
         // the listener is needed to update symbols number in status panel
-        this.EDITOR_TAB.getEditor().addKeyListener(new KeyAdapter() {
+        getEditorTab().getEditor().addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
 
@@ -165,12 +165,12 @@ public class MainJFrame extends JFrame {
 
         if (null != file) {
             this.STATUS_BAR.setInputFilePath(file.getAbsolutePath());   // The file we're currently editing
-            this.STATUS_BAR.setSymbolsNumber(this.EDITOR_TAB.getEditor().getText().length()); // Size of the file
+            this.STATUS_BAR.setSymbolsNumber(getEditorTab().getText().length()); // Size of the file
 
             // If a file is loaded, we should enable certain stuff
             this.TOOLBAR.getSaveButton().setEnabled(true);
             this.TOOLBAR.getExportButton().setEnabled(true);
-            this.EDITOR_TAB.setEnabled(true);
+            getEditorTab().setEnabled(true);
         } else {
             blockComponents();
         }
@@ -200,7 +200,7 @@ public class MainJFrame extends JFrame {
         this.TOOLBAR.getSaveButton().setEnabled(false);
         this.TOOLBAR.getExportButton().setEnabled(false);
 
-        this.EDITOR_TAB.setEnabled(false);
+        getEditorTab().setEnabled(false);
     }
 
     /**

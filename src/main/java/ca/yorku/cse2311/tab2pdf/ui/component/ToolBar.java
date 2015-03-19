@@ -1,9 +1,8 @@
 package ca.yorku.cse2311.tab2pdf.ui.component;
 
-import ca.yorku.cse2311.tab2pdf.ui.support.JFrameTool;
-
+import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
+import java.util.logging.Logger;
 
 /**
  * ToolBar
@@ -15,23 +14,26 @@ import java.awt.*;
  */
  public class ToolBar extends JToolBar {
 
+    private final static Logger LOG = Logger.getLogger(ToolBar.class.getName());
+
+
     /**
      * Size of toolbar buttons
      */
-    private static final Dimension BUTTON_SIZE = new Dimension(400, 200);
+    //private static final Dimension BUTTON_SIZE = new Dimension(400, 200);
 
     /**
      * Toolbar elements
      */
-    private final JButton OPEN_BUTTON = new JButton("Open");
+    private final JButton OPEN_BUTTON;
 
-    private final JButton SAVE_BUTTON = new JButton("Save");
+    private final JButton SAVE_BUTTON;
 
-    private final JButton EXPORT_BUTTON = new JButton("Export PDF");
+    private final JButton EXPORT_BUTTON;
 
-    private final JButton SETTINGS_BUTTON = new JButton("Settings");
+    private final JButton SETTINGS_BUTTON;
 
-    private final JButton HELP_BUTTON = new JButton("Help");
+    private final JButton HELP_BUTTON;
 
     public JButton getHelpButton() {
 
@@ -57,52 +59,33 @@ import java.awt.*;
 
         super();
 
-        // setup toolbar
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.setPreferredSize(JFrameTool.BAR_SIZE);
-        this.setFloatable(false);
+        this.setFloatable(false);   // Don't let user detach (float) this toolbar
 
-        setupButtons();
-
+        // add buttons
+        this.add(this.OPEN_BUTTON = createButton("folder-open.png", "Open", "Open a Tab File"));
+        this.add(this.SAVE_BUTTON = createButton("document-save.png", "Save", "Save the Tab File"));
+        this.addSeparator();
+        this.add(this.EXPORT_BUTTON = createButton("application-pdf.png", "Export to PDF", "Export the Tab to a PDF"));
+        this.addSeparator();
+        this.add(this.SETTINGS_BUTTON = createButton("settings.png", "Settings", "Edit User Settings"));
+        this.add(this.HELP_BUTTON = createButton("help.png", "Help", "Opens the Help Manual"));
     }
 
-    private void setupButtons() {
+    private JButton createButton(String rawImage, String text, String tooltip) {
 
-        // set button size
-        setButtonSize(OPEN_BUTTON);
-        setButtonSize(SAVE_BUTTON);
-        setButtonSize(EXPORT_BUTTON);
-        setButtonSize(SETTINGS_BUTTON);
-        setButtonSize(HELP_BUTTON);
+        final JButton button = new JButton(text);
+        button.setToolTipText(tooltip);
 
-        // disable buttons which are not to be clicked yet
-        //enableComponents(SAVE_BUTTON, false);
-        //enableComponents(EXPORT_BUTTON, false);
+        try {   // try to give this button an icon
+            LOG.info("loading image: resources/toolbar/"+rawImage);
+            button.setIcon(new ImageIcon(
+                    ImageIO.read(ClassLoader.getSystemResource("toolbar/" + rawImage)),
+                    tooltip
+            ));
+        } catch (Exception e) {
+            LOG.severe("Failed to load image: "+e.getMessage());
+        }
 
-        // add buttons to toolbar
-        this.add(OPEN_BUTTON);
-        this.add(createSeparator());
-        this.add(SAVE_BUTTON);
-        this.add(createSeparator());
-        this.add(EXPORT_BUTTON);
-        this.add(createSeparator());
-        this.add(SETTINGS_BUTTON);
-        this.add(createSeparator());
-        this.add(HELP_BUTTON);
+        return button;
     }
-
-    private void setButtonSize(JButton button) {
-
-        button.setPreferredSize(BUTTON_SIZE);
-        button.setMaximumSize(BUTTON_SIZE);
-    }
-
-    private static JSeparator createSeparator() {
-
-        JSeparator separator = new JSeparator();
-        separator.setOrientation(JSeparator.VERTICAL);
-
-        return separator;
-    }
-
 }
