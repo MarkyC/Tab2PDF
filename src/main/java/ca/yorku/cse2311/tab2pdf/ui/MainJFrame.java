@@ -1,25 +1,21 @@
 package ca.yorku.cse2311.tab2pdf.ui;
 
 import ca.yorku.cse2311.tab2pdf.Arguments;
-import ca.yorku.cse2311.tab2pdf.PdfHelper;
 import ca.yorku.cse2311.tab2pdf.ui.component.EditorTab;
 import ca.yorku.cse2311.tab2pdf.ui.component.PreviewTab;
 import ca.yorku.cse2311.tab2pdf.ui.component.StatusBar;
 import ca.yorku.cse2311.tab2pdf.ui.component.ToolBar;
+import ca.yorku.cse2311.tab2pdf.ui.listener.ExportPdfListener;
 import ca.yorku.cse2311.tab2pdf.ui.listener.HelpListener;
 import ca.yorku.cse2311.tab2pdf.ui.listener.OpenFileListener;
 import ca.yorku.cse2311.tab2pdf.ui.listener.SaveFileListener;
-import ca.yorku.cse2311.tab2pdf.util.PdfCreator;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.logging.Logger;
 
 /**
@@ -102,11 +98,12 @@ public class MainJFrame extends JFrame {
         JTabbedPane pane = tabbedPane("Switch to Text File Editor", this.EDITOR_TAB = new EditorTab(), "Switch to Pdf Preview Panel", new PreviewTab());
         container.add(pane, BorderLayout.CENTER);
         container.add(this.STATUS_BAR = new StatusBar(), BorderLayout.SOUTH);
+
         // add listeners to the toolbar elements
         addListeners();
 
+        // update GUI, we're ready for primetime!
         update();
-
     }
 
     /**
@@ -142,20 +139,7 @@ public class MainJFrame extends JFrame {
         // add action listeners to the toolbar buttons
         this.TOOLBAR.getOpenButton().addActionListener(new OpenFileListener(this));
         this.TOOLBAR.getSaveButton().addActionListener(new SaveFileListener(this));
-        this.TOOLBAR.getExportButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-
-                try {
-                    new PdfCreator(
-                            new PdfHelper(EDITOR_TAB.getSpacingValue(), EDITOR_TAB.getScalingValue()),
-                            Arrays.asList(getEditorText().split("\\r?\\n"))
-                    );
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        this.TOOLBAR.getExportButton().addActionListener(new ExportPdfListener(this));
         this.TOOLBAR.getHelpButton().addActionListener(new HelpListener(this));
 
         // add key listener to the input editor
@@ -192,9 +176,9 @@ public class MainJFrame extends JFrame {
         }
     }
 
-    public String getEditorText() {
+    public EditorTab getEditorTab() {
 
-        return EDITOR_TAB.getText();
+        return EDITOR_TAB;
     }
 
     private JTabbedPane tabbedPane(String tab1Name, JComponent tab1, String tab2Name, JComponent tab2) {
