@@ -2,9 +2,12 @@ package ca.yorku.cse2311.tab2pdf.ui.listener;
 
 import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
 
-import javax.swing.*;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * HelpListener
@@ -15,8 +18,9 @@ import java.awt.event.ActionListener;
  * @since 2015-03-19
  */
  public class HelpListener implements ActionListener {
-
+	private final String USER_MANUAL_LINK = "http://markyc.github.io/Tab2PDF/user-manual.pdf";
     private final MainJFrame window;
+    
 
     /**
      * @param window    the window we are working with
@@ -30,13 +34,35 @@ import java.awt.event.ActionListener;
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
-        //TODO: make user manual work
-        // create a new frame with an embedded user manual
-        JFrame helpFrame = new JFrame("User Manual");
-        helpFrame.setSize(500, 500);
-        JLabel label = new JLabel("Will be implemented soon!", JLabel.CENTER);
-        helpFrame.add(label);
-        helpFrame.setVisible(true);
+    	open(createURI(USER_MANUAL_LINK));
+    	
     }
+    /**
+	 * Opens the URI in the URI object using the desktop's default browser
+	 * @param URI uri
+	 */
+	public static void open(URI uri){
+    	if (Desktop.isDesktopSupported()){
+    		try{
+    			Desktop.getDesktop().browse(uri);
+    		}catch (IOException e){
+    			e.printStackTrace();
+    		}
+    	}else{
+    		//TODO
+    	}
+    }
+	
+	public URI createURI(String link){
+		URI uri;
+		try{
+			uri = new URI(link);
+			
+		}catch (URISyntaxException m){
+			uri= null;
+			m.printStackTrace();
+		}
+		return uri;
+	}
+    
 }
