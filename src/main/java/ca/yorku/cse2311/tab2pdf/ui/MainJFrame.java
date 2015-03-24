@@ -12,6 +12,8 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * MainJFrame
@@ -38,6 +40,8 @@ public class MainJFrame extends JFrame {
     private final SettingsListener SETTINGS_LISTENER = new SettingsListener(this);
     private final HelpListener HELP_LISTENER = new HelpListener(this);
     private final AboutListener ABOUT_LISTENER = new AboutListener(this);
+    private final TitleListener TITLE_LISTENER = new TitleListener(this);
+    private final SubtitleListener SUBTITLE_LISTENER = new SubtitleListener(this);
 
     /**
      * The tab we are editing
@@ -163,16 +167,23 @@ public class MainJFrame extends JFrame {
 
         this.MENU_BAR.getExitMenuItem().addActionListener(new ExitListener(this));
 
+        this.EDITOR_TAB.getTitleField().addKeyListener(TITLE_LISTENER);
+
+        this.EDITOR_TAB.getSubtitleField().addKeyListener(SUBTITLE_LISTENER);
+
+
+
         // add key listener to the input editor
         // the listener is needed to update symbols number in status panel
         getEditorTab().getEditor().addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-
                 update();
                 super.keyPressed(e);
             }
         });
+
+
     }
 
     public void update() {
@@ -195,8 +206,13 @@ public class MainJFrame extends JFrame {
         this.STATUS_BAR.setHint(status);
 
         if (null != file) {
+
             this.STATUS_BAR.setInputFilePath(file.getAbsolutePath());   // The file we're currently editing
             this.STATUS_BAR.setSymbolsNumber(getEditorTab().getText().length()); // Size of the file
+
+
+            setTitleField();
+            setSubtitleField();
 
             // If a file is loaded, we should enable certain stuff
             this.TOOLBAR.getSaveButton().setEnabled(true);
@@ -204,14 +220,74 @@ public class MainJFrame extends JFrame {
             this.TOOLBAR.getExportButton().setEnabled(true);
             this.MENU_BAR.getExportMenuItem().setEnabled(true);
             getEditorTab().setEnabled(true);
+            this.EDITOR_TAB.getTitleField().setEnabled(true);
+            this.EDITOR_TAB.getSubtitleField().setEnabled(true);
+            this.EDITOR_TAB.getSpacingSlider().setEnabled(true);
+            this.EDITOR_TAB.getScalingSlider().setEnabled(true);
         } else {
             blockComponents();
         }
+
+
+    }
+    public void setTitleField(){
+        int line = 0;
+        String[] EditorContents = getEditorContents();
+        Pattern i= Pattern.compile("(\\W|^)TITLE[=](\\W|$)");
+        Matcher matcher = i.matcher("TITLE=");
+        while (matcher.find()) {
+            String string = EditorContents[line];
+            string = string.substring(6, string.length());
+            this.EDITOR_TAB.TITLE.setText(string);
+            line++;
+        }
+
+
+    }
+
+    public void  setSubtitleField(){
+        int line = 0;
+        String[] EditorContents = getEditorContents();
+        Pattern i= Pattern.compile("(\\W|^)SUBTITLE[=](\\W|$)");
+        Matcher matcher = i.matcher("SUBTITLE=");
+        while (matcher.find()) {
+            line++;
+            String string = EditorContents[line];
+            string = string.substring(9, string.length());
+            this.EDITOR_TAB.SUBTITLE.setText(string);
+
+        }
+    }
+
+
+    public JTextPane getInputEditor() {
+        return EDITOR_TAB.getEditor();
     }
 
     public EditorTab getEditorTab() {
 
         return EDITOR_TAB;
+    }
+
+    public String[] getEditorContents() {
+        JTextPane inputEditor = EDITOR_TAB.getEditor();
+        String[] line = inputEditor.getText().split("\\n");
+        return line;
+    }
+
+    public JTextField getTitleTextField(){
+        JTextField titleTextField = EDITOR_TAB.getTitleField();
+        return titleTextField;
+    }
+
+    public JTextField getSubtitleTextField(){
+        JTextField subtitleTextField = EDITOR_TAB.getSubtitleField();
+        return subtitleTextField;
+    }
+
+    public String getTitle(){
+
+        return EDITOR_TAB.getTitle();
     }
 
     private JTabbedPane tabbedPane(String tab1Name, JComponent tab1, String tab2Name, JComponent tab2) {
@@ -244,9 +320,14 @@ public class MainJFrame extends JFrame {
         this.MENU_BAR.getSaveMenuItem().setEnabled(false);
         this.TOOLBAR.getExportButton().setEnabled(false);
         this.MENU_BAR.getExportMenuItem().setEnabled(false);
+        this.EDITOR_TAB.getTitleField().setEnabled(false);
+        this.EDITOR_TAB.getSubtitleField().setEnabled(false);
+        this.EDITOR_TAB.getScalingSlider().setEnabled(false);
+        this.EDITOR_TAB.getSpacingSlider().setEnabled(false);
 
         getEditorTab().setEnabled(false);
     }
+
 
     /**
      * Temporary piece of code to test GUI
@@ -260,4 +341,5 @@ public class MainJFrame extends JFrame {
             }
         });
     }
+
 }

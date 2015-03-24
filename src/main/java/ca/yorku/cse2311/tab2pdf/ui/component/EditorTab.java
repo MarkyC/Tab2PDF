@@ -67,9 +67,9 @@ import java.io.IOException;
      */
     private final JTextPane EDITOR = new JTextPane();
 
-    private final JTextField TITLE = new JTextField("Not Implemented");
+    public final JTextField TITLE = new JTextField("");
 
-    private final JTextField SUBTITLE = new JTextField("Not Implemented");
+    public final JTextField SUBTITLE = new JTextField("");
 
     private final JSlider SCALING_SLIDER = new JSlider(JSlider.HORIZONTAL, SCALING_SLIDER_MIN, SCALING_SLIDER_MAX, SCALING_SLIDER_INIT);
 
@@ -80,9 +80,22 @@ import java.io.IOException;
         return EDITOR;
     }
 
+    public JSlider getScalingSlider(){
+        return SCALING_SLIDER;
+    }
+    public JSlider getSpacingSlider(){
+        return SPACING_SLIDER;
+    }
+
     public String getTitle() {
 
         return TITLE.getText();
+    }
+
+    public void setTitle(String title) {
+
+        TITLE.setText(title);
+
     }
 
     public String getSubtitle() {
@@ -98,6 +111,13 @@ import java.io.IOException;
     public Integer getSpacingValue() {
 
         return SPACING_SLIDER.getValue();
+    }
+
+    public JTextField getTitleField() {
+        return TITLE;
+    }
+    public JTextField getSubtitleField(){
+        return SUBTITLE;
     }
 
     public String getText() {
