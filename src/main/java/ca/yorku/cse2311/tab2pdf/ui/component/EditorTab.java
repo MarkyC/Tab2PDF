@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * EditorTab
@@ -67,9 +69,9 @@ import java.io.IOException;
      */
     private final JTextPane EDITOR = new JTextPane();
 
-    private final JTextField TITLE = new JTextField("Not Implemented");
+    private final JTextField TITLE = new JTextField("");
 
-    private final JTextField SUBTITLE = new JTextField("Not Implemented");
+    private final JTextField SUBTITLE = new JTextField("");
 
     private final JSlider SCALING_SLIDER = new JSlider(JSlider.HORIZONTAL, SCALING_SLIDER_MIN, SCALING_SLIDER_MAX, SCALING_SLIDER_INIT);
 
@@ -80,9 +82,22 @@ import java.io.IOException;
         return EDITOR;
     }
 
+    public JSlider getScalingSlider(){
+        return SCALING_SLIDER;
+    }
+    public JSlider getSpacingSlider(){
+        return SPACING_SLIDER;
+    }
+
     public String getTitle() {
 
         return TITLE.getText();
+    }
+
+    public void setTitle(String title) {
+
+        TITLE.setText(title);
+
     }
 
     public String getSubtitle() {
@@ -100,8 +115,23 @@ import java.io.IOException;
         return SPACING_SLIDER.getValue();
     }
 
+    public JTextField getTitleField() {
+        return TITLE;
+    }
+    public JTextField getSubtitleField(){
+        return SUBTITLE;
+    }
+
     public String getText() {
         return EDITOR.getText();
+    }
+
+    public String[] getTextAsArray() {
+        return getText().split("\\r?\\n");
+    }
+
+    public List<String> getTextAsList() {
+        return Arrays.asList(getTextAsArray());
     }
 
     /**
@@ -121,7 +151,6 @@ import java.io.IOException;
 
         // setup layout
         this.setLayout(new BorderLayout());
-        //this.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), ""));
 
         // add components to the tab
         this.add(controlPanel(), BorderLayout.WEST);
@@ -228,13 +257,17 @@ import java.io.IOException;
     }
 
     /**
-     * TODO: Disable the text editor if this panel is not enabled yet
-     * Also put a string like "click open to choose a file first" or something
+     * TODO: put a string like "click open to choose a file first"
      * @param enabled
      */
     @Override
     public void setEnabled(boolean enabled) {
 
         super.setEnabled(enabled);
+
+        getTitleField().setEnabled(enabled);
+        getSubtitleField().setEnabled(enabled);
+        getSpacingSlider().setEnabled(enabled);
+        getScalingSlider().setEnabled(enabled);
     }
 }
