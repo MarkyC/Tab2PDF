@@ -38,6 +38,9 @@ public class MainJFrame extends JFrame {
     private final SettingsListener SETTINGS_LISTENER = new SettingsListener(this);
     private final HelpListener HELP_LISTENER = new HelpListener(this);
     private final AboutListener ABOUT_LISTENER = new AboutListener(this);
+    private final SampleInput_1Listener SAMPLE_1_LISTENER = new SampleInput_1Listener(this);
+    private final SampleInput_2Listener SAMPLE_2_LISTENER = new SampleInput_2Listener(this);
+
 
     /**
      * The tab we are editing
@@ -158,6 +161,9 @@ public class MainJFrame extends JFrame {
 
         this.TOOLBAR.getHelpButton().addActionListener(HELP_LISTENER);
         this.MENU_BAR.getUserManualMenuItem().addActionListener(HELP_LISTENER);
+        
+        this.MENU_BAR.getSample1MenuItem().addActionListener(SAMPLE_1_LISTENER);
+        this.MENU_BAR.getSample2MenuItem().addActionListener(SAMPLE_2_LISTENER);
 
         this.MENU_BAR.getAboutMenuItem().addActionListener(ABOUT_LISTENER);
 

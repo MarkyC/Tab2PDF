@@ -14,6 +14,7 @@ public class MenuBar extends JMenuBar {
 
     private final JMenu FILE_MENU;
     private final JMenu HELP_MENU;
+    private final JMenu SAMPLE_FILES;
 
     private final JMenuItem OPEN_ITEM;
     private final JMenuItem SAVE_ITEM;
@@ -23,6 +24,8 @@ public class MenuBar extends JMenuBar {
 
     private final JMenuItem USER_MANUAL_ITEM;
     private final JMenuItem ABOUT_ITEM;
+    private final JMenuItem SAMPLE_1;
+    private final JMenuItem SAMPLE_2;
 
     public MenuBar() {
 
@@ -40,6 +43,9 @@ public class MenuBar extends JMenuBar {
 
         this.HELP_MENU = new JMenu("Help");
         HELP_MENU.add(this.USER_MANUAL_ITEM = new JMenuItem("User Manual"));
+        HELP_MENU.add(this.SAMPLE_FILES = new JMenu("Sample Tabs"));
+        SAMPLE_FILES.add(this.SAMPLE_1 = new JMenuItem("Moonlight Sonata"));
+        SAMPLE_FILES.add(this.SAMPLE_2 = new JMenuItem("Remembering Rain"));
         HELP_MENU.add(this.ABOUT_ITEM = new JMenuItem("About"));
 
         this.add(FILE_MENU);
@@ -79,5 +85,11 @@ public class MenuBar extends JMenuBar {
     public JMenuItem getAboutMenuItem() {
 
         return ABOUT_ITEM;
+    }
+    public JMenuItem getSample1MenuItem(){
+    	return SAMPLE_1;
+    }
+    public JMenuItem getSample2MenuItem(){
+    	return SAMPLE_2;
     }
 }

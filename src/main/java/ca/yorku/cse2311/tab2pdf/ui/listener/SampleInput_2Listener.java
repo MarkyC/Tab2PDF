@@ -15,18 +15,18 @@ import java.net.URISyntaxException;
  *
  * Opens the User Manual for the user to peruse
  *
- * @author Glib Sitiugin, Anton Sitkovets, Marco Cirillo
+ * @author Anton Sitkovets
  * @since 2015-03-19
  */
- public class HelpListener implements ActionListener {
-	private final String USER_MANUAL_LINK = "http://markyc.github.io/Tab2PDF/user-manual.pdf";
-    private final MainJFrame window;
+ public class SampleInput_2Listener implements ActionListener {
+	 private final String INPUT_FILE_2 = "https://wiki.eecs.yorku.ca/course_archive/2014-15/W/2311/_media/rememberingrain.txt";
+	 private final MainJFrame window;
     
 
     /**
      * @param window    the window we are working with
      */
-    public HelpListener(MainJFrame window) {
+    public SampleInput_2Listener(MainJFrame window) {
 
         super();
 
@@ -35,11 +35,9 @@ import java.net.URISyntaxException;
 
     @Override
     public void actionPerformed(ActionEvent e) {
-    	
-    	new OpenUrl(USER_MANUAL_LINK);
-    	
+    	new OpenUrl(INPUT_FILE_2);
     	
     }
-	
+   
     
 }
