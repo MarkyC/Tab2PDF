@@ -170,6 +170,9 @@ public class MainJFrame extends JFrame {
         getToolbar().getHelpButton().addActionListener(HELP_LISTENER);
         getMenubar().getUserManualMenuItem().addActionListener(HELP_LISTENER);
 
+        getMenubar().getSample1MenuItem().addActionListener(SAMPLE_1_LISTENER);
+        getMenubar().getSample2MenuItem().addActionListener(SAMPLE_2_LISTENER);
+
         getMenubar().getAboutMenuItem().addActionListener(ABOUT_LISTENER);
 
         getMenubar().getExitMenuItem().addActionListener(new ExitListener(this));
