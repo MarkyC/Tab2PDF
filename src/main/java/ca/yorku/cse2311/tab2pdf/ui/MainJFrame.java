@@ -1,19 +1,21 @@
 package ca.yorku.cse2311.tab2pdf.ui;
 
 import ca.yorku.cse2311.tab2pdf.Arguments;
+import ca.yorku.cse2311.tab2pdf.model.Subtitle;
+import ca.yorku.cse2311.tab2pdf.model.Title;
+import ca.yorku.cse2311.tab2pdf.parser.TabParser;
 import ca.yorku.cse2311.tab2pdf.ui.component.*;
 import ca.yorku.cse2311.tab2pdf.ui.component.MenuBar;
 import ca.yorku.cse2311.tab2pdf.ui.listener.*;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 /**
  * MainJFrame
@@ -219,11 +221,12 @@ public class MainJFrame extends JFrame {
             this.MENU_BAR.getSaveMenuItem().setEnabled(true);
             this.TOOLBAR.getExportButton().setEnabled(true);
             this.MENU_BAR.getExportMenuItem().setEnabled(true);
-            getEditorTab().setEnabled(true);
             this.EDITOR_TAB.getTitleField().setEnabled(true);
             this.EDITOR_TAB.getSubtitleField().setEnabled(true);
             this.EDITOR_TAB.getSpacingSlider().setEnabled(true);
             this.EDITOR_TAB.getScalingSlider().setEnabled(true);
+            getEditorTab().setEnabled(true);
+
         } else {
             blockComponents();
         }
@@ -231,32 +234,18 @@ public class MainJFrame extends JFrame {
 
     }
     public void setTitleField(){
-        int line = 0;
-        String[] EditorContents = getEditorContents();
-        Pattern i= Pattern.compile("(\\W|^)TITLE[=](\\W|$)");
-        Matcher matcher = i.matcher("TITLE=");
-        while (matcher.find()) {
-            String string = EditorContents[line];
-            string = string.substring(6, string.length());
-            this.EDITOR_TAB.TITLE.setText(string);
-            line++;
-        }
+       // int line = 0;
+        String[] editorContents = getEditorContents();
 
+       Title title = TabParser.getTitle(Arrays.asList(editorContents));
+       this.EDITOR_TAB.getTitleField().setText(title.toString());
 
     }
 
     public void  setSubtitleField(){
-        int line = 0;
-        String[] EditorContents = getEditorContents();
-        Pattern i= Pattern.compile("(\\W|^)SUBTITLE[=](\\W|$)");
-        Matcher matcher = i.matcher("SUBTITLE=");
-        while (matcher.find()) {
-            line++;
-            String string = EditorContents[line];
-            string = string.substring(9, string.length());
-            this.EDITOR_TAB.SUBTITLE.setText(string);
-
-        }
+        String[] editorContents = getEditorContents();
+        Subtitle subtitle = TabParser.getSubtitle(Arrays.asList(editorContents));
+        this.EDITOR_TAB.getSubtitleField().setText(subtitle.toString());
     }
 
 

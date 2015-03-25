@@ -67,9 +67,9 @@ import java.io.IOException;
      */
     private final JTextPane EDITOR = new JTextPane();
 
-    public final JTextField TITLE = new JTextField("");
+    private final JTextField TITLE = new JTextField("");
 
-    public final JTextField SUBTITLE = new JTextField("");
+    private final JTextField SUBTITLE = new JTextField("");
 
     private final JSlider SCALING_SLIDER = new JSlider(JSlider.HORIZONTAL, SCALING_SLIDER_MIN, SCALING_SLIDER_MAX, SCALING_SLIDER_INIT);
 

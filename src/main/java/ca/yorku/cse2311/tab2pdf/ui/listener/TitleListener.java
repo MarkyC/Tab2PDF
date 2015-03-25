@@ -1,12 +1,12 @@
 package ca.yorku.cse2311.tab2pdf.ui.listener;
 
-
+import ca.yorku.cse2311.tab2pdf.model.Title;
+import ca.yorku.cse2311.tab2pdf.parser.TabParser;
 import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 /**
  * Created by Varsha Ragavendran , Glib Sitiugin
@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 public  class TitleListener implements KeyListener {
 
     private final MainJFrame window;
+    //public static final Pattern TOKEN_PATTERN = Pattern.compile("^TITLE=(.+)", Pattern.CASE_INSENSITIVE);
 
     /**
      * @param window the window we are working with
@@ -25,6 +26,7 @@ public  class TitleListener implements KeyListener {
         this.window = window;
     }
 
+
     @Override
     public void keyTyped(KeyEvent e) {
         // do nothing
@@ -32,22 +34,19 @@ public  class TitleListener implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        // do nothing
+
+        String[] string = window.getEditorContents();
+        Title title =  TabParser.getTitle(Arrays.asList(string));
+        String newTitle = window.getTitleTextField().getText();
+        String printableText =  Arrays.toString(string).replaceAll("[\\[\\]]", "").replaceAll(", ", "\n").replace( title.toString(), newTitle);
+        window.getInputEditor().setText(printableText);
+        window.getInputEditor().setCaretPosition(0);
+
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        int line = 0;
-        String[] string = window.getEditorContents();
-        Pattern i= Pattern.compile("(\\W|^)TITLE[=](\\W|$)");
-        Matcher matcher = i.matcher("TITLE=");
-        while (matcher.find()) {
-            String newTitle = "TITLE=" + window.getTitleTextField().getText();
-            String printableText =  Arrays.toString(string).replaceAll("[\\[\\]]", "").replaceAll(", ", "\n").replace(string[line], newTitle);
-            window.getInputEditor().setText(printableText);
-            window.getInputEditor().setCaretPosition(0);
-            line++;
-        }
+       // do nothing
 
     }
 
