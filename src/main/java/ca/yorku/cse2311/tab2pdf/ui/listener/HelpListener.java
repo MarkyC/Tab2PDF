@@ -1,7 +1,7 @@
 package ca.yorku.cse2311.tab2pdf.ui.listener;
 
 import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
-import ca.yorku.cse2311.tab2pdf.util.OpenUrl;
+import ca.yorku.cse2311.tab2pdf.util.URIHelper;
 
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import javax.swing.JOptionPane;
 
 /**
  * HelpListener
@@ -35,8 +37,12 @@ import java.net.URISyntaxException;
 
     @Override
     public void actionPerformed(ActionEvent e) {
-    	
-    	new OpenUrl(USER_MANUAL_LINK);
+    	try
+		{
+			URIHelper.open(USER_MANUAL_LINK);
+		} catch (Exception e1) {
+			JOptionPane.showMessageDialog(window, "Could not open link to User Manual", "Error", JOptionPane.ERROR_MESSAGE);
+		}
     	
     	
     }
