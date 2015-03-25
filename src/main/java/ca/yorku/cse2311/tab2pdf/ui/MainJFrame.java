@@ -38,6 +38,8 @@ public class MainJFrame extends JFrame {
     private final SettingsListener SETTINGS_LISTENER = new SettingsListener(this);
     private final HelpListener HELP_LISTENER = new HelpListener(this);
     private final AboutListener ABOUT_LISTENER = new AboutListener(this);
+    private final SampleInput1Listener SAMPLE_1_LISTENER = new SampleInput1Listener(this);
+    private final SampleInput2Listener SAMPLE_2_LISTENER = new SampleInput2Listener(this);
     private final TitleListener TITLE_LISTENER = new TitleListener(this);
     private final SubtitleListener SUBTITLE_LISTENER = new SubtitleListener(this);
     private final SpacingListener SPACING_LISTENER = new SpacingListener(this);
@@ -167,6 +169,9 @@ public class MainJFrame extends JFrame {
 
         getToolbar().getHelpButton().addActionListener(HELP_LISTENER);
         getMenubar().getUserManualMenuItem().addActionListener(HELP_LISTENER);
+
+        getMenubar().getSample1MenuItem().addActionListener(SAMPLE_1_LISTENER);
+        getMenubar().getSample2MenuItem().addActionListener(SAMPLE_2_LISTENER);
 
         getMenubar().getAboutMenuItem().addActionListener(ABOUT_LISTENER);
 

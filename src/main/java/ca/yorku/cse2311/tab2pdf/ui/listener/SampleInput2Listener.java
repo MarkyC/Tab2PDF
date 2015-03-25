@@ -1,7 +1,7 @@
 package ca.yorku.cse2311.tab2pdf.ui.listener;
 
 import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
-import ca.yorku.cse2311.tab2pdf.util.OpenUrl;
+import ca.yorku.cse2311.tab2pdf.util.URIHelper;
 
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import javax.swing.JOptionPane;
 
 /**
  * HelpListener
@@ -18,15 +20,15 @@ import java.net.URISyntaxException;
  * @author Anton Sitkovets
  * @since 2015-03-19
  */
- public class SampleInput_1Listener implements ActionListener {
-	 private final String INPUT_FILE_1 = "https://wiki.eecs.yorku.ca/course_archive/2014-15/W/2311/_media/moonlightsonata.txt";
+ public class SampleInput2Listener implements ActionListener {
+	 private final String INPUT_FILE_2 = "https://wiki.eecs.yorku.ca/course_archive/2014-15/W/2311/_media/rememberingrain.txt";
 	 private final MainJFrame window;
     
 
     /**
      * @param window    the window we are working with
      */
-    public SampleInput_1Listener(MainJFrame window) {
+    public SampleInput2Listener(MainJFrame window) {
 
         super();
 
@@ -35,10 +37,13 @@ import java.net.URISyntaxException;
 
     @Override
     public void actionPerformed(ActionEvent e) {
-    	new OpenUrl(INPUT_FILE_1);
-    	
+    	try
+		{
+			URIHelper.open(INPUT_FILE_2);
+		} catch (Exception e1) {
+			JOptionPane.showMessageDialog(window, "Could not open link to Remembering Rain", "Error", JOptionPane.ERROR_MESSAGE);
+		}
     }
-    
-	
+   
     
 }
