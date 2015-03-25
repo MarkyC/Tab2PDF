@@ -7,17 +7,17 @@ import ca.yorku.cse2311.tab2pdf.ui.listener.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 /**
  * MainJFrame
  * Handles the GUI of the application
  *
- * @author Marco, Glib, Varsha
+ * @author Marco Cirillo, Glib Sitiugin, Varsha Ragavendran
  * @since 2015-01-21
  */
 public class MainJFrame extends JFrame {
@@ -38,9 +38,10 @@ public class MainJFrame extends JFrame {
     private final SettingsListener SETTINGS_LISTENER = new SettingsListener(this);
     private final HelpListener HELP_LISTENER = new HelpListener(this);
     private final AboutListener ABOUT_LISTENER = new AboutListener(this);
-    private final SampleInput_1Listener SAMPLE_1_LISTENER = new SampleInput_1Listener(this);
-    private final SampleInput_2Listener SAMPLE_2_LISTENER = new SampleInput_2Listener(this);
-
+    private final TitleListener TITLE_LISTENER = new TitleListener(this);
+    private final SubtitleListener SUBTITLE_LISTENER = new SubtitleListener(this);
+    private final SpacingListener SPACING_LISTENER = new SpacingListener(this);
+    private final EditorListener EDITOR_LISTENER = new EditorListener(this);
 
     /**
      * The tab we are editing
@@ -56,7 +57,10 @@ public class MainJFrame extends JFrame {
     }
 
     /**
-     * sets the tab file we are editing
+     * sets the tab file we are editing:
+     * * load it in the editor
+     * * update title/subtitle/spacing with values from the tab
+     *
      * @param file the new tab file to set
      */
     public void setFile(File file) {
@@ -76,6 +80,9 @@ public class MainJFrame extends JFrame {
             );
         }
 
+
+        this.EDITOR_LISTENER.keyReleased(null);         // fire listeners so the title/subtitle update
+        getEditorTab().getEditor().setCaretPosition(0); // bring the editor to the top
     }
 
     /**
@@ -96,8 +103,8 @@ public class MainJFrame extends JFrame {
         this.setLocation(0, 0);
 
         // makes the frame look native to your computer (ie: Windows, or Mac looking)
-        try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
-        catch (Exception e) {e.printStackTrace();}
+        try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); }
+        catch (Exception e) { LOG.log(Level.WARNING, "Could not set look and feel", e); }
 
         this.setJMenuBar(this.MENU_BAR = new MenuBar());
 
@@ -105,7 +112,7 @@ public class MainJFrame extends JFrame {
         Container container = this.getContentPane();
         container.add(this.TOOLBAR = new ToolBar(), BorderLayout.NORTH);
 
-        JTabbedPane pane = tabbedPane("Editor", this.EDITOR_TAB = new EditorTab(), "Preview", new PreviewTab());
+        JTabbedPane pane = createTabbedPane("Editor", this.EDITOR_TAB = new EditorTab(), "Preview", new PreviewTab());
         container.add(pane, BorderLayout.CENTER);
         container.add(this.STATUS_BAR = new StatusBar(), BorderLayout.SOUTH);
 
@@ -136,7 +143,6 @@ public class MainJFrame extends JFrame {
 
         MainJFrame window = new MainJFrame(title, args); // create the window that holds our application
         window.pack(); // compress contents
-        //window.setMinimumSize(JFrameData.WINDOW_MIN_SIZE); // set minimum size
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // exit the app when the JFrame closes
         window.setVisible(true);                // Show the window
     }
@@ -147,38 +153,29 @@ public class MainJFrame extends JFrame {
     public void addListeners() {
 
         // add action listeners to the toolbar and menu buttons
-        this.TOOLBAR.getOpenButton().addActionListener(OPEN_FILE_LISTENER);
-        this.MENU_BAR.getOpenMenuItem().addActionListener(OPEN_FILE_LISTENER);
+        getToolbar().getOpenButton().addActionListener(OPEN_FILE_LISTENER);
+        getMenubar().getOpenMenuItem().addActionListener(OPEN_FILE_LISTENER);
 
-        this.TOOLBAR.getSaveButton().addActionListener(SAVE_FILE_LISTENER);
-        this.MENU_BAR.getSaveMenuItem().addActionListener(SAVE_FILE_LISTENER);
+        getToolbar().getSaveButton().addActionListener(SAVE_FILE_LISTENER);
+        getMenubar().getSaveMenuItem().addActionListener(SAVE_FILE_LISTENER);
 
-        this.TOOLBAR.getExportButton().addActionListener(EXPORT_PDF_LISTENER);
-        this.MENU_BAR.getExportMenuItem().addActionListener(EXPORT_PDF_LISTENER);
+        getToolbar().getExportButton().addActionListener(EXPORT_PDF_LISTENER);
+        getMenubar().getExportMenuItem().addActionListener(EXPORT_PDF_LISTENER);
 
-        this.TOOLBAR.getSettingsButton().addActionListener(SETTINGS_LISTENER);
-        this.MENU_BAR.getSettingsMenuItem().addActionListener(SETTINGS_LISTENER);
+        getToolbar().getSettingsButton().addActionListener(SETTINGS_LISTENER);
+        getMenubar().getSettingsMenuItem().addActionListener(SETTINGS_LISTENER);
 
-        this.TOOLBAR.getHelpButton().addActionListener(HELP_LISTENER);
-        this.MENU_BAR.getUserManualMenuItem().addActionListener(HELP_LISTENER);
-        
-        this.MENU_BAR.getSample1MenuItem().addActionListener(SAMPLE_1_LISTENER);
-        this.MENU_BAR.getSample2MenuItem().addActionListener(SAMPLE_2_LISTENER);
+        getToolbar().getHelpButton().addActionListener(HELP_LISTENER);
+        getMenubar().getUserManualMenuItem().addActionListener(HELP_LISTENER);
 
-        this.MENU_BAR.getAboutMenuItem().addActionListener(ABOUT_LISTENER);
+        getMenubar().getAboutMenuItem().addActionListener(ABOUT_LISTENER);
 
-        this.MENU_BAR.getExitMenuItem().addActionListener(new ExitListener(this));
+        getMenubar().getExitMenuItem().addActionListener(new ExitListener(this));
 
-        // add key listener to the input editor
-        // the listener is needed to update symbols number in status panel
-        getEditorTab().getEditor().addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-
-                update();
-                super.keyPressed(e);
-            }
-        });
+        getEditorTab().getTitleField().addKeyListener(TITLE_LISTENER);
+        getEditorTab().getSubtitleField().addKeyListener(SUBTITLE_LISTENER);
+        getEditorTab().getSpacingSlider().addChangeListener(SPACING_LISTENER);
+        getEditorTab().getEditor().addKeyListener(EDITOR_LISTENER);
     }
 
     public void update() {
@@ -198,60 +195,71 @@ public class MainJFrame extends JFrame {
      */
     public void update(String status) {
 
-        this.STATUS_BAR.setHint(status);
+        getStatusbar().setHint(status);
 
         if (null != file) {
-            this.STATUS_BAR.setInputFilePath(file.getAbsolutePath());   // The file we're currently editing
-            this.STATUS_BAR.setSymbolsNumber(getEditorTab().getText().length()); // Size of the file
 
-            // If a file is loaded, we should enable certain stuff
-            this.TOOLBAR.getSaveButton().setEnabled(true);
-            this.MENU_BAR.getSaveMenuItem().setEnabled(true);
-            this.TOOLBAR.getExportButton().setEnabled(true);
-            this.MENU_BAR.getExportMenuItem().setEnabled(true);
-            getEditorTab().setEnabled(true);
+            getStatusbar().setInputFilePath(file.getAbsolutePath());   // The file we're currently editing
+            getStatusbar().setSymbolsNumber(getEditorTab().getText().length()); // Size of the file
+
+            // If a file is loaded, we should enable everything
+            setEnabled(true);
+
         } else {
-            blockComponents();
+            setEnabled(false);
         }
+    }
+
+    public JTextPane getInputEditor() {
+        return EDITOR_TAB.getEditor();
     }
 
     public EditorTab getEditorTab() {
 
         return EDITOR_TAB;
     }
+    
+    public ToolBar getToolbar() {
+        return TOOLBAR;
+    }
+    
+    public MenuBar getMenubar() {
+        return MENU_BAR;
+    }
+    
+    public StatusBar getStatusbar() {
+        return STATUS_BAR;
+    }
 
-    private JTabbedPane tabbedPane(String tab1Name, JComponent tab1, String tab2Name, JComponent tab2) {
+    private static JTabbedPane createTabbedPane(String tab1Name, JComponent tab1, String tab2Name, JComponent tab2) {
 
         final JTabbedPane pane = new JTabbedPane();
 
         pane.addTab(String.format(
-                "<html><body><table width='150'><tr><td align='center'>%s</td></tr></table></body></html>",
-                tab1Name
+                        "<html><body><table width='150'><tr><td align='center'>%s</td></tr></table></body></html>",
+                        tab1Name
                 ),
-            tab1
+                tab1
         );
         pane.addTab(String.format(
-                "<html><body><table width='150'><tr><td align='center'>%s</td></tr></table></body></html>",
-                tab2Name
+                        "<html><body><table width='150'><tr><td align='center'>%s</td></tr></table></body></html>",
+                        tab2Name
                 ),
-            tab2
+                tab2
         );
 
         return pane;
 
     }
 
-    /**
-     * Disables components which are not supposed to be used yet
-     */
-    private void blockComponents() {
+    @Override
+    public void setEnabled(boolean enabled) {
 
-        this.TOOLBAR.getSaveButton().setEnabled(false);
-        this.MENU_BAR.getSaveMenuItem().setEnabled(false);
-        this.TOOLBAR.getExportButton().setEnabled(false);
-        this.MENU_BAR.getExportMenuItem().setEnabled(false);
-
-        getEditorTab().setEnabled(false);
+        // don't call super here, since it would actually disable this window
+        // instead, we delegate to the toolbar, menubar, and editor's setEnabled() methods
+        getToolbar().setEnabled(enabled);
+        getMenubar().setEnabled(enabled);
+        getEditorTab().setEnabled(enabled);
     }
 
     /**

@@ -96,4 +96,13 @@ import java.util.logging.Logger;
 
         return button;
     }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+
+        super.setEnabled(enabled);
+
+        getSaveButton().setEnabled(enabled);
+        getExportButton().setEnabled(enabled);
+    }
 }
