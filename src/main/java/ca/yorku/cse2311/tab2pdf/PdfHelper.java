@@ -55,7 +55,7 @@ public class PdfHelper {
     }
 
     public PdfHelper(File output, int lineSpace, float lineWidth) throws IOException, DocumentException {
-        this(new Document(), output, lineSpace, lineWidth);
+        this(new Document(), output, lineSpace + 2, lineWidth);
     }
 
 
