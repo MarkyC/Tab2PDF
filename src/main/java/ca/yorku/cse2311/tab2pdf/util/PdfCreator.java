@@ -61,7 +61,7 @@ public class PdfCreator implements Runnable {
             // attempt to create a PDF from the parsed tab
             createPdf(TabParser.parse(lines));
 
-            // notify our observers by giving them the output PDF File
+            // deliver the callback by giving them the output PDF File
             LOG.info("PDF created successfully, running Callback...");
             callback.onCallback(true, helper.getFile());
 

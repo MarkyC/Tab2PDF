@@ -68,7 +68,7 @@ public class PreviewTabListener implements ChangeListener {
                     // we failed to convert the tab to PDF with an Exception
                     JOptionPane.showMessageDialog(
                             window,
-                            "Could not render tab: " + ((Exception) output).getMessage(),
+                            "Could not render tab",
                             "Error",
                             JOptionPane.ERROR_MESSAGE
                     );
