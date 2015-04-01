@@ -16,6 +16,8 @@ public class PreviewTab extends JPanel {
 
     public static final Dimension TAB_SIZE = new Dimension(500, 500);
 
+    SwingController controller;
+
     /**
      * Constructs a new preview tab
      */
@@ -24,6 +26,30 @@ public class PreviewTab extends JPanel {
         super();
 
         setupTab();
+        setupPreview();
+    }
+
+    private void setupPreview() {
+
+        // build a controller
+        controller = new SwingController();
+
+        // Build a SwingViewFactory configured with the controller
+        SwingViewBuilder factory = new SwingViewBuilder(controller);
+
+        // Use the factory to build a JPanel that is pre-configured
+        //with a complete, active Viewer UI.
+        JPanel viewerComponentPanel = factory.buildViewerPanel();
+
+        // add copy keyboard command
+        ComponentKeyBinding.install(controller, viewerComponentPanel);
+
+        // add interactive mouse link annotation support via callback
+        controller.getDocumentViewController().setAnnotationCallback(
+                new org.icepdf.ri.common.MyAnnotationCallback(
+                        controller.getDocumentViewController()));
+
+        this.add(viewerComponentPanel);
     }
 
     /**
@@ -39,26 +65,6 @@ public class PreviewTab extends JPanel {
     }
 
     public void update(String filePath) {
-
-        // build a controller
-        SwingController controller = new SwingController();
-
-        // Build a SwingViewFactory configured with the controller
-                SwingViewBuilder factory = new SwingViewBuilder(controller);
-
-        // Use the factory to build a JPanel that is pre-configured
-        //with a complete, active Viewer UI.
-                JPanel viewerComponentPanel = factory.buildViewerPanel();
-
-        // add copy keyboard command
-                ComponentKeyBinding.install(controller, viewerComponentPanel);
-
-        // add interactive mouse link annotation support via callback
-                controller.getDocumentViewController().setAnnotationCallback(
-                        new org.icepdf.ri.common.MyAnnotationCallback(
-                                controller.getDocumentViewController()));
-
-        this.add(viewerComponentPanel);
 
         // Open a PDF document to view
         controller.openDocument(filePath);
