@@ -61,8 +61,8 @@ import java.util.logging.Logger;
         this.setFloatable(false);   // Don't let user detach (float) this toolbar
 
         // add buttons
-        this.add(this.OPEN_BUTTON = createButton("folder-open.png", "Open", "Open a Tab File"));
-        this.add(this.SAVE_BUTTON = createButton("document-save.png", "Save", "Save the Tab File"));
+        this.add(this.OPEN_BUTTON = createButton("folder-open.png", "Open Tab", "Open a Tab File"));
+        this.add(this.SAVE_BUTTON = createButton("document-save.png", "Save Tab", "Save the Tab File"));
         this.addSeparator();
         this.add(this.EXPORT_BUTTON = createButton("application-pdf.png", "Export to PDF", "Export the Tab to a PDF"));
         this.addSeparator();
