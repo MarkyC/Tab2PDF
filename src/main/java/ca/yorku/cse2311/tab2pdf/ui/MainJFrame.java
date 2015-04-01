@@ -35,7 +35,6 @@ public class MainJFrame extends JFrame {
     private final OpenFileListener OPEN_FILE_LISTENER = new OpenFileListener(this);
     private final SaveFileListener SAVE_FILE_LISTENER = new SaveFileListener(this);
     private final ExportPdfListener EXPORT_PDF_LISTENER = new ExportPdfListener(this);
-    private final SettingsListener SETTINGS_LISTENER = new SettingsListener(this);
     private final HelpListener HELP_LISTENER = new HelpListener(this);
     private final AboutListener ABOUT_LISTENER = new AboutListener(this);
     private final SampleInput1Listener SAMPLE_1_LISTENER = new SampleInput1Listener(this);
@@ -163,9 +162,6 @@ public class MainJFrame extends JFrame {
 
         getToolbar().getExportButton().addActionListener(EXPORT_PDF_LISTENER);
         getMenubar().getExportMenuItem().addActionListener(EXPORT_PDF_LISTENER);
-
-        getToolbar().getSettingsButton().addActionListener(SETTINGS_LISTENER);
-        getMenubar().getSettingsMenuItem().addActionListener(SETTINGS_LISTENER);
 
         getToolbar().getHelpButton().addActionListener(HELP_LISTENER);
         getMenubar().getUserManualMenuItem().addActionListener(HELP_LISTENER);
