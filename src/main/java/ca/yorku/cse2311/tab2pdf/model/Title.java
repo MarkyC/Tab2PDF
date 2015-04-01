@@ -12,11 +12,13 @@ import ca.yorku.cse2311.tab2pdf.PdfHelper;
  */
 public class Title implements ITabNotation {
 
+    public static final String DEFAULT_TITLE = "No Title";
+
     private final String title;
 
     public Title() {
 
-        this("No Title");
+        this(DEFAULT_TITLE);
     }
 
     public Title(String title) {
