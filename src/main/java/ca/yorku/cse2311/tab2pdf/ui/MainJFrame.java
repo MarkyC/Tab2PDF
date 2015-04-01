@@ -1,14 +1,20 @@
 package ca.yorku.cse2311.tab2pdf.ui;
 
 import ca.yorku.cse2311.tab2pdf.Arguments;
+import ca.yorku.cse2311.tab2pdf.PdfHelper;
 import ca.yorku.cse2311.tab2pdf.ui.component.*;
 import ca.yorku.cse2311.tab2pdf.ui.component.MenuBar;
 import ca.yorku.cse2311.tab2pdf.ui.listener.*;
+import ca.yorku.cse2311.tab2pdf.util.FileUtils;
+import ca.yorku.cse2311.tab2pdf.util.PdfCreator;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,6 +33,8 @@ public class MainJFrame extends JFrame {
     private final ToolBar TOOLBAR;
 
     private final EditorTab EDITOR_TAB;
+
+    private final PreviewTab PREVIEW_TAB;
 
     private final StatusBar STATUS_BAR;
 
@@ -113,7 +121,10 @@ public class MainJFrame extends JFrame {
         Container container = this.getContentPane();
         container.add(this.TOOLBAR = new ToolBar(), BorderLayout.NORTH);
 
-        JTabbedPane pane = createTabbedPane("Editor", this.EDITOR_TAB = new EditorTab(), "Preview", new PreviewTab());
+        JTabbedPane pane = createTabbedPane(
+                "Editor", this.EDITOR_TAB = new EditorTab(),
+                "Preview", this.PREVIEW_TAB = new PreviewTab()
+        );
         container.add(pane, BorderLayout.CENTER);
         container.add(this.STATUS_BAR = new StatusBar(), BorderLayout.SOUTH);
 
@@ -232,7 +243,7 @@ public class MainJFrame extends JFrame {
         return STATUS_BAR;
     }
 
-    private static JTabbedPane createTabbedPane(String tab1Name, JComponent tab1, String tab2Name, JComponent tab2) {
+    private JTabbedPane createTabbedPane(String tab1Name, JComponent tab1, String tab2Name, final PreviewTab tab2) {
 
         final JTabbedPane pane = new JTabbedPane();
 
@@ -242,12 +253,39 @@ public class MainJFrame extends JFrame {
                 ),
                 tab1
         );
+
         pane.addTab(String.format(
                         "<html><body><table width='150'><tr><td align='center'>%s</td></tr></table></body></html>",
                         tab2Name
                 ),
                 tab2
         );
+
+        pane.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                //if (e.getSource() == tab2) {
+                try {
+                    File f = FileUtils.createTempFile("tab2pdf", ".pdf");
+                    LOG.info("Previewing File: " + f.getAbsolutePath());
+                    new Thread(new PdfCreator(
+                            new PdfHelper(
+                                    f,
+                                    MainJFrame.this.getEditorTab().getSpacingValue(),
+                                    MainJFrame.this.getEditorTab().getScalingValue()
+                            ),
+                            Arrays.asList(MainJFrame.this.getEditorTab().getText().split("\\r?\\n"))
+                    )).start();
+                    Thread.sleep(1000);
+                    tab2.update(f.getAbsolutePath());
+                } catch (Exception e1) {
+                    LOG.log(Level.SEVERE, "Could not convert tab to pdf: " + e1.getMessage(), e1);
+                }
+                // }
+            }
+        });
+
+
 
         return pane;
 

@@ -8,7 +8,6 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -55,7 +54,7 @@ public class PdfCreator implements Runnable {
 
         try {
             createPdf(TabParser.parse(lines));
-            Desktop.getDesktop().open(helper.getFile());
+            //Desktop.getDesktop().open(helper.getFile());
 
         } catch (Exception e) {
             e.printStackTrace();
