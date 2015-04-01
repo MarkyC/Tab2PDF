@@ -482,7 +482,7 @@ public class PdfHelper {
         }
         float xlen = 1.4f;
         float ylen = 1.2f;
-        line(xCoordinate - fontHeight * xlen * 0.9f, yCoordinate - fontHeight * ylen, xCoordinate + fontHeight * xlen * 0.9f, yCoordinate + fontHeight * ylen, lineWidth);
+        line(xCoordinate - fontHeight * xlen * 0.9f, yCoordinate - fontHeight * ylen, xCoordinate + fontHeight * xlen * 0.9f, yCoordinate + fontHeight * ylen, lineWidth / 10);
 
     }
 
@@ -551,7 +551,7 @@ public class PdfHelper {
         //drawDigit(staveNumber, lineNumber, xCoordinate - fontHeight * 2, pullOff.getEnd().getValue(), writer);
         drawText(((xCoordinate + digitRadius * 2.0f) + connectingXCoordinate) / 2, yCoordinate + 8, "p", 6);
 
-        arc(xCoordinate + digitRadius * 1.5f, yCoordinate + 3, connectingXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, lineWidth, 2.0f);
+        arc(xCoordinate + digitRadius * 1.5f, yCoordinate + 3, connectingXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, 1f, 2.0f);
 
 
     }
@@ -591,7 +591,7 @@ public class PdfHelper {
         //drawDigit(staveNumber, lineNumber, xCoordinate + fontHeight / 4f, hammerOn.getEnd().getValue(), writer);
         drawText(((xCoordinate + digitRadius * 2.0f) + connectingXCoordinate) / 2, yCoordinate + 7, "h", 6);
 
-        arc(xCoordinate + digitRadius * 1.5f, yCoordinate + 3, connectingXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, lineWidth, 2.0f);
+        arc(xCoordinate + digitRadius * 1.5f, yCoordinate + 3, connectingXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, 1f, 2.0f);
 
 
     }
