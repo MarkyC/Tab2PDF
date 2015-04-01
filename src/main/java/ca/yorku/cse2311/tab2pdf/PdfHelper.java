@@ -25,6 +25,8 @@ import java.nio.file.Files;
 
 public class PdfHelper {
 
+    public static final int DISTANCE_FROM_TOP = 650;
+
     private final PdfWriter writer;
 
     private final Document document;
@@ -238,7 +240,7 @@ public class PdfHelper {
     public int determineYCoordinate(int staveNumber) {
 
         final int STAVE_SPACE = lineSpace * 10; //Space between the staves
-        return 600 - staveNumber * STAVE_SPACE;
+        return DISTANCE_FROM_TOP - staveNumber * STAVE_SPACE;
     }
 
     /**
