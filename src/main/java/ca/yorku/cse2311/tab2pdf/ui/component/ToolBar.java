@@ -25,18 +25,11 @@ import java.util.logging.Logger;
 
     private final JButton EXPORT_BUTTON;
 
-    private final JButton SETTINGS_BUTTON;
-
     private final JButton HELP_BUTTON;
 
     public JButton getHelpButton() {
 
         return HELP_BUTTON;
-    }
-
-    public JButton getSettingsButton() {
-
-        return SETTINGS_BUTTON;
     }
 
     public JButton getExportButton() {
@@ -61,13 +54,12 @@ import java.util.logging.Logger;
         this.setFloatable(false);   // Don't let user detach (float) this toolbar
 
         // add buttons
-        this.add(this.OPEN_BUTTON = createButton("folder-open.png", "Open", "Open a Tab File"));
-        this.add(this.SAVE_BUTTON = createButton("document-save.png", "Save", "Save the Tab File"));
+        this.add(this.OPEN_BUTTON = createButton("folder-open.png", "Open Tab", "Open a Tab File"));
+        this.add(this.SAVE_BUTTON = createButton("document-save.png", "Save Tab", "Save the Tab File"));
         this.addSeparator();
         this.add(this.EXPORT_BUTTON = createButton("application-pdf.png", "Export to PDF", "Export the Tab to a PDF"));
         this.addSeparator();
-        this.add(this.SETTINGS_BUTTON = createButton("settings.png", "Settings", "Edit User Settings"));
-        this.add(this.HELP_BUTTON = createButton("help.png", "Help", "Opens the Help Manual"));
+        this.add(this.HELP_BUTTON = createButton("help.png", "User Manual", "Opens the Help Manual"));
     }
 
     /**

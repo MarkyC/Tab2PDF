@@ -25,6 +25,8 @@ import java.nio.file.Files;
 
 public class PdfHelper {
 
+    public static final int DISTANCE_FROM_TOP = 650;
+
     private final PdfWriter writer;
 
     private final Document document;
@@ -55,7 +57,7 @@ public class PdfHelper {
     }
 
     public PdfHelper(File output, int lineSpace, float lineWidth) throws IOException, DocumentException {
-        this(new Document(), output, lineSpace, lineWidth);
+        this(new Document(), output, lineSpace + 2, lineWidth);
     }
 
 
@@ -238,7 +240,7 @@ public class PdfHelper {
     public int determineYCoordinate(int staveNumber) {
 
         final int STAVE_SPACE = lineSpace * 10; //Space between the staves
-        return 600 - staveNumber * STAVE_SPACE;
+        return DISTANCE_FROM_TOP - staveNumber * STAVE_SPACE;
     }
 
     /**
@@ -482,7 +484,7 @@ public class PdfHelper {
         }
         float xlen = 1.4f;
         float ylen = 1.2f;
-        line(xCoordinate - fontHeight * xlen * 0.9f, yCoordinate - fontHeight * ylen, xCoordinate + fontHeight * xlen * 0.9f, yCoordinate + fontHeight * ylen, lineWidth);
+        line(xCoordinate - fontHeight * xlen * 0.9f, yCoordinate - fontHeight * ylen, xCoordinate + fontHeight * xlen * 0.9f, yCoordinate + fontHeight * ylen, lineWidth / 10);
 
     }
 
@@ -551,7 +553,7 @@ public class PdfHelper {
         //drawDigit(staveNumber, lineNumber, xCoordinate - fontHeight * 2, pullOff.getEnd().getValue(), writer);
         drawText(((xCoordinate + digitRadius * 2.0f) + connectingXCoordinate) / 2, yCoordinate + 8, "p", 6);
 
-        arc(xCoordinate + digitRadius * 1.5f, yCoordinate + 3, connectingXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, lineWidth, 2.0f);
+        arc(xCoordinate + digitRadius * 1.5f, yCoordinate + 3, connectingXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, 1f, 2.0f);
 
 
     }
@@ -591,7 +593,7 @@ public class PdfHelper {
         //drawDigit(staveNumber, lineNumber, xCoordinate + fontHeight / 4f, hammerOn.getEnd().getValue(), writer);
         drawText(((xCoordinate + digitRadius * 2.0f) + connectingXCoordinate) / 2, yCoordinate + 7, "h", 6);
 
-        arc(xCoordinate + digitRadius * 1.5f, yCoordinate + 3, connectingXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, lineWidth, 2.0f);
+        arc(xCoordinate + digitRadius * 1.5f, yCoordinate + 3, connectingXCoordinate + oldDigitRadius * 1.5f, oldyCoordinate + 3, 1f, 2.0f);
 
 
     }

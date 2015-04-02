@@ -48,7 +48,13 @@ public class ExportPdfListener implements ActionListener {
                                 window.getEditorTab().getSpacingValue(),
                                 window.getEditorTab().getScalingValue()
                         ),
-                        Arrays.asList(window.getEditorTab().getText().split("\\r?\\n"))
+                        Arrays.asList(window.getEditorTab().getText().split("\\r?\\n")),
+                        new PdfCreator.Callback() {
+                            @Override
+                            public void onCallback(boolean success, Object output) {
+                                LOG.info("onCallback");
+                            }
+                        }
                 )).start();
             }
         } catch (Exception e) {

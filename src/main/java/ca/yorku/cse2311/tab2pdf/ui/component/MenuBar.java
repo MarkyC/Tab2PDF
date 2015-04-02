@@ -19,7 +19,6 @@ public class MenuBar extends JMenuBar {
     private final JMenuItem OPEN_ITEM;
     private final JMenuItem SAVE_ITEM;
     private final JMenuItem EXPORT_ITEM;
-    private final JMenuItem SETTINGS_ITEM;
     private final JMenuItem EXIT_ITEM;
 
     private final JMenuItem USER_MANUAL_ITEM;
@@ -36,8 +35,6 @@ public class MenuBar extends JMenuBar {
         FILE_MENU.add(this.SAVE_ITEM = new JMenuItem("Save"));
         FILE_MENU.addSeparator();
         FILE_MENU.add(this.EXPORT_ITEM = new JMenuItem("Export to PDF"));
-        FILE_MENU.addSeparator();
-        FILE_MENU.add(this.SETTINGS_ITEM = new JMenuItem("Settings"));
         FILE_MENU.addSeparator();
         FILE_MENU.add(this.EXIT_ITEM = new JMenuItem("Exit"));
 
@@ -65,11 +62,6 @@ public class MenuBar extends JMenuBar {
     public JMenuItem getExportMenuItem() {
 
         return EXPORT_ITEM;
-    }
-
-    public JMenuItem getSettingsMenuItem() {
-
-        return SETTINGS_ITEM;
     }
 
     public JMenuItem getExitMenuItem() {
