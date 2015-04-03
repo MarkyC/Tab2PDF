@@ -130,7 +130,12 @@ public class TabParser {
             }
 
             // A blank line begins a new Bar
-            if (line.isEmpty()) {
+            PipeParser pipe = new PipeParser();
+            DoubleBarParser doubleBar = new DoubleBarParser();
+            if (!pipe.canParse(line) && !doubleBar.canParse((line))) {
+                if(bars.isEmpty()){
+                    continue;
+                }
                 for (Bar bar : bars) {
                     try {
                         int barLenght = 0;
