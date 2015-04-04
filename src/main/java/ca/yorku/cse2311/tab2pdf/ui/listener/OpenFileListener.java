@@ -44,5 +44,7 @@ public class OpenFileListener implements ActionListener {
         if (JFileChooser.APPROVE_OPTION == fc.showOpenDialog(window)) {
             window.setFile(fc.getSelectedFile());
         }
+
+
     }
 }

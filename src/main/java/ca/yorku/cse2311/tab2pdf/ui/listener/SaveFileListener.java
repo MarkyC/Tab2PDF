@@ -43,6 +43,10 @@ public class SaveFileListener implements ActionListener {
 
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(window.getFile()));
+            writer.write(window.getEditorTab().TITLE_PATTERN + window.getEditorTab().getTitle() + "\n");
+            writer.write(window.getEditorTab().SUBTITLE_PATTERN + window.getEditorTab().getSubtitle() + "\n");
+            writer.write(window.getEditorTab().SPACING_PATTERN + window.getEditorTab().getSpacingValue() + "\n");
+            writer.write(window.getEditorTab().SCALING_PATTERN + window.getEditorTab().getScalingValue() + "\n");
             writer.write(window.getEditorTab().getText());
             writer.close();
         } catch (IOException e) {

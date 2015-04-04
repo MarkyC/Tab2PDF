@@ -1,11 +1,14 @@
 package ca.yorku.cse2311.tab2pdf.ui;
 
 import ca.yorku.cse2311.tab2pdf.Arguments;
+import ca.yorku.cse2311.tab2pdf.model.Tab;
+import ca.yorku.cse2311.tab2pdf.parser.TabParser;
 import ca.yorku.cse2311.tab2pdf.ui.component.*;
 import ca.yorku.cse2311.tab2pdf.ui.component.MenuBar;
 import ca.yorku.cse2311.tab2pdf.ui.listener.*;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +24,8 @@ import java.util.logging.Logger;
  * @since 2015-01-21
  */
 public class MainJFrame extends JFrame {
+
+    public static MainJFrame frame = null;
 
     /**
      * Title of the GUI window
@@ -39,7 +44,7 @@ public class MainJFrame extends JFrame {
 
     private final MenuBar MENU_BAR;
 
-    private final JTabbedPane TABS;
+    private final JTabbedPane TABBED_PANE;
 
     private final OpenFileListener OPEN_FILE_LISTENER = new OpenFileListener(this);
 
@@ -54,14 +59,6 @@ public class MainJFrame extends JFrame {
     private final SampleInput1Listener SAMPLE_1_LISTENER = new SampleInput1Listener(this);
 
     private final SampleInput2Listener SAMPLE_2_LISTENER = new SampleInput2Listener(this);
-
-    private final TitleListener TITLE_LISTENER = new TitleListener(this);
-
-    private final SubtitleListener SUBTITLE_LISTENER = new SubtitleListener(this);
-
-    private final SpacingListener SPACING_LISTENER = new SpacingListener(this);
-
-    private final EditorListener EDITOR_LISTENER = new EditorListener(this);
 
     /**
      * The tab we are editing
@@ -92,10 +89,10 @@ public class MainJFrame extends JFrame {
 
         // Add tabs for this window
         // Not to be confused with guitar tabs, these tabs are for the Editor and Preview panes.
-        this.TABS = new JTabbedPane();
-        TABS.addTab(formatTabName("Editor"), this.EDITOR_TAB = new EditorTab());
-        TABS.addTab(formatTabName("Preview"), this.PREVIEW_TAB = new PreviewTab());
-        container.add(TABS, BorderLayout.CENTER);
+        this.TABBED_PANE = new JTabbedPane();
+        TABBED_PANE.addTab(formatTabName("Editor"), this.EDITOR_TAB = new EditorTab());
+        TABBED_PANE.addTab(formatTabName("Preview"), this.PREVIEW_TAB = new PreviewTab());
+        container.add(TABBED_PANE, BorderLayout.CENTER);
 
         // Add status bar
         container.add(this.STATUS_BAR = new StatusBar(), BorderLayout.SOUTH);
@@ -105,6 +102,8 @@ public class MainJFrame extends JFrame {
 
         // update GUI, we're ready for primetime!
         update();
+
+        frame = this;
     }
 
     /**
@@ -128,7 +127,9 @@ public class MainJFrame extends JFrame {
         MainJFrame window = new MainJFrame(title, args); // create the window that holds our application
         window.pack(); // compress contents
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // exit the app when the JFrame closes
+        window.setTitle(title);
         window.setVisible(true);                // Show the window
+
     }
 
     /**
@@ -156,7 +157,7 @@ public class MainJFrame extends JFrame {
     /**
      * sets the tab file we are editing:
      * * load it in the editor
-     * * update title/subtitle/spacing with values from the tab
+     * * update title/subtitle/spacing/scaling with values from the tab
      *
      * @param file the new tab file to set
      */
@@ -177,9 +178,11 @@ public class MainJFrame extends JFrame {
             );
         }
 
-
-        this.EDITOR_LISTENER.keyReleased(null);         // fire listeners so the title/subtitle update
         getEditorTab().getEditor().setCaretPosition(0); // bring the editor to the top
+
+        // Refresh the preview tab, so the user is show the newly loaded tab
+        // Fixes #65: converted Pdf file is not shown in the preview panel until you switch to editor panel and back
+        new PreviewTabListener(this).stateChanged(new ChangeEvent(getTabbedPane()));
     }
 
     /**
@@ -207,12 +210,7 @@ public class MainJFrame extends JFrame {
 
         getMenubar().getExitMenuItem().addActionListener(new ExitListener(this));
 
-        getEditorTab().getTitleField().addKeyListener(TITLE_LISTENER);
-        getEditorTab().getSubtitleField().addKeyListener(SUBTITLE_LISTENER);
-        getEditorTab().getSpacingSlider().addChangeListener(SPACING_LISTENER);
-        getEditorTab().getEditor().addKeyListener(EDITOR_LISTENER);
-
-        this.TABS.addChangeListener(new PreviewTabListener(this));
+        getTabbedPane().addChangeListener(new PreviewTabListener(this));
     }
 
     public void update() {
@@ -247,25 +245,29 @@ public class MainJFrame extends JFrame {
         }
     }
 
-    public JTextPane getInputEditor() {
-        return EDITOR_TAB.getEditor();
-    }
-    
-    public EditorTab getEditorTab() {
+    public final EditorTab getEditorTab() {
 
         return EDITOR_TAB;
     }
-    
-    public ToolBar getToolbar() {
+
+    public final ToolBar getToolbar() {
         return TOOLBAR;
     }
-    
-    public MenuBar getMenubar() {
+
+    public final MenuBar getMenubar() {
         return MENU_BAR;
     }
 
-    public StatusBar getStatusbar() {
+    public final StatusBar getStatusbar() {
         return STATUS_BAR;
+    }
+
+    public final JTabbedPane getTabbedPane() {
+        return TABBED_PANE;
+    }
+
+    public final PreviewTab getPreviewTab() {
+        return PREVIEW_TAB;
     }
 
     @Override
@@ -284,4 +286,38 @@ public class MainJFrame extends JFrame {
                 name
         );
     }
+
+    public String getTitle() {
+        return EDITOR_TAB.getTitle();
+    }
+
+    public String getSubtitle() {
+        return EDITOR_TAB.getSubtitle();
+    }
+
+    public Integer getSpacingValue() {
+        return EDITOR_TAB.getSpacingValue();
+    }
+
+    public Integer getScalingValue() {
+        return EDITOR_TAB.getScalingValue();
+    }
+
+    /**
+     * @return  The current tab that is open for editing
+     */
+    public Tab getTab() {
+
+        Tab tab = TabParser.parse(getEditorTab().getTextAsList());
+        tab.setTitle(getTitle());
+        tab.setSubtitle(getSubtitle());
+        tab.setSpacing(getSpacingValue());
+        tab.setScaling(getScalingValue());
+        return tab;
+    }
+
+    public static MainJFrame getFrame() {
+        return frame;
+    }
+
 }

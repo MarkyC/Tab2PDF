@@ -1,6 +1,7 @@
 package ca.yorku.cse2311.tab2pdf.ui.listener;
 
 import ca.yorku.cse2311.tab2pdf.PdfHelper;
+import ca.yorku.cse2311.tab2pdf.model.Tab;
 import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
 import ca.yorku.cse2311.tab2pdf.ui.component.PreviewTab;
 import ca.yorku.cse2311.tab2pdf.util.FileUtils;
@@ -37,7 +38,7 @@ public class PreviewTabListener implements ChangeListener {
     private static PdfCreator buildPdfCreator(
             final MainJFrame window
             , final PreviewTab tab
-            , List<String> input
+            , Tab input
             , File output
     ) throws IOException, DocumentException {
 
@@ -98,7 +99,7 @@ public class PreviewTabListener implements ChangeListener {
                 LOG.info("Previewing File: " + output.getAbsolutePath());
 
                 // Convert the file for the preview
-                new Thread(buildPdfCreator(window, tab, input, output)).start();
+                new Thread(buildPdfCreator(window, tab, window.getTab(), output)).start();
             } catch (Exception e1) {
                 LOG.log(Level.SEVERE, "Could not convert tab to pdf: " + e1.getMessage(), e1);
             }
