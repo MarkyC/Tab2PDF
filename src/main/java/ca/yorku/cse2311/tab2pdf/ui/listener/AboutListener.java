@@ -35,7 +35,7 @@ import java.awt.event.ActionListener;
     String varshaName = "Varsha Raghav";
     String varshaEmail = "varsha_raghav@hotmail.com";
     String glibName = "Glib Sitiguin";
-    String glibEmail = "glib.sitiugin@gmail.com";
+    String glibEmail = "situgin@yorku.ca";
 
     /**
      * @param window    the window we are working with
