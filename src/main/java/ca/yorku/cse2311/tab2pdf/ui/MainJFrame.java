@@ -98,7 +98,7 @@ public class MainJFrame extends JFrame {
         container.add(TABS, BorderLayout.CENTER);
 
         // Add status bar
-        container.add(this.STATUS_BAR = new StatusBar(), BorderLayout.SOUTH);
+        this.EDITOR_TAB.add(this.STATUS_BAR = new StatusBar(), BorderLayout.SOUTH);
 
         // add listeners to the toolbar elements
         addListeners();
