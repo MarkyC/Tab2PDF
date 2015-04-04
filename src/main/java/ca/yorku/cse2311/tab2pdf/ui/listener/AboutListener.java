@@ -4,6 +4,7 @@ import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.net.*;
 import java.io.*;
@@ -22,8 +23,8 @@ import java.awt.event.ActionListener;
 
     private final MainJFrame window;
 
-    JLabel jlbLabel1, jlbLabel2, jlbLabel3, jlbLabel4, jlbLabel5, jlbLabel6, jlbLabel7, jlbLabel8, jlbLabel9,
-    jlbLabel10, jlbLabel11, jlbLabel12, jlbLabel13, jlbLabel14, jlbLabel15, jlbLabel16, jlbLabel17, jlbLabel18;
+    JLabel jlbLabel2, jlbLabel3, jlbLabel5, jlbLabel6, jlbLabel8, jlbLabel9, jlbLabel11, jlbLabel12, jlbLabel14,
+            jlbLabel15, jlbLabel17, jlbLabel18;
 
     /**
      * @param window    the window we are working with
@@ -37,6 +38,7 @@ import java.awt.event.ActionListener;
         ImageIcon deep = null;
         ImageIcon anton = null;
         ImageIcon marco = null;
+        ImageIcon varsha = null;
        // ImageIcon  = null;
        // ImageIcon  = null;
 
@@ -44,47 +46,42 @@ import java.awt.event.ActionListener;
             deep = new ImageIcon(ImageIO.read(ClassLoader.getSystemResource("toolbar/Deep.jpg")));
             anton = new ImageIcon(ImageIO.read(ClassLoader.getSystemResource("toolbar/anton.jpg")));
             marco = new ImageIcon(ImageIO.read(ClassLoader.getSystemResource("toolbar/marco.jpeg")));
+            varsha = new ImageIcon(ImageIO.read(ClassLoader.getSystemResource("toolbar/Varsha.jpg")));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        setLayout(new GridLayout(6,3));
+        setLayout(new GridLayout(3,4));
        // setLayout(new GridLayout(6, 3));
         // 3 rows, 1 column Panel having Grid Layout
-        jlbLabel1 = new JLabel("    Deep Patel");
         jlbLabel2 = new JLabel(deep);
-        jlbLabel3 = new JLabel("   deep_.09@hotmail.com");
-        jlbLabel4 = new JLabel("    Marco Pietro Cirillo");
+        jlbLabel2.setBorder(LineBorder.createGrayLineBorder());
+        jlbLabel3 = new JLabel("<html>&nbsp&nbsp&nbsp deep_.09@hotmail.com<br>&nbsp&nbsp&nbsp Deep Patel </html>");
         jlbLabel5 = new JLabel(marco);
-        jlbLabel6 = new JLabel("   cirillom@my.yorku.ca");
-        jlbLabel7 = new JLabel("    Anton Sitkovets");
+        jlbLabel5.setBorder(LineBorder.createGrayLineBorder());
+        jlbLabel6 = new JLabel("<html>&nbsp&nbsp&nbsp cirillom@my.yorku.ca <br>&nbsp&nbsp&nbsp Marco Pietro Cirillo </html>");
         jlbLabel8 = new JLabel(anton);
-        jlbLabel9 = new JLabel("   antosi@my.yorku.ca");
-        jlbLabel10 = new JLabel("   Brody Atto");
+        jlbLabel8.setBorder(LineBorder.createGrayLineBorder());
+        jlbLabel9 = new JLabel("<html>&nbsp&nbsp&nbsp antosi@my.yorku.ca<br>&nbsp&nbsp&nbsp Anton Sitkovets </html>");
         jlbLabel11 = new JLabel("11");
-        jlbLabel12 = new JLabel("   brodyatto@gmail.com");
-        jlbLabel13 = new JLabel("   Varsha Raghav");
-        jlbLabel14 = new JLabel("14");
-        jlbLabel15 = new JLabel("   varsha_raghav@hotmail.com");
-        jlbLabel16 = new JLabel("   Glib Sitiguin");
+        jlbLabel11.setBorder(LineBorder.createGrayLineBorder());
+        jlbLabel12 = new JLabel("<html>&nbsp&nbsp&nbsp brodyatto@gmail.com<br>&nbsp&nbsp&nbsp Brody Atto <html>");
+        jlbLabel14 = new JLabel(varsha);
+        jlbLabel14.setBorder(LineBorder.createGrayLineBorder());
+        jlbLabel15 = new JLabel("<html>&nbsp&nbsp&nbsp varsha_raghav@hotmail.com<br>&nbsp&nbsp&nbsp Varsha Raghav <html>");
         jlbLabel17 = new JLabel("17");
-        jlbLabel18 = new JLabel("   glib.sitiugin@gmail.com");
-        add(jlbLabel1);
+        jlbLabel17.setBorder(LineBorder.createGrayLineBorder());
+        jlbLabel18 = new JLabel("<html>&nbsp&nbsp&nbsp glib.sitiugin@gmail.com<br>&nbsp&nbsp&nbsp Glib Sitiguin <html>");
         add(jlbLabel2);
         add(jlbLabel3);
-        add(jlbLabel4);
         add(jlbLabel5);
         add(jlbLabel6);
-        add(jlbLabel7);
         add(jlbLabel8);
         add(jlbLabel9);
-        add(jlbLabel10);
         add(jlbLabel11);
         add(jlbLabel12);
-        add(jlbLabel13);
         add(jlbLabel14);
         add(jlbLabel15);
-        add(jlbLabel16);
         add(jlbLabel17);
         add(jlbLabel18);
     }
