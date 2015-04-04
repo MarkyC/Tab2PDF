@@ -1,6 +1,8 @@
 package ca.yorku.cse2311.tab2pdf.ui;
 
 import ca.yorku.cse2311.tab2pdf.Arguments;
+import ca.yorku.cse2311.tab2pdf.model.Tab;
+import ca.yorku.cse2311.tab2pdf.parser.TabParser;
 import ca.yorku.cse2311.tab2pdf.ui.component.*;
 import ca.yorku.cse2311.tab2pdf.ui.component.MenuBar;
 import ca.yorku.cse2311.tab2pdf.ui.listener.*;
@@ -238,10 +240,6 @@ public class MainJFrame extends JFrame {
         }
     }
 
-    public JTextPane getInputEditor() {
-        return EDITOR_TAB.getEditor();
-    }
-    
     public EditorTab getEditorTab() {
 
         return EDITOR_TAB;
@@ -290,6 +288,19 @@ public class MainJFrame extends JFrame {
 
     public Integer getScalingValue() {
         return EDITOR_TAB.getScalingValue();
+    }
+
+    /**
+     * @return  The current tab that is open for editing
+     */
+    public Tab getTab() {
+
+        Tab tab = TabParser.parse(getEditorTab().getTextAsList());
+        tab.setTitle(getTitle());
+        tab.setSubtitle(getSubtitle());
+        tab.setSpacing(getSpacingValue());
+        tab.setScaling(getScalingValue());
+        return tab;
     }
 
     public static MainJFrame getFrame() {

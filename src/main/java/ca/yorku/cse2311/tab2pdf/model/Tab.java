@@ -63,9 +63,17 @@ public class Tab {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = new Title(title);
+    }
+
     public Subtitle getSubtitle() {
 
         return subtitle;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = new Subtitle(subtitle);
     }
 
     public Spacing getSpacing() {
@@ -73,9 +81,17 @@ public class Tab {
         return spacing;
     }
 
+    public void setSpacing(int spacing) {
+        this.spacing = new Spacing(spacing);
+    }
+
     public Scaling getScaling() {
 
         return scaling;
+    }
+
+    public void setScaling(int scaling) {
+        this.scaling = new Scaling(scaling);
     }
 
     public List<Bar> getBars() {
