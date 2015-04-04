@@ -1,12 +1,14 @@
 package ca.yorku.cse2311.tab2pdf.ui.component;
 
-import ca.yorku.cse2311.tab2pdf.util.FileUtils;
-
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -22,30 +24,30 @@ import java.util.List;
     /**
      * Toolbar sliders data
      */
-    private static final int SCALING_SLIDER_MIN = 5;
-
-    private static final int SCALING_SLIDER_MAX = 15;
-
-    private static final int SCALING_SLIDER_INIT = 7;
-
-    private static final int SPACING_SLIDER_MIN = 2;
-
-    private static final int SPACING_SLIDER_MAX = 8;
-
-    private static final int SPACING_SLIDER_INIT = 5;
-
-    private static final int SCALING_MAJOR_TRICK_SPACING = 5;
-
-    private static final int SPACING_MAJOR_TRICK_SPACING = 3;
-
-    private static final int MINOR_TRICK_SPACING = 1;
+    private final int SCALING_SLIDER_MIN = 5;
+    private final int SCALING_SLIDER_MAX = 15;
+    private final int SCALING_SLIDER_INIT = 7;
+    private final int SPACING_SLIDER_MIN = 2;
+    private final int SPACING_SLIDER_MAX = 10;
+    private final int SPACING_SLIDER_INIT = 5;
+    //private final int SCALING_MAJOR_TRICK_SPACING = 5;
+    //private final int SPACING_MAJOR_TRICK_SPACING = 3;
+    //private final int MINOR_TRICK_SPACING = 1;
+    private final String SLIDER_LEFT_INDEX = "Narrow";
+    private final String SLIDER_RIGHT_INDEX = "Wide";
 
     /**
-     * An instance of monospaced font for input editor
+     * Input elements data
+     */
+    public final String TITLE_PATTERN = "TITLE=";
+    public final String SUBTITLE_PATTERN = "SUBTITLE=";
+    public final String SPACING_PATTERN = "SPACING=";
+    public final String SCALING_PATTERN = "SCALING=";
+
+    /**
+     * An frame of monospaced font for input editor
      */
     private final Font EDITOR_FONT = new Font(Font.MONOSPACED, Font.PLAIN, 12);
-
-    //private final Font TITLE_FONT = new Font(Font.MONOSPACED, Font.BOLD, 16);
 
     /**
      * String constants
@@ -135,11 +137,73 @@ import java.util.List;
     }
 
     /**
-     * Sets the file we are editting
-     * @param f The new file we are editting
+     * Sets the file we are editing
+     * @param f The new file we are editing
      */
     public void setFile(File f) throws IOException {
-        this.getEditor().setText(FileUtils.readFile(f));
+
+        //this.getEditor().setText(FileUtils.readFile(f));
+
+        // set control panel components to default values
+        this.TITLE.setText("");
+        this.SUBTITLE.setText("");
+        this.SPACING_SLIDER.setValue(5);
+        this.SCALING_SLIDER.setValue(7);
+
+        BufferedReader reader = new BufferedReader(new FileReader(f));
+        try {
+            StringBuilder builder = new StringBuilder();
+            String line = reader.readLine();
+
+            while (line != null) {
+
+                // decide what to do with input line
+                // (either store to the left panel or put into editor)
+                parseInputLine(builder, line);
+                // read next line
+                line = reader.readLine();
+            }
+            // set editor text
+            this.getEditor().setText(builder.toString());
+        }
+        finally {
+            reader.close();
+        }
+
+    }
+
+    /**
+     * Depending on input line either puts it to control panel or into editor
+     * @param builder String Builder we are working with
+     * @param line String from the input file
+     */
+    private void parseInputLine(StringBuilder builder, String line) {
+
+        // if the line is subtitle line set subtitle
+        if (line.contains(SUBTITLE_PATTERN)) {
+            String subtitle = line.replace(SUBTITLE_PATTERN, "");
+            this.SUBTITLE.setText(subtitle);
+        }
+        // if the line is title line set title
+        else if (line.contains(TITLE_PATTERN)) {
+            String title = line.replace(TITLE_PATTERN, "");
+            this.TITLE.setText(title);
+        }
+        // if the line is spacing line set spacing
+        else if (line.contains(SPACING_PATTERN)) {
+            String spacing = line.replace(SPACING_PATTERN, "");
+            this.SPACING_SLIDER.setValue(Integer.parseInt(spacing));
+        }
+        // if the line is scaling line set scaling
+        else if (line.contains(SCALING_PATTERN)) {
+            String scaling = line.replace(SCALING_PATTERN, "");
+            this.SCALING_SLIDER.setValue(Integer.parseInt(scaling));
+        }
+        // otherwise put the line into editor
+        else {
+            builder.append(line);
+            builder.append(System.lineSeparator());
+        }
     }
 
     /**
@@ -188,8 +252,8 @@ import java.util.List;
 
         // add sliders
         setupSliders();
-        panel.add(panel(SCALING_PANEL_NAME, SCALING_SLIDER));
         panel.add(panel(SPACING_PANEL_NAME, SPACING_SLIDER));
+        panel.add(panel(SCALING_PANEL_NAME, SCALING_SLIDER));
 
         panel.add(Box.createVerticalGlue());
 
@@ -201,18 +265,25 @@ import java.util.List;
      */
     private void setupSliders() {
 
-        // setup scaling slider
-        SCALING_SLIDER.setMajorTickSpacing(SCALING_MAJOR_TRICK_SPACING);
-        SCALING_SLIDER.setMinorTickSpacing(MINOR_TRICK_SPACING);
-        SCALING_SLIDER.setPaintTicks(true);
-        SCALING_SLIDER.setPaintLabels(true);
-
         // setup spacing slider
-        SPACING_SLIDER.setMajorTickSpacing(SPACING_MAJOR_TRICK_SPACING);
+        /*SPACING_SLIDER.setMajorTickSpacing(SPACING_MAJOR_TRICK_SPACING);
         SPACING_SLIDER.setMinorTickSpacing(MINOR_TRICK_SPACING);
-        SPACING_SLIDER.setPaintTicks(true);
+        SPACING_SLIDER.setPaintTicks(true);*/
         SPACING_SLIDER.setPaintLabels(true);
+        Dictionary<Integer, JComponent> spacingLabels = new Hashtable<Integer, JComponent>();
+        spacingLabels.put(SPACING_SLIDER_MIN + 1, new JLabel(SLIDER_LEFT_INDEX));
+        spacingLabels.put(SPACING_SLIDER_MAX - 1, new JLabel(SLIDER_RIGHT_INDEX));
+        SPACING_SLIDER.setLabelTable(spacingLabels);
 
+        // setup scaling slider
+        /*SCALING_SLIDER.setMajorTickSpacing(SCALING_MAJOR_TRICK_SPACING);
+        SCALING_SLIDER.setMinorTickSpacing(MINOR_TRICK_SPACING);
+        SCALING_SLIDER.setPaintTicks(true);*/
+        SCALING_SLIDER.setPaintLabels(true);
+        Dictionary<Integer, JComponent> scalingLabels = new Hashtable<Integer, JComponent>();
+        scalingLabels.put(SCALING_SLIDER_MIN + 1, new JLabel(SLIDER_LEFT_INDEX));
+        scalingLabels.put(SCALING_SLIDER_MAX - 1, new JLabel(SLIDER_RIGHT_INDEX));
+        SCALING_SLIDER.setLabelTable(scalingLabels);
     }
 
     /**

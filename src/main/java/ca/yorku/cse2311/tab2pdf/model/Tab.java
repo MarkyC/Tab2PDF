@@ -19,6 +19,8 @@ public class Tab {
 
     private Spacing spacing;
 
+    private Scaling scaling;
+
     private List<Bar> bars;
 
     public Tab() {
@@ -39,14 +41,20 @@ public class Tab {
 
     public Tab(Title title, Subtitle subtitle, Spacing spacing) {
 
-        this(title, subtitle, spacing, new ArrayList<Bar>());
+        this(title, subtitle, spacing, new Scaling());
     }
 
-    public Tab(Title title, Subtitle subtitle, Spacing spacing, List<Bar> bars) {
+    public Tab(Title title, Subtitle subtitle, Spacing spacing, Scaling scaling) {
+
+        this(title, subtitle, spacing, scaling, new ArrayList<Bar>());
+    }
+
+    public Tab(Title title, Subtitle subtitle, Spacing spacing, Scaling scaling, List<Bar> bars) {
 
         this.title = title;
         this.subtitle = subtitle;
         this.spacing = spacing;
+        this.scaling = scaling;
         this.bars = bars;
     }
 
@@ -63,6 +71,11 @@ public class Tab {
     public Spacing getSpacing() {
 
         return spacing;
+    }
+
+    public Scaling getScaling() {
+
+        return scaling;
     }
 
     public List<Bar> getBars() {
