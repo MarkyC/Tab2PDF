@@ -57,7 +57,7 @@ public class PdfHelper {
     }
 
     public PdfHelper(File output, int lineSpace, float lineWidth) throws IOException, DocumentException {
-        this(new Document(), output, lineSpace + 2, lineWidth);
+        this(new Document(), output, lineSpace, lineWidth);
     }
 
 
@@ -65,10 +65,10 @@ public class PdfHelper {
         this.document = document;
         this.writer = PdfWriter.getInstance(document, Files.newOutputStream(output.toPath()));
         this.file = output;
-        this.lineSpace = lineSpace;
-        this.staveHeight = lineSpace * 5;
+        this.lineSpace = lineSpace + 5; // Add 5 to the user supplied lineSpace, or it would be too small
+        this.staveHeight = (int) lineWidth;//lineSpace * 5; //18 + (int) lineWidth;//
         this.lineWidth = lineWidth;
-        this.digitSize = (int)(lineSpace * 1.3);
+        this.digitSize = (int)(staveHeight * 1.3);
     }
 
     public PdfWriter getWriter() {
@@ -239,7 +239,7 @@ public class PdfHelper {
      */
     public int determineYCoordinate(int staveNumber) {
 
-        final int STAVE_SPACE = lineSpace * 10; //Space between the staves
+        final int STAVE_SPACE = getStaveHeight() * 10; //Space between the staves
         return DISTANCE_FROM_TOP - staveNumber * STAVE_SPACE;
     }
 
@@ -255,7 +255,7 @@ public class PdfHelper {
         for (int i = 0; i < 6; i++) {
 
             line(0, yCoordinate, 600, yCoordinate, .5f);
-            yCoordinate += lineSpace;
+            yCoordinate += getStaveHeight();
         }
     }
 
@@ -269,7 +269,7 @@ public class PdfHelper {
 
         int yCoordinate = determineYCoordinate(staveNumber);
 
-        line(xCoordinate, yCoordinate, xCoordinate, yCoordinate + staveHeight, .5f);
+        line(xCoordinate, yCoordinate, xCoordinate, yCoordinate + getStaveHeight() * 5, .5f);
     }
 
     /**
@@ -281,7 +281,7 @@ public class PdfHelper {
     public void thickLine(int staveNumber, float xCoordinate) {
 
         int yCoordinate = determineYCoordinate(staveNumber);
-        line(xCoordinate, yCoordinate, xCoordinate, yCoordinate + staveHeight, 1.5f);
+        line(xCoordinate, yCoordinate, xCoordinate, yCoordinate + getStaveHeight() * 5, 1.5f);
     }
 
     /**
@@ -352,7 +352,7 @@ public class PdfHelper {
      */
     private void blankSpace(int staveNumber, int lineNumber, float xCoordinate, int digitWidth) {
 
-        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * lineSpace;
+        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * getStaveHeight();
 
         PdfContentByte canvas = writer.getDirectContent();
 
@@ -390,7 +390,7 @@ public class PdfHelper {
             digitRadius = (int) font.getWidthPoint(' ', digitSize);
         }
         //Clears a space for the digit and determines the Y coordinate of the digit to be printed
-        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * lineSpace;
+        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * getStaveHeight();
         blankSpace(staveNumber, lineNumber, xCoordinate, digitRadius);
         PdfContentByte canvas = writer.getDirectContent();
 
@@ -453,7 +453,7 @@ public class PdfHelper {
 
         xCoordinate -= repeatMsg.length() * fontHeight / 2;
 
-        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * lineSpace;
+        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * getStaveHeight();
 
         drawText(xCoordinate, yCoordinate, repeatMsg, 6);
     }
@@ -473,7 +473,7 @@ public class PdfHelper {
         //Distance from the middle of the digit to the digit border
         int fontHeight = (int) font.getWidthPoint(' ', digitSize);
 
-        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * lineSpace;
+        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * getStaveHeight();
 
         if (slide.getStart().getValue() != 0) {
             drawDigit(staveNumber, lineNumber, xCoordinate - fontHeight * 2, slide.getStart().getValue());
@@ -509,7 +509,7 @@ public class PdfHelper {
             digitRadius = (int) font.getWidthPoint(' ', digitSize);
         }
 
-        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * lineSpace;
+        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * getStaveHeight();
 
         drawDigit(staveNumber, lineNumber, xCoordinate, squareNote.getNote().getValue());
 
@@ -546,8 +546,8 @@ public class PdfHelper {
 
         int oldDigitRadius = (int) font.getWidthPoint(' ', digitSize * connectingNote.length()); //compensate for larger than 1 length
 
-        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * lineSpace;
-        int oldyCoordinate = determineYCoordinate(connectingStave) + (6 - connectingLine) * lineSpace;
+        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * getStaveHeight();
+        int oldyCoordinate = determineYCoordinate(connectingStave) + (6 - connectingLine) * getStaveHeight();
 
 
         //drawDigit(staveNumber, lineNumber, xCoordinate - fontHeight * 2, pullOff.getEnd().getValue(), writer);
@@ -586,8 +586,8 @@ public class PdfHelper {
 
         int oldDigitRadius = (int) font.getWidthPoint(' ', digitSize * connectingNote.length()); //compensate for larger than 1 length
 
-        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * lineSpace;
-        int oldyCoordinate = determineYCoordinate(connectingStave) + (6 - connectingLine) * lineSpace;
+        int yCoordinate = determineYCoordinate(staveNumber) + (6 - lineNumber) * getStaveHeight();
+        int oldyCoordinate = determineYCoordinate(connectingStave) + (6 - connectingLine) * getStaveHeight();
 
 
         //drawDigit(staveNumber, lineNumber, xCoordinate + fontHeight / 4f, hammerOn.getEnd().getValue(), writer);
