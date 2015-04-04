@@ -83,7 +83,7 @@ import java.awt.event.ActionListener;
 
     public void createRow(ImageIcon picture,String name, String email){
         picLabel = new JLabel(picture);
-        picLabel.setBorder(LineBorder.createGrayLineBorder());
+ //       picLabel.setBorder(LineBorder.createGrayLineBorder());
         InfoLabel = new JLabel("<html>&nbsp&nbsp&nbsp "+name+"<br>&nbsp&nbsp&nbsp "+email+" </html>");
         add(picLabel);
         add(InfoLabel);
