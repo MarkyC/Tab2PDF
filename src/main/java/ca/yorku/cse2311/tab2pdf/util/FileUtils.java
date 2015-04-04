@@ -2,6 +2,8 @@ package ca.yorku.cse2311.tab2pdf.util;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Files
@@ -71,5 +73,20 @@ public class FileUtils {
         in.close(); // close the File
 
         return sb.toString();
+    }
+
+    public static List<String> readFileToList(File f) throws IOException {
+
+        List<String> result = new ArrayList<>();
+
+        // Opens and reads the file into the list
+        BufferedReader in = new BufferedReader(new FileReader(f));
+        for (String line = in.readLine(); null != line; line = in.readLine()) {
+            result.add(line);
+        }
+
+        in.close(); // close the File
+
+        return result;
     }
 }

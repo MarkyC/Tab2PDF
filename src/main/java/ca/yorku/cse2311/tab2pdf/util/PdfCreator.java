@@ -2,7 +2,6 @@ package ca.yorku.cse2311.tab2pdf.util;
 
 import ca.yorku.cse2311.tab2pdf.PdfHelper;
 import ca.yorku.cse2311.tab2pdf.model.*;
-import ca.yorku.cse2311.tab2pdf.parser.TabParser;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
@@ -25,9 +24,9 @@ public class PdfCreator implements Runnable {
 
     private final PdfHelper helper;
 
-    private final List<String> lines;
-
     private final Callback callback;
+
+    private final Tab tab;
 
     private List<? extends ILongDraw> longNotes = Collections.unmodifiableList(Arrays.asList(
             new PullOff(new Note()),
@@ -47,10 +46,10 @@ public class PdfCreator implements Runnable {
 
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
 
-    public PdfCreator(PdfHelper helper, List<String> lines, Callback callback) {
+    public PdfCreator(PdfHelper helper, Tab tab, Callback callback) {
 
         this.helper = helper;
-        this.lines = lines;
+        this.tab = tab;
         this.callback = callback;
     }
 
@@ -59,7 +58,7 @@ public class PdfCreator implements Runnable {
         try {
 
             // attempt to create a PDF from the parsed tab
-            createPdf(TabParser.parse(lines));
+            createPdf(tab);
 
             // deliver the callback by giving them the output PDF File
             LOG.info("PDF created successfully, running Callback...");
@@ -72,6 +71,14 @@ public class PdfCreator implements Runnable {
     }
 
     public void createPdf(Tab tab) throws Exception {
+
+        tab.setSpacing((int) (tab.getSpacing().getSpacing() + 2));
+
+        LOG.info("Creating PDF of tab");
+        LOG.info(tab.getTitle().toString());
+        LOG.info(tab.getSubtitle().toString());
+        LOG.info(tab.getSpacing().toString());
+        LOG.info(tab.getScaling().toString());
 
         // Create document
         Document document = this.helper.getDocument();

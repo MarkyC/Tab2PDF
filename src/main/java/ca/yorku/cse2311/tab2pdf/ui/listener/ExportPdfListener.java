@@ -8,7 +8,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.Arrays;
 import java.util.logging.Logger;
 
 /**
@@ -48,7 +47,7 @@ public class ExportPdfListener implements ActionListener {
                                 window.getEditorTab().getSpacingValue(),
                                 window.getEditorTab().getScalingValue()
                         ),
-                        Arrays.asList(window.getEditorTab().getText().split("\\r?\\n")),
+                        window.getTab(),
                         new PdfCreator.Callback() {
                             @Override
                             public void onCallback(boolean success, Object output) {

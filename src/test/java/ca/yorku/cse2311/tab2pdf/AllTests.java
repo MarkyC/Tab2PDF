@@ -14,10 +14,7 @@ import org.junit.runners.Suite;
         , NoteParserTest.class
         , SlideParserTest.class
         , DashParserTest.class
-        , SpacingParserTest.class
         , PipeParserTest.class
-        , SubtitleParserTest.class
-        , TitleParserTest.class
         , MainTest.class
 })
 public class AllTests {
