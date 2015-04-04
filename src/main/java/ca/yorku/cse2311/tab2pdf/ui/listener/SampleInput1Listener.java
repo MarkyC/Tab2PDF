@@ -17,18 +17,18 @@ import javax.swing.JOptionPane;
  *
  * Opens the User Manual for the user to peruse
  *
- * @author Glib Sitiugin, Anton Sitkovets, Marco Cirillo
+ * @author Anton Sitkovets
  * @since 2015-03-19
  */
- public class HelpListener implements ActionListener {
-	private final String USER_MANUAL_LINK = "http://markyc.github.io/Tab2PDF/user-manual.pdf";
-    private final MainJFrame window;
+ public class SampleInput1Listener implements ActionListener {
+	 private final String INPUT_FILE_1 = "https://wiki.eecs.yorku.ca/course_archive/2014-15/W/2311/_media/moonlightsonata.txt";
+	 private final MainJFrame window;
     
 
     /**
      * @param window    the window we are working with
      */
-    public HelpListener(MainJFrame window) {
+    public SampleInput1Listener(MainJFrame window) {
 
         super();
 
@@ -37,15 +37,15 @@ import javax.swing.JOptionPane;
 
     @Override
     public void actionPerformed(ActionEvent e) {
+    	
     	try
 		{
-			URIHelper.open(USER_MANUAL_LINK);
+			URIHelper.open(INPUT_FILE_1);
 		} catch (Exception e1) {
-			JOptionPane.showMessageDialog(window, "Could not open link to User Manual", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(window, "Could not open link to Moonlight Sonata", "Error", JOptionPane.ERROR_MESSAGE);
 		}
-    	
-    	
     }
+    
 	
     
 }

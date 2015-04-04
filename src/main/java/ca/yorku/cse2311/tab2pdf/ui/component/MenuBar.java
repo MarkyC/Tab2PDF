@@ -14,14 +14,16 @@ public class MenuBar extends JMenuBar {
 
     private final JMenu FILE_MENU;
     private final JMenu HELP_MENU;
+    private final JMenu SAMPLE_FILES;
 
     private final JMenuItem OPEN_ITEM;
     private final JMenuItem SAVE_ITEM;
     private final JMenuItem EXPORT_ITEM;
-    private final JMenuItem SETTINGS_ITEM;
     private final JMenuItem EXIT_ITEM;
 
     private final JMenuItem USER_MANUAL_ITEM;
+    private final JMenuItem SAMPLE_1;
+    private final JMenuItem SAMPLE_2;
     private final JMenuItem ABOUT_ITEM;
 
     public MenuBar() {
@@ -34,12 +36,13 @@ public class MenuBar extends JMenuBar {
         FILE_MENU.addSeparator();
         FILE_MENU.add(this.EXPORT_ITEM = new JMenuItem("Export to PDF"));
         FILE_MENU.addSeparator();
-        FILE_MENU.add(this.SETTINGS_ITEM = new JMenuItem("Settings"));
-        FILE_MENU.addSeparator();
         FILE_MENU.add(this.EXIT_ITEM = new JMenuItem("Exit"));
 
         this.HELP_MENU = new JMenu("Help");
         HELP_MENU.add(this.USER_MANUAL_ITEM = new JMenuItem("User Manual"));
+        HELP_MENU.add(this.SAMPLE_FILES = new JMenu("Sample Tabs"));
+        SAMPLE_FILES.add(this.SAMPLE_1 = new JMenuItem("Moonlight Sonata"));
+        SAMPLE_FILES.add(this.SAMPLE_2 = new JMenuItem("Remembering Rain"));
         HELP_MENU.add(this.ABOUT_ITEM = new JMenuItem("About"));
 
         this.add(FILE_MENU);
@@ -61,11 +64,6 @@ public class MenuBar extends JMenuBar {
         return EXPORT_ITEM;
     }
 
-    public JMenuItem getSettingsMenuItem() {
-
-        return SETTINGS_ITEM;
-    }
-
     public JMenuItem getExitMenuItem() {
 
         return EXIT_ITEM;
@@ -76,8 +74,25 @@ public class MenuBar extends JMenuBar {
         return USER_MANUAL_ITEM;
     }
 
+    public JMenuItem getSample1MenuItem(){
+        return SAMPLE_1;
+    }
+
+    public JMenuItem getSample2MenuItem(){
+        return SAMPLE_2;
+    }
+
     public JMenuItem getAboutMenuItem() {
 
         return ABOUT_ITEM;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+
+        super.setEnabled(enabled);
+
+        getSaveMenuItem().setEnabled(enabled);
+        getExportMenuItem().setEnabled(enabled);
     }
 }

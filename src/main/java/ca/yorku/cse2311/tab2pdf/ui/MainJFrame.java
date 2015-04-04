@@ -1,19 +1,15 @@
 package ca.yorku.cse2311.tab2pdf.ui;
 
 import ca.yorku.cse2311.tab2pdf.Arguments;
-import ca.yorku.cse2311.tab2pdf.model.Subtitle;
-import ca.yorku.cse2311.tab2pdf.model.Title;
-import ca.yorku.cse2311.tab2pdf.parser.TabParser;
 import ca.yorku.cse2311.tab2pdf.ui.component.*;
 import ca.yorku.cse2311.tab2pdf.ui.component.MenuBar;
 import ca.yorku.cse2311.tab2pdf.ui.listener.*;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -21,10 +17,15 @@ import java.util.logging.Logger;
  * MainJFrame
  * Handles the GUI of the application
  *
- * @author Marco, Glib, Varsha
+ * @author Marco Cirillo, Glib Sitiugin, Varsha Ragavendran
  * @since 2015-01-21
  */
 public class MainJFrame extends JFrame {
+
+    /**
+     * Title of the GUI window
+     */
+    public static final String WINDOW_TITLE = "Tab2PDF";
 
     private final static Logger LOG = Logger.getLogger(MainJFrame.class.getName());
 
@@ -32,59 +33,40 @@ public class MainJFrame extends JFrame {
 
     private final EditorTab EDITOR_TAB;
 
+    private final PreviewTab PREVIEW_TAB;
+
     private final StatusBar STATUS_BAR;
 
     private final MenuBar MENU_BAR;
 
+    private final JTabbedPane TABS;
+
     private final OpenFileListener OPEN_FILE_LISTENER = new OpenFileListener(this);
+
     private final SaveFileListener SAVE_FILE_LISTENER = new SaveFileListener(this);
+
     private final ExportPdfListener EXPORT_PDF_LISTENER = new ExportPdfListener(this);
-    private final SettingsListener SETTINGS_LISTENER = new SettingsListener(this);
+
     private final HelpListener HELP_LISTENER = new HelpListener(this);
+
     private final AboutListener ABOUT_LISTENER = new AboutListener(this);
+
+    private final SampleInput1Listener SAMPLE_1_LISTENER = new SampleInput1Listener(this);
+
+    private final SampleInput2Listener SAMPLE_2_LISTENER = new SampleInput2Listener(this);
+
     private final TitleListener TITLE_LISTENER = new TitleListener(this);
+
     private final SubtitleListener SUBTITLE_LISTENER = new SubtitleListener(this);
+
+    private final SpacingListener SPACING_LISTENER = new SpacingListener(this);
+
+    private final EditorListener EDITOR_LISTENER = new EditorListener(this);
 
     /**
      * The tab we are editing
      */
     private File file;
-
-    /**
-     * @return the tab we are editing
-     */
-    public File getFile() {
-
-        return file;
-    }
-
-    /**
-     * sets the tab file we are editing
-     * @param file the new tab file to set
-     */
-    public void setFile(File file) {
-
-        try { // Put this file in the editor
-            getEditorTab().setFile(file);
-            this.file = file;
-            update(String.format("Opened %s", file.getName()));
-        } catch (IOException e) {
-            LOG.severe(e.getMessage());
-            String filePath = null == file ? "" : file.getAbsolutePath();
-            JOptionPane.showMessageDialog(
-                    MainJFrame.this,
-                    String.format("Could not open file %s. Error: %s", filePath, e.getMessage()),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-        }
-
-    }
-
-    /**
-     * Title of the GUI window
-     */
-    public static final String WINDOW_TITLE = "Tab2PDF";
 
     /**
      * Main frame constructor
@@ -99,8 +81,8 @@ public class MainJFrame extends JFrame {
         this.setLocation(0, 0);
 
         // makes the frame look native to your computer (ie: Windows, or Mac looking)
-        try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
-        catch (Exception e) {e.printStackTrace();}
+        try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); }
+        catch (Exception e) { LOG.log(Level.WARNING, "Could not set look and feel", e); }
 
         this.setJMenuBar(this.MENU_BAR = new MenuBar());
 
@@ -108,8 +90,14 @@ public class MainJFrame extends JFrame {
         Container container = this.getContentPane();
         container.add(this.TOOLBAR = new ToolBar(), BorderLayout.NORTH);
 
-        JTabbedPane pane = tabbedPane("Editor", this.EDITOR_TAB = new EditorTab(), "Preview", new PreviewTab());
-        container.add(pane, BorderLayout.CENTER);
+        // Add tabs for this window
+        // Not to be confused with guitar tabs, these tabs are for the Editor and Preview panes.
+        this.TABS = new JTabbedPane();
+        TABS.addTab(formatTabName("Editor"), this.EDITOR_TAB = new EditorTab());
+        TABS.addTab(formatTabName("Preview"), this.PREVIEW_TAB = new PreviewTab());
+        container.add(TABS, BorderLayout.CENTER);
+
+        // Add status bar
         container.add(this.STATUS_BAR = new StatusBar(), BorderLayout.SOUTH);
 
         // add listeners to the toolbar elements
@@ -139,9 +127,59 @@ public class MainJFrame extends JFrame {
 
         MainJFrame window = new MainJFrame(title, args); // create the window that holds our application
         window.pack(); // compress contents
-        //window.setMinimumSize(JFrameData.WINDOW_MIN_SIZE); // set minimum size
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // exit the app when the JFrame closes
         window.setVisible(true);                // Show the window
+    }
+
+    /**
+     * Temporary piece of code to test GUI
+     * @param args program arguments
+     */
+    public static void main(String[] args) {
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+
+                MainJFrame.createAndShow();
+            }
+        });
+    }
+
+    /**
+     * @return the tab we are editing
+     */
+    public File getFile() {
+
+        return file;
+    }
+
+    /**
+     * sets the tab file we are editing:
+     * * load it in the editor
+     * * update title/subtitle/spacing with values from the tab
+     *
+     * @param file the new tab file to set
+     */
+    public void setFile(File file) {
+
+        try { // Put this file in the editor
+            getEditorTab().setFile(file);
+            this.file = file;
+            update(String.format("Opened %s", file.getName()));
+        } catch (IOException e) {
+            LOG.severe(e.getMessage());
+            String filePath = null == file ? "" : file.getAbsolutePath();
+            JOptionPane.showMessageDialog(
+                    MainJFrame.this,
+                    String.format("Could not open file %s. Error: %s", filePath, e.getMessage()),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+
+
+        this.EDITOR_LISTENER.keyReleased(null);         // fire listeners so the title/subtitle update
+        getEditorTab().getEditor().setCaretPosition(0); // bring the editor to the top
     }
 
     /**
@@ -150,42 +188,31 @@ public class MainJFrame extends JFrame {
     public void addListeners() {
 
         // add action listeners to the toolbar and menu buttons
-        this.TOOLBAR.getOpenButton().addActionListener(OPEN_FILE_LISTENER);
-        this.MENU_BAR.getOpenMenuItem().addActionListener(OPEN_FILE_LISTENER);
+        getToolbar().getOpenButton().addActionListener(OPEN_FILE_LISTENER);
+        getMenubar().getOpenMenuItem().addActionListener(OPEN_FILE_LISTENER);
 
-        this.TOOLBAR.getSaveButton().addActionListener(SAVE_FILE_LISTENER);
-        this.MENU_BAR.getSaveMenuItem().addActionListener(SAVE_FILE_LISTENER);
+        getToolbar().getSaveButton().addActionListener(SAVE_FILE_LISTENER);
+        getMenubar().getSaveMenuItem().addActionListener(SAVE_FILE_LISTENER);
 
-        this.TOOLBAR.getExportButton().addActionListener(EXPORT_PDF_LISTENER);
-        this.MENU_BAR.getExportMenuItem().addActionListener(EXPORT_PDF_LISTENER);
+        getToolbar().getExportButton().addActionListener(EXPORT_PDF_LISTENER);
+        getMenubar().getExportMenuItem().addActionListener(EXPORT_PDF_LISTENER);
 
-        this.TOOLBAR.getSettingsButton().addActionListener(SETTINGS_LISTENER);
-        this.MENU_BAR.getSettingsMenuItem().addActionListener(SETTINGS_LISTENER);
+        getToolbar().getHelpButton().addActionListener(HELP_LISTENER);
+        getMenubar().getUserManualMenuItem().addActionListener(HELP_LISTENER);
 
-        this.TOOLBAR.getHelpButton().addActionListener(HELP_LISTENER);
-        this.MENU_BAR.getUserManualMenuItem().addActionListener(HELP_LISTENER);
+        getMenubar().getSample1MenuItem().addActionListener(SAMPLE_1_LISTENER);
+        getMenubar().getSample2MenuItem().addActionListener(SAMPLE_2_LISTENER);
 
-        this.MENU_BAR.getAboutMenuItem().addActionListener(ABOUT_LISTENER);
+        getMenubar().getAboutMenuItem().addActionListener(ABOUT_LISTENER);
 
-        this.MENU_BAR.getExitMenuItem().addActionListener(new ExitListener(this));
+        getMenubar().getExitMenuItem().addActionListener(new ExitListener(this));
 
-        this.EDITOR_TAB.getTitleField().addKeyListener(TITLE_LISTENER);
+        getEditorTab().getTitleField().addKeyListener(TITLE_LISTENER);
+        getEditorTab().getSubtitleField().addKeyListener(SUBTITLE_LISTENER);
+        getEditorTab().getSpacingSlider().addChangeListener(SPACING_LISTENER);
+        getEditorTab().getEditor().addKeyListener(EDITOR_LISTENER);
 
-        this.EDITOR_TAB.getSubtitleField().addKeyListener(SUBTITLE_LISTENER);
-
-
-
-        // add key listener to the input editor
-        // the listener is needed to update symbols number in status panel
-        getEditorTab().getEditor().addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                update();
-                super.keyPressed(e);
-            }
-        });
-
-
+        this.TABS.addChangeListener(new PreviewTabListener(this));
     }
 
     public void update() {
@@ -205,130 +232,56 @@ public class MainJFrame extends JFrame {
      */
     public void update(String status) {
 
-        this.STATUS_BAR.setHint(status);
+        getStatusbar().setHint(status);
 
         if (null != file) {
 
-            this.STATUS_BAR.setInputFilePath(file.getAbsolutePath());   // The file we're currently editing
-            this.STATUS_BAR.setSymbolsNumber(getEditorTab().getText().length()); // Size of the file
+            getStatusbar().setInputFilePath(file.getAbsolutePath());   // The file we're currently editing
+            getStatusbar().setSymbolsNumber(getEditorTab().getText().length()); // Size of the file
 
-
-            setTitleField();
-            setSubtitleField();
-
-            // If a file is loaded, we should enable certain stuff
-            this.TOOLBAR.getSaveButton().setEnabled(true);
-            this.MENU_BAR.getSaveMenuItem().setEnabled(true);
-            this.TOOLBAR.getExportButton().setEnabled(true);
-            this.MENU_BAR.getExportMenuItem().setEnabled(true);
-            this.EDITOR_TAB.getTitleField().setEnabled(true);
-            this.EDITOR_TAB.getSubtitleField().setEnabled(true);
-            this.EDITOR_TAB.getSpacingSlider().setEnabled(true);
-            this.EDITOR_TAB.getScalingSlider().setEnabled(true);
-            getEditorTab().setEnabled(true);
+            // If a file is loaded, we should enable everything
+            setEnabled(true);
 
         } else {
-            blockComponents();
+            setEnabled(false);
         }
-
-
     }
-    public void setTitleField(){
-       // int line = 0;
-        String[] editorContents = getEditorContents();
-
-       Title title = TabParser.getTitle(Arrays.asList(editorContents));
-       this.EDITOR_TAB.getTitleField().setText(title.toString());
-
-    }
-
-    public void  setSubtitleField(){
-        String[] editorContents = getEditorContents();
-        Subtitle subtitle = TabParser.getSubtitle(Arrays.asList(editorContents));
-        this.EDITOR_TAB.getSubtitleField().setText(subtitle.toString());
-    }
-
 
     public JTextPane getInputEditor() {
         return EDITOR_TAB.getEditor();
     }
-
+    
     public EditorTab getEditorTab() {
 
         return EDITOR_TAB;
     }
-
-    public String[] getEditorContents() {
-        JTextPane inputEditor = EDITOR_TAB.getEditor();
-        String[] line = inputEditor.getText().split("\\n");
-        return line;
+    
+    public ToolBar getToolbar() {
+        return TOOLBAR;
+    }
+    
+    public MenuBar getMenubar() {
+        return MENU_BAR;
     }
 
-    public JTextField getTitleTextField(){
-        JTextField titleTextField = EDITOR_TAB.getTitleField();
-        return titleTextField;
+    public StatusBar getStatusbar() {
+        return STATUS_BAR;
     }
 
-    public JTextField getSubtitleTextField(){
-        JTextField subtitleTextField = EDITOR_TAB.getSubtitleField();
-        return subtitleTextField;
+    @Override
+    public void setEnabled(boolean enabled) {
+
+        // don't call super here, since it would actually disable this window
+        // instead, we delegate to the toolbar, menubar, and editor's setEnabled() methods
+        getToolbar().setEnabled(enabled);
+        getMenubar().setEnabled(enabled);
+        getEditorTab().setEnabled(enabled);
     }
 
-    public String getTitle(){
-
-        return EDITOR_TAB.getTitle();
-    }
-
-    private JTabbedPane tabbedPane(String tab1Name, JComponent tab1, String tab2Name, JComponent tab2) {
-
-        final JTabbedPane pane = new JTabbedPane();
-
-        pane.addTab(String.format(
+    private static String formatTabName(String name) {
+        return String.format(
                 "<html><body><table width='150'><tr><td align='center'>%s</td></tr></table></body></html>",
-                tab1Name
-                ),
-            tab1
+                name
         );
-        pane.addTab(String.format(
-                "<html><body><table width='150'><tr><td align='center'>%s</td></tr></table></body></html>",
-                tab2Name
-                ),
-            tab2
-        );
-
-        return pane;
-
     }
-
-    /**
-     * Disables components which are not supposed to be used yet
-     */
-    private void blockComponents() {
-
-        this.TOOLBAR.getSaveButton().setEnabled(false);
-        this.MENU_BAR.getSaveMenuItem().setEnabled(false);
-        this.TOOLBAR.getExportButton().setEnabled(false);
-        this.MENU_BAR.getExportMenuItem().setEnabled(false);
-        this.EDITOR_TAB.getTitleField().setEnabled(false);
-        this.EDITOR_TAB.getSubtitleField().setEnabled(false);
-        this.EDITOR_TAB.getScalingSlider().setEnabled(false);
-        this.EDITOR_TAB.getSpacingSlider().setEnabled(false);
-
-        getEditorTab().setEnabled(false);
-    }
-
-
-    /**
-     * Temporary piece of code to test GUI
-     * @param args program arguments
-     */
-    public static void main(String[] args) {
-
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                MainJFrame.createAndShow();
-            }
-        });
-    }
-
 }

@@ -12,11 +12,13 @@ import ca.yorku.cse2311.tab2pdf.PdfHelper;
  */
 public class Subtitle implements ITabNotation {
 
+    public static final String DEFAULT_SUBTITLE = "No Subtitle";
+
     private final String subtitle;
 
     public Subtitle() {
 
-        this("No Subtitle");
+        this(DEFAULT_SUBTITLE);
     }
 
     public Subtitle(String subtitle) {

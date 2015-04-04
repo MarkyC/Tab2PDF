@@ -8,10 +8,10 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -26,6 +26,8 @@ public class PdfCreator implements Runnable {
     private final PdfHelper helper;
 
     private final List<String> lines;
+
+    private final Callback callback;
 
     private List<? extends ILongDraw> longNotes = Collections.unmodifiableList(Arrays.asList(
             new PullOff(new Note()),
@@ -45,21 +47,27 @@ public class PdfCreator implements Runnable {
 
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
 
-    public PdfCreator(PdfHelper helper, List<String> lines) {
+    public PdfCreator(PdfHelper helper, List<String> lines, Callback callback) {
 
         this.helper = helper;
         this.lines = lines;
+        this.callback = callback;
     }
 
     public void run() {
 
         try {
+
+            // attempt to create a PDF from the parsed tab
             createPdf(TabParser.parse(lines));
-            Desktop.getDesktop().open(helper.getFile());
+
+            // deliver the callback by giving them the output PDF File
+            LOG.info("PDF created successfully, running Callback...");
+            callback.onCallback(true, helper.getFile());
 
         } catch (Exception e) {
-            e.printStackTrace();
-            LOG.severe(e.getMessage());
+            LOG.log(Level.SEVERE, "Could not convert tab: "+e.getMessage(), e);
+            callback.onCallback(false, e);
         }
     }
 
@@ -202,5 +210,12 @@ public class PdfCreator implements Runnable {
 
         //Document is finished
         document.close();
+    }
+
+    /**
+     * Used to provide a callback to execute when this Runnable has finished
+     */
+    public interface Callback {
+        public void onCallback(boolean success, Object output);
     }
 }
