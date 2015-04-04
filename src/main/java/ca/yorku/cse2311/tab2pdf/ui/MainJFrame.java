@@ -8,6 +8,7 @@ import ca.yorku.cse2311.tab2pdf.ui.component.MenuBar;
 import ca.yorku.cse2311.tab2pdf.ui.listener.*;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -178,6 +179,10 @@ public class MainJFrame extends JFrame {
         }
 
         getEditorTab().getEditor().setCaretPosition(0); // bring the editor to the top
+
+        // Refresh the preview tab, so the user is show the newly loaded tab
+        // Fixes #65: converted Pdf file is not shown in the preview panel until you switch to editor panel and back
+        new PreviewTabListener(this).stateChanged(new ChangeEvent(getTabbedPane()));
     }
 
     /**
@@ -205,7 +210,7 @@ public class MainJFrame extends JFrame {
 
         getMenubar().getExitMenuItem().addActionListener(new ExitListener(this));
 
-        this.TABBED_PANE.addChangeListener(new PreviewTabListener(this));
+        getTabbedPane().addChangeListener(new PreviewTabListener(this));
     }
 
     public void update() {
@@ -240,21 +245,29 @@ public class MainJFrame extends JFrame {
         }
     }
 
-    public EditorTab getEditorTab() {
+    public final EditorTab getEditorTab() {
 
         return EDITOR_TAB;
     }
-    
-    public ToolBar getToolbar() {
+
+    public final ToolBar getToolbar() {
         return TOOLBAR;
     }
-    
-    public MenuBar getMenubar() {
+
+    public final MenuBar getMenubar() {
         return MENU_BAR;
     }
 
-    public StatusBar getStatusbar() {
+    public final StatusBar getStatusbar() {
         return STATUS_BAR;
+    }
+
+    public final JTabbedPane getTabbedPane() {
+        return TABBED_PANE;
+    }
+
+    public final PreviewTab getPreviewTab() {
+        return PREVIEW_TAB;
     }
 
     @Override
