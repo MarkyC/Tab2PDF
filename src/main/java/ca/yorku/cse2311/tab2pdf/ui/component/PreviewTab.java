@@ -1,5 +1,9 @@
 package ca.yorku.cse2311.tab2pdf.ui.component;
 
+import org.icepdf.ri.common.ComponentKeyBinding;
+import org.icepdf.ri.common.SwingController;
+import org.icepdf.ri.common.SwingViewBuilder;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -12,6 +16,8 @@ public class PreviewTab extends JPanel {
 
     public static final Dimension TAB_SIZE = new Dimension(500, 500);
 
+    SwingController controller;
+
     /**
      * Constructs a new preview tab
      */
@@ -20,6 +26,30 @@ public class PreviewTab extends JPanel {
         super();
 
         setupTab();
+        setupPreview();
+    }
+
+    private void setupPreview() {
+
+        // build a controller
+        controller = new SwingController();
+
+        // Build a SwingViewFactory configured with the controller
+        SwingViewBuilder factory = new SwingViewBuilder(controller);
+
+        // Use the factory to build a JPanel that is pre-configured
+        //with a complete, active Viewer UI.
+        JPanel viewerComponentPanel = factory.buildViewerPanel();
+
+        // add copy keyboard command
+        ComponentKeyBinding.install(controller, viewerComponentPanel);
+
+        // add interactive mouse link annotation support via callback
+        controller.getDocumentViewController().setAnnotationCallback(
+                new org.icepdf.ri.common.MyAnnotationCallback(
+                        controller.getDocumentViewController()));
+
+        this.add(viewerComponentPanel);
     }
 
     /**
@@ -32,5 +62,11 @@ public class PreviewTab extends JPanel {
         this.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), PREVIEW_PANEL_NAME));
         this.setPreferredSize(TAB_SIZE);
         this.setMaximumSize(TAB_SIZE);
+    }
+
+    public void update(String filePath) {
+
+        // Open a PDF document to view
+        controller.openDocument(filePath);
     }
 }

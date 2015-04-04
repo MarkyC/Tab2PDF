@@ -5,6 +5,7 @@ import ca.yorku.cse2311.tab2pdf.parser.TabParser;
 import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
 import ca.yorku.cse2311.tab2pdf.ui.component.EditorTab;
 
+import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
@@ -44,18 +45,40 @@ public class SubtitleListener extends KeyAdapter {
         Subtitle oldSubtitle = TabParser.getSubtitle(editor.getTextAsList());
         Subtitle newSubtitle = new Subtitle(editor.getSubtitleField().getText());
 
-        LOG.info(String.format("Subtitle changed from %s to %s", oldSubtitle.getValue(), newSubtitle.getValue()));
-
         if ( !newSubtitle.equals(oldSubtitle) ) { // The subtitle has changed
+            LOG.info(String.format("Subtitle changed from %s to %s", oldSubtitle.getValue(), newSubtitle.getValue()));
 
             // update the subtitle in the editor
-            editor.getEditor().setText(
-                    editor.getText().replace(oldSubtitle.toString(), newSubtitle.toString())
-            );
+            updateSubtitle(editor.getEditor(), oldSubtitle, newSubtitle);
 
             // Fire an update event, and reset the caret to the first position
             window.update("Changed title to " + newSubtitle.getValue());
             window.getInputEditor().setCaretPosition(0);
+        }
+    }
+
+    /**
+     * Updates the subtitle in the editor
+     * @param editor        The editor to update
+     * @param oldSubtitle   the old subtitle
+     * @param newSubtitle   the new subtitle
+     */
+    public static void updateSubtitle(JTextPane editor, Subtitle oldSubtitle, Subtitle newSubtitle) {
+        if (Subtitle.DEFAULT_SUBTITLE.equals(oldSubtitle.getValue())) {
+
+            // Fixes a bug where the Tab says "SUBTITLE=", but our subtitle field says No Subtitle
+            // This is because we map
+            // "SUBTITLE=" (the empty string is the subtitle)
+            // to "SUBTITLE=No Subtitle", so our tabs will have a default subtitle that is not empty
+            editor.setText(
+                    editor.getText().replaceAll("SUBTITLE=", newSubtitle.toString())
+            );
+        } else {
+
+            // For every other subtitle (that isn't empty), we simply replace the old subtitle with the new subtitle
+            editor.setText(
+                    editor.getText().replace(oldSubtitle.toString(), newSubtitle.toString())
+            );
         }
     }
 }
