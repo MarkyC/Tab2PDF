@@ -1,15 +1,17 @@
 package ca.yorku.cse2311.tab2pdf.ui.component;
 
+import ca.yorku.cse2311.tab2pdf.util.FileUtils;
+
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * EditorTab
@@ -20,6 +22,8 @@ import java.util.List;
  * @since 2015-03-18
  */
  public class EditorTab extends JPanel {
+
+    private final Logger LOG = Logger.getLogger(this.getClass().getName());
 
     /**
      * Toolbar sliders data
@@ -142,34 +146,63 @@ import java.util.List;
      */
     public void setFile(File f) throws IOException {
 
-        //this.getEditor().setText(FileUtils.readFile(f));
-
         // set control panel components to default values
         this.TITLE.setText("");
         this.SUBTITLE.setText("");
         this.SPACING_SLIDER.setValue(5);
         this.SCALING_SLIDER.setValue(7);
 
-        BufferedReader reader = new BufferedReader(new FileReader(f));
-        try {
-            StringBuilder builder = new StringBuilder();
-            String line = reader.readLine();
+        // This will remove the meta (TITLE, etc) information from the tab, and populate the
+        // control panel components with their values
+        // At the end, setText() sets the editor to the text of the tab, minus the meta information that was removed
+        this.getEditor().setText(
+                removeMetaAndSetControlPanelFields(FileUtils.readFileToList(f))
+        );
+    }
 
-            while (line != null) {
+    /**
+     * Removes meta information from the tab (ex: TITLE, SPACING, SUBTITLE, SCALING), and sets their values in the
+     * Control Panel. Returns a string suitable for inserting into the editor tab
+     *
+     * @param lines The tab file, line by line in a List
+     *
+     * @return a string suitable for inserting into the editor tab
+     */
+    public String removeMetaAndSetControlPanelFields(List<String> lines) {
 
-                // decide what to do with input line
-                // (either store to the left panel or put into editor)
-                parseInputLine(builder, line);
-                // read next line
-                line = reader.readLine();
+        StringBuilder builder = new StringBuilder();
+
+        for (String line : lines) { // Go through all the lines
+
+            if (line.contains(SUBTITLE_PATTERN)) {      // This line contains a subtitle
+                String subtitle = line.replace(SUBTITLE_PATTERN, "");
+                this.SUBTITLE.setText(subtitle);        // Set the subtitle in the control panel
+            } else if (line.contains(TITLE_PATTERN)) {    // This line contains a title
+                String title = line.replace(TITLE_PATTERN, "");
+                this.TITLE.setText(title);              // Set the title in the control panel
+            } else if (line.contains(SPACING_PATTERN)) {  // This line contains a spacing
+                String spacing = line.replace(SPACING_PATTERN, "");
+
+                try {   // Set spacing in the control panel
+                    this.SPACING_SLIDER.setValue(((int) Double.parseDouble(spacing)));
+                } catch (NumberFormatException e) {
+                    LOG.log(Level.SEVERE, "Could not parse Spacing", e);
+                }
+            } else if (line.contains(SCALING_PATTERN)) {  // This line contains a scaling
+                String scaling = line.replace(SCALING_PATTERN, "");
+
+                try {   // Set scaling in the control panel
+                    this.SCALING_SLIDER.setValue((int) Double.parseDouble(scaling));
+                } catch (NumberFormatException e) {
+                    LOG.log(Level.SEVERE, "Could not parse Scaling", e);
+                }
+            } else {    // This line does not contain any meta information, put the line into editor
+                builder.append(line);
+                builder.append(System.lineSeparator());
             }
-            // set editor text
-            this.getEditor().setText(builder.toString());
-        }
-        finally {
-            reader.close();
         }
 
+        return builder.toString();
     }
 
     /**
@@ -177,7 +210,9 @@ import java.util.List;
      * @param builder String Builder we are working with
      * @param line String from the input file
      */
-    private void parseInputLine(StringBuilder builder, String line) {
+    private void removeMetaInformation(StringBuilder builder, String line) {
+
+
 
         // if the line is subtitle line set subtitle
         if (line.contains(SUBTITLE_PATTERN)) {
@@ -192,7 +227,7 @@ import java.util.List;
         // if the line is spacing line set spacing
         else if (line.contains(SPACING_PATTERN)) {
             String spacing = line.replace(SPACING_PATTERN, "");
-            this.SPACING_SLIDER.setValue(Integer.parseInt(spacing));
+            this.SPACING_SLIDER.setValue(((int) Double.parseDouble(spacing)));
         }
         // if the line is scaling line set scaling
         else if (line.contains(SCALING_PATTERN)) {

@@ -4,7 +4,6 @@ import ca.yorku.cse2311.tab2pdf.model.*;
 import ca.yorku.cse2311.tab2pdf.parser.exception.BarFormatException;
 import ca.yorku.cse2311.tab2pdf.parser.exception.CouldNotParseSymbolException;
 import ca.yorku.cse2311.tab2pdf.parser.exception.ParseException;
-import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -24,6 +23,9 @@ public class TabParser {
     public static final List<IParser> PARSERS = new ArrayList<>();
 
     static {
+        PARSERS.add(new SpacingParser());
+        PARSERS.add(new TitleParser());
+        PARSERS.add(new SubtitleParser());
         PARSERS.add(new NoteParser());
         PARSERS.add(new DashParser());
         PARSERS.add(new PipeParser());
@@ -41,29 +43,78 @@ public class TabParser {
         return (index + 1 > line.length());
     }
 
-    public static Title getTitle() {
+    public static boolean isTitleLine(String line) {
 
-        return new Title(MainJFrame.getFrame().getTitle());
+        return new TitleParser().canParse(line);
     }
 
-    public static Subtitle getSubtitle() {
+    public static boolean isSubtitleLine(String line) {
 
-        return new Subtitle(MainJFrame.getFrame().getSubtitle());
+        return new SubtitleParser().canParse(line);
     }
 
-    public static Spacing getSpacing() {
+    public static boolean isSpacingLine(String line) {
 
-        return new Spacing(MainJFrame.getFrame().getSpacingValue());
+        return new SpacingParser().canParse(line);
     }
 
-    public static Scaling getScaling() {
+    public static Title getTitle(List<String> lines) {
 
-        return new Scaling(MainJFrame.getFrame().getScalingValue());
+        TitleParser parser = new TitleParser();
+
+        for (String line : lines) {
+            if (parser.canParse(line)) {
+                try {
+                    return parser.parse(line);
+                } catch (ParseException e) {
+                    LOG.warning(e.getMessage());
+                }
+            }
+        }
+
+        // If no title was found, give it the default title
+        return new Title();
+    }
+
+    public static Subtitle getSubtitle(List<String> lines) {
+
+        SubtitleParser parser = new SubtitleParser();
+
+        for (String line : lines) {
+            if (parser.canParse(line)) {
+                try {
+                    return parser.parse(line);
+                } catch (ParseException e) {
+                    LOG.warning(e.getMessage());
+                }
+            }
+        }
+
+        // no subtitle found, give it the default subtitle
+        return new Subtitle();
+    }
+
+    public static Spacing getSpacing(List<String> lines) {
+
+        SpacingParser parser = new SpacingParser();
+
+        for (String line : lines) {
+            if (parser.canParse(line)) {
+                try {
+                    return parser.parse(line);
+                } catch (ParseException e) {
+                    LOG.warning(e.getMessage());
+                }
+            }
+        }
+
+        // no Spacing found, give it the default Spacing
+        return new Spacing();
     }
 
     public static Tab parse(List<String> lines) {
 
-        Tab tab = new Tab(getTitle(), getSubtitle(), getSpacing(), getScaling());
+        Tab tab = new Tab(getTitle(lines), getSubtitle(lines), getSpacing(lines));
         //Bar bar = new Bar();
 
         List<Bar> bars = new ArrayList<>();
@@ -71,6 +122,12 @@ public class TabParser {
         for (int i = 0; i < lines.size(); ++i) {
 
             String line = lines.get(i);
+
+            // Skip lines that are title or spacing lines
+            if (isTitleLine(line) || isSubtitleLine(line) || isSpacingLine(line)) {
+                LOG.info("Skipping title/subtitle/spacing line: " + line);
+                continue;
+            }
 
             // A blank line begins a new Bar
             if (line.isEmpty()) {
