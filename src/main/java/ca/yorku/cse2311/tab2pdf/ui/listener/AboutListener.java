@@ -6,7 +6,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.net.*;
 import java.io.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,8 +22,20 @@ import java.awt.event.ActionListener;
 
     private final MainJFrame window;
 
-    JLabel jlbLabel2, jlbLabel3, jlbLabel5, jlbLabel6, jlbLabel8, jlbLabel9, jlbLabel11, jlbLabel12, jlbLabel14,
-            jlbLabel15, jlbLabel17, jlbLabel18;
+    JLabel InfoLabel,brodyPicLabel, brodyInfoLabel, glibPicLabel, glibInfoLabel, picLabel;
+
+    String deepName = "Deep Patel";
+    String deepEmail = "deep0410@my.yorku.ca";
+    String marcoName = "Marco Pietro Cirillo";
+    String marcoEmail = "cirillom@my.yorku.ca";
+    String antonName = "Anton Sitkovets";
+    String antonEmail = "antosi@my.yorku.ca";
+    String brodyName = "Brody Atto";
+    String bordyEmail = "brodyatto@gmail.com";
+    String varshaName = "Varsha Raghav";
+    String varshaEmail = "varsha_raghav@hotmail.com";
+    String glibName = "Glib Sitiguin";
+    String glibEmail = "glib.sitiugin@gmail.com";
 
     /**
      * @param window    the window we are working with
@@ -39,7 +50,7 @@ import java.awt.event.ActionListener;
         ImageIcon anton = null;
         ImageIcon marco = null;
         ImageIcon varsha = null;
-       // ImageIcon  = null;
+        ImageIcon  glib = null;
        // ImageIcon  = null;
 
         try {
@@ -47,6 +58,7 @@ import java.awt.event.ActionListener;
             anton = new ImageIcon(ImageIO.read(ClassLoader.getSystemResource("toolbar/anton.jpg")));
             marco = new ImageIcon(ImageIO.read(ClassLoader.getSystemResource("toolbar/marco.jpeg")));
             varsha = new ImageIcon(ImageIO.read(ClassLoader.getSystemResource("toolbar/Varsha.jpg")));
+            glib = new ImageIcon(ImageIO.read(ClassLoader.getSystemResource("toolbar/glib.jpg")));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -54,48 +66,35 @@ import java.awt.event.ActionListener;
         setLayout(new GridLayout(3,4));
        // setLayout(new GridLayout(6, 3));
         // 3 rows, 1 column Panel having Grid Layout
-        jlbLabel2 = new JLabel(deep);
-        jlbLabel2.setBorder(LineBorder.createGrayLineBorder());
-        jlbLabel3 = new JLabel("<html>&nbsp&nbsp&nbsp deep_.09@hotmail.com<br>&nbsp&nbsp&nbsp Deep Patel </html>");
-        jlbLabel5 = new JLabel(marco);
-        jlbLabel5.setBorder(LineBorder.createGrayLineBorder());
-        jlbLabel6 = new JLabel("<html>&nbsp&nbsp&nbsp cirillom@my.yorku.ca <br>&nbsp&nbsp&nbsp Marco Pietro Cirillo </html>");
-        jlbLabel8 = new JLabel(anton);
-        jlbLabel8.setBorder(LineBorder.createGrayLineBorder());
-        jlbLabel9 = new JLabel("<html>&nbsp&nbsp&nbsp antosi@my.yorku.ca<br>&nbsp&nbsp&nbsp Anton Sitkovets </html>");
-        jlbLabel11 = new JLabel("11");
-        jlbLabel11.setBorder(LineBorder.createGrayLineBorder());
-        jlbLabel12 = new JLabel("<html>&nbsp&nbsp&nbsp brodyatto@gmail.com<br>&nbsp&nbsp&nbsp Brody Atto <html>");
-        jlbLabel14 = new JLabel(varsha);
-        jlbLabel14.setBorder(LineBorder.createGrayLineBorder());
-        jlbLabel15 = new JLabel("<html>&nbsp&nbsp&nbsp varsha_raghav@hotmail.com<br>&nbsp&nbsp&nbsp Varsha Raghav <html>");
-        jlbLabel17 = new JLabel("17");
-        jlbLabel17.setBorder(LineBorder.createGrayLineBorder());
-        jlbLabel18 = new JLabel("<html>&nbsp&nbsp&nbsp glib.sitiugin@gmail.com<br>&nbsp&nbsp&nbsp Glib Sitiguin <html>");
-        add(jlbLabel2);
-        add(jlbLabel3);
-        add(jlbLabel5);
-        add(jlbLabel6);
-        add(jlbLabel8);
-        add(jlbLabel9);
-        add(jlbLabel11);
-        add(jlbLabel12);
-        add(jlbLabel14);
-        add(jlbLabel15);
-        add(jlbLabel17);
-        add(jlbLabel18);
+
+        createRow(deep, deepName, deepEmail);
+        createRow(marco, marcoName, marcoEmail);
+        createRow(anton, antonName, antonEmail);
+        brodyPicLabel = new JLabel("11");
+        brodyPicLabel.setBorder(LineBorder.createGrayLineBorder());
+        brodyInfoLabel = new JLabel("<html>&nbsp&nbsp&nbsp brodyatto@gmail.com<br>&nbsp&nbsp&nbsp Brody Atto <html>");
+        add(brodyPicLabel);
+        add(brodyInfoLabel);
+ //     createRow(brody, brodyName, brodyEmail);
+        createRow(varsha, varshaName, varshaEmail);
+        createRow(glib, glibName, glibEmail);
     }
 
 
+    public void createRow(ImageIcon picture,String name, String email){
+        picLabel = new JLabel(picture);
+        picLabel.setBorder(LineBorder.createGrayLineBorder());
+        InfoLabel = new JLabel("<html>&nbsp&nbsp&nbsp "+name+"<br>&nbsp&nbsp&nbsp "+email+" </html>");
+        add(picLabel);
+        add(InfoLabel);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-
         JFrame helpFrame = new JFrame("About Us");
         helpFrame.setSize(500, 500);
-      //  JLabel label = new JLabel("Will be implemented soon!", JLabel.CENTER);
         helpFrame.setContentPane(new AboutListener(window));
         helpFrame.pack();
-     //   helpFrame.add(label);
         helpFrame.setVisible(true);
     }
 }
