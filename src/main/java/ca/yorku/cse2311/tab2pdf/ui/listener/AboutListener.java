@@ -4,11 +4,10 @@ import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.io.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 /**
  * AboutListener
@@ -31,7 +30,7 @@ import java.awt.event.ActionListener;
     String antonName = "Anton Sitkovets";
     String antonEmail = "antosi@my.yorku.ca";
     String brodyName = "Brody Atto";
-    String bordyEmail = "brodyatto@gmail.com";
+    String brodyEmail = "brodyatto@gmail.com";
     String varshaName = "Varsha Raghav";
     String varshaEmail = "varsha_raghav@hotmail.com";
     String glibName = "Glib Sitiguin";
@@ -51,7 +50,7 @@ import java.awt.event.ActionListener;
         ImageIcon marco = null;
         ImageIcon varsha = null;
         ImageIcon  glib = null;
-       // ImageIcon  = null;
+        ImageIcon brody = null;
 
         try {
             deep = new ImageIcon(ImageIO.read(ClassLoader.getSystemResource("toolbar/Deep.jpg")));
@@ -59,6 +58,7 @@ import java.awt.event.ActionListener;
             marco = new ImageIcon(ImageIO.read(ClassLoader.getSystemResource("toolbar/marco.jpeg")));
             varsha = new ImageIcon(ImageIO.read(ClassLoader.getSystemResource("toolbar/Varsha.jpg")));
             glib = new ImageIcon(ImageIO.read(ClassLoader.getSystemResource("toolbar/glib.jpg")));
+            brody = new ImageIcon(ImageIO.read(ClassLoader.getSystemResource("toolbar/brody.jpg")));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,12 +70,7 @@ import java.awt.event.ActionListener;
         createRow(deep, deepName, deepEmail);
         createRow(marco, marcoName, marcoEmail);
         createRow(anton, antonName, antonEmail);
-        brodyPicLabel = new JLabel("11");
-        brodyPicLabel.setBorder(LineBorder.createGrayLineBorder());
-        brodyInfoLabel = new JLabel("<html>&nbsp&nbsp&nbsp brodyatto@gmail.com<br>&nbsp&nbsp&nbsp Brody Atto <html>");
-        add(brodyPicLabel);
-        add(brodyInfoLabel);
- //     createRow(brody, brodyName, brodyEmail);
+        createRow(brody, brodyName, brodyEmail);
         createRow(varsha, varshaName, varshaEmail);
         createRow(glib, glibName, glibEmail);
     }
