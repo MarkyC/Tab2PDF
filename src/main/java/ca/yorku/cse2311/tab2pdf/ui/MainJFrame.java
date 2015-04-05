@@ -25,8 +25,6 @@ import java.util.logging.Logger;
  */
 public class MainJFrame extends JFrame {
 
-    public static MainJFrame frame = null;
-
     /**
      * Title of the GUI window
      */
@@ -102,8 +100,6 @@ public class MainJFrame extends JFrame {
 
         // update GUI, we're ready for primetime!
         update();
-
-        frame = this;
     }
 
     /**
@@ -315,9 +311,4 @@ public class MainJFrame extends JFrame {
         tab.setScaling(getScalingValue());
         return tab;
     }
-
-    public static MainJFrame getFrame() {
-        return frame;
-    }
-
 }
