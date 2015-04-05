@@ -22,7 +22,7 @@ public class AboutJFrame extends JFrame {
             {"Brody Atto",              "brodyatto@gmail.com",          "about/brody.jpg"},
             {"Marco Pietro Cirillo",    "cirillom@my.yorku.ca",         "about/marco.jpeg"},
             {"Deep Patel",              "deep0410@my.yorku.ca",         "about/Deep.jpg"},
-            {"Varsha Raghav",           "varsha_raghav@hotmail.com",    "about/Varsha.jpg"},
+            {"Varsha Ragavendran",      "varsha_raghav@hotmail.com",    "about/Varsha.jpg"},
             {"Glib Sitiguin",           "situgin@yorku.ca",             "about/glib.jpg"},
             {"Anton Sitkovets",         "antosi@my.yorku.ca",           "about/anton.jpg"},
     };
