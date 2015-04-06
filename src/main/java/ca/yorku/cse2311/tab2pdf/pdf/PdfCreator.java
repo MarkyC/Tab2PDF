@@ -1,6 +1,6 @@
-package ca.yorku.cse2311.tab2pdf.util;
+package ca.yorku.cse2311.tab2pdf.pdf;
 
-import ca.yorku.cse2311.tab2pdf.PdfHelper;
+import ca.yorku.cse2311.tab2pdf.pdf.PdfHelper;
 import ca.yorku.cse2311.tab2pdf.model.*;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Font;

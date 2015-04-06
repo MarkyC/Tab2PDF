@@ -1,22 +1,25 @@
 package ca.yorku.cse2311.tab2pdf.ui.listener;
 
-import ca.yorku.cse2311.tab2pdf.PdfHelper;
-import ca.yorku.cse2311.tab2pdf.model.Tab;
-import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
-import ca.yorku.cse2311.tab2pdf.ui.component.PreviewTab;
-import ca.yorku.cse2311.tab2pdf.util.FileUtils;
-import ca.yorku.cse2311.tab2pdf.util.PdfCreator;
 import com.itextpdf.text.DocumentException;
 
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import ca.yorku.cse2311.tab2pdf.model.Tab;
+import ca.yorku.cse2311.tab2pdf.pdf.PdfCreator;
+import ca.yorku.cse2311.tab2pdf.pdf.PdfHelper;
+import ca.yorku.cse2311.tab2pdf.ui.MainJFrame;
+import ca.yorku.cse2311.tab2pdf.ui.component.PreviewTab;
+import ca.yorku.cse2311.tab2pdf.util.FileUtils;
 
 /**
  * PreviewTabListener

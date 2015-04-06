@@ -1,6 +1,6 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
-import ca.yorku.cse2311.tab2pdf.PdfHelper;
+import ca.yorku.cse2311.tab2pdf.pdf.PdfHelper;
 
 /**
  * Created by Brody Atto on 25/01/2015.

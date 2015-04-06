@@ -1,6 +1,6 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
-import ca.yorku.cse2311.tab2pdf.PdfHelper;
+import ca.yorku.cse2311.tab2pdf.pdf.PdfHelper;
 
 /**
  * Subtitle
