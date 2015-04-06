@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created by Glib Sitiugin on 2015-03-07.
+ * Created by Glib Sitiugin , Varsha Ragavendran on 2015-03-07.
  */
 public class StatusBar extends JPanel {
 
@@ -56,6 +56,12 @@ public class StatusBar extends JPanel {
     public void setInputFilePath(String path) {
 
         INPUT_FILE_PATH.setText(path);
+    }
+
+    public String getInputFilePath(){
+
+        return INPUT_FILE_PATH.getText();
+
     }
 
     public void setSymbolsNumber(int number) {

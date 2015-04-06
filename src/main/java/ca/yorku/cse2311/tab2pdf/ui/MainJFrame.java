@@ -45,6 +45,8 @@ public class MainJFrame extends JFrame {
 
     private final SaveFileListener SAVE_FILE_LISTENER = new SaveFileListener(this);
 
+    private final SaveFileAsListener SAVE_FILE_AS_LISTENER = new SaveFileAsListener(this);
+
     private final ExportPdfListener EXPORT_PDF_LISTENER = new ExportPdfListener(this);
 
     private final HelpListener HELP_LISTENER = new HelpListener(this);
@@ -194,6 +196,8 @@ public class MainJFrame extends JFrame {
         getToolbar().getSaveButton().addActionListener(SAVE_FILE_LISTENER);
         getMenubar().getSaveMenuItem().addActionListener(SAVE_FILE_LISTENER);
 
+        getMenubar().getSaveAsMenuItem().addActionListener(SAVE_FILE_AS_LISTENER);
+
         getToolbar().getExportButton().addActionListener(EXPORT_PDF_LISTENER);
         getMenubar().getExportMenuItem().addActionListener(EXPORT_PDF_LISTENER);
 
@@ -250,6 +254,8 @@ public class MainJFrame extends JFrame {
     public JTextPane getInputEditor() {
         return EDITOR_TAB.getEditor();
     }
+
+    public String getInputFilePath() { return STATUS_BAR.getInputFilePath(); }
     
     public EditorTab getEditorTab() {
 
