@@ -1,19 +1,38 @@
 package ca.yorku.cse2311.tab2pdf.ui;
 
-import ca.yorku.cse2311.tab2pdf.Arguments;
-import ca.yorku.cse2311.tab2pdf.model.Tab;
-import ca.yorku.cse2311.tab2pdf.parser.TabParser;
-import ca.yorku.cse2311.tab2pdf.ui.component.*;
-import ca.yorku.cse2311.tab2pdf.ui.component.MenuBar;
-import ca.yorku.cse2311.tab2pdf.ui.listener.*;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Container;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
+import javax.swing.event.ChangeEvent;
+
+import ca.yorku.cse2311.tab2pdf.Arguments;
+import ca.yorku.cse2311.tab2pdf.model.Tab;
+import ca.yorku.cse2311.tab2pdf.parser.TabParser;
+import ca.yorku.cse2311.tab2pdf.ui.component.EditorTab;
+import ca.yorku.cse2311.tab2pdf.ui.component.MenuBar;
+import ca.yorku.cse2311.tab2pdf.ui.component.PreviewTab;
+import ca.yorku.cse2311.tab2pdf.ui.component.StatusBar;
+import ca.yorku.cse2311.tab2pdf.ui.component.ToolBar;
+import ca.yorku.cse2311.tab2pdf.ui.listener.AboutListener;
+import ca.yorku.cse2311.tab2pdf.ui.listener.ExitListener;
+import ca.yorku.cse2311.tab2pdf.ui.listener.ExportPdfListener;
+import ca.yorku.cse2311.tab2pdf.ui.listener.HelpListener;
+import ca.yorku.cse2311.tab2pdf.ui.listener.OpenFileListener;
+import ca.yorku.cse2311.tab2pdf.ui.listener.PreviewTabListener;
+import ca.yorku.cse2311.tab2pdf.ui.listener.SampleInput1Listener;
+import ca.yorku.cse2311.tab2pdf.ui.listener.SampleInput2Listener;
+import ca.yorku.cse2311.tab2pdf.ui.listener.SaveFileAsListener;
+import ca.yorku.cse2311.tab2pdf.ui.listener.SaveFileListener;
 
 
 /**
@@ -47,6 +66,8 @@ public class MainJFrame extends JFrame {
     private final OpenFileListener OPEN_FILE_LISTENER = new OpenFileListener(this);
 
     private final SaveFileListener SAVE_FILE_LISTENER = new SaveFileListener(this);
+
+    private final SaveFileAsListener SAVE_FILE_AS_LISTENER = new SaveFileAsListener(this);
 
     private final ExportPdfListener EXPORT_PDF_LISTENER = new ExportPdfListener(this);
 
@@ -93,8 +114,8 @@ public class MainJFrame extends JFrame {
         container.add(TABBED_PANE, BorderLayout.CENTER);
 
         // Add status bar
-        container.add(this.STATUS_BAR = new StatusBar(), BorderLayout.SOUTH);
-
+        this.EDITOR_TAB.add(this.STATUS_BAR = new StatusBar(), BorderLayout.SOUTH);
+        
         // add listeners to the toolbar elements
         addListeners();
 
@@ -192,6 +213,8 @@ public class MainJFrame extends JFrame {
 
         getToolbar().getSaveButton().addActionListener(SAVE_FILE_LISTENER);
         getMenubar().getSaveMenuItem().addActionListener(SAVE_FILE_LISTENER);
+
+        getMenubar().getSaveAsMenuItem().addActionListener(SAVE_FILE_AS_LISTENER);
 
         getToolbar().getExportButton().addActionListener(EXPORT_PDF_LISTENER);
         getMenubar().getExportMenuItem().addActionListener(EXPORT_PDF_LISTENER);

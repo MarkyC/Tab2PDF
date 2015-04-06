@@ -1,10 +1,20 @@
 package ca.yorku.cse2311.tab2pdf.ui.component;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 
 /**
- * Created by Glib Sitiugin on 2015-03-07.
+ * StatusBar
+ *
+ * Holds the status bar at the bottom of the EditorTab
+ *
+ * @since 2015-04-06
+ * @author Glib Sitiugin , Varsha Ragavendran
  */
 public class StatusBar extends JPanel {
 
