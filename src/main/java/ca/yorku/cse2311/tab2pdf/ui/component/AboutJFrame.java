@@ -33,6 +33,8 @@ public class AboutJFrame extends JFrame {
 
     public static final GridBagConstraints EMAIL_CONSTRAINTS = new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0);
 
+    public static final Dimension PICTURE_SIZE = new Dimension(150, 150);
+
     public AboutJFrame() throws HeadlessException {
 
         super("About Tab2Pdf");
@@ -57,8 +59,8 @@ public class AboutJFrame extends JFrame {
         }
 
         // Set size of picture, so they look uniform
-        pic.setMinimumSize(new Dimension(150, 150));
-        pic.setPreferredSize(new Dimension(150, 150));
+        pic.setMinimumSize(PICTURE_SIZE);
+        pic.setPreferredSize(PICTURE_SIZE);
 
         // Add picture
         result.add(pic, PIC_CONSTRAINTS);
