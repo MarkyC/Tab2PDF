@@ -1,14 +1,23 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
-import ca.yorku.cse2311.tab2pdf.model.*;
-import ca.yorku.cse2311.tab2pdf.parser.exception.BarFormatException;
-import ca.yorku.cse2311.tab2pdf.parser.exception.CouldNotParseSymbolException;
-import ca.yorku.cse2311.tab2pdf.parser.exception.ParseException;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import ca.yorku.cse2311.tab2pdf.model.Bar;
+import ca.yorku.cse2311.tab2pdf.model.BarLine;
+import ca.yorku.cse2311.tab2pdf.model.Dash;
+import ca.yorku.cse2311.tab2pdf.model.DoubleBar;
+import ca.yorku.cse2311.tab2pdf.model.ITabNotation;
+import ca.yorku.cse2311.tab2pdf.model.Pipe;
+import ca.yorku.cse2311.tab2pdf.model.Spacing;
+import ca.yorku.cse2311.tab2pdf.model.Subtitle;
+import ca.yorku.cse2311.tab2pdf.model.Tab;
+import ca.yorku.cse2311.tab2pdf.model.Title;
+import ca.yorku.cse2311.tab2pdf.parser.exception.BarFormatException;
+import ca.yorku.cse2311.tab2pdf.parser.exception.CouldNotParseSymbolException;
+import ca.yorku.cse2311.tab2pdf.parser.exception.ParseException;
 
 /**
  * TabParser
@@ -38,10 +47,6 @@ public class TabParser {
     }
 
     private static final Logger LOG = Logger.getLogger(TabParser.class.getSimpleName());
-
-    public static boolean endOfLine(int index, String line) {
-        return (index + 1 > line.length());
-    }
 
     public static boolean isTitleLine(String line) {
 

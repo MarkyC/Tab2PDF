@@ -1,12 +1,15 @@
 package ca.yorku.cse2311.tab2pdf.model;
 
-import ca.yorku.cse2311.tab2pdf.parser.TabParser;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
+import ca.yorku.cse2311.tab2pdf.parser.TabParser;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * TabParserTest
@@ -18,6 +21,15 @@ import static org.junit.Assert.assertEquals;
  */
 public class TabParserTest {
 
+    /* These are sample title, subtitle, spacing, scaling lines */
+    public static final String TITLE_LINE = "TITLE=Moonlight Sonata";
+    public static final String SUBTITLE_LINE = "SUBTITLE=Ludwig van Beethoven";
+    public static final String SPACING_LINE = "SPACING=5.0";
+    public static final String SCALING_LINE = "SCALING=5.0";
+
+    /**
+     * An entire tab, line by line 
+     */
     public static final String[] LINES = {
             "TITLE=Moonlight Sonata"
             , "SUBTITLE=Ludwig van Beethoven"
@@ -281,7 +293,9 @@ public class TabParserTest {
     @Test
     public void testParse() {
 
-        // Not yet!
+        // Running our sample tab shouldn't throw an exception
+        // This test should be sufficient (and we won't have to hardcode a Tab object!)
+        TabParser.parse(Arrays.asList(LINES));
     }
 
     /**
@@ -295,7 +309,7 @@ public class TabParserTest {
             // This will hold line that we converted back to tab using the ITabNotations toString()
             String parsedLine = "";
 
-                //TODO: Fix tester since the way it works is different now. (The parser treats each bar as objects)
+            //TODO: Fix tester since the way it works is different now. (The parser treats each bar as objects)
             for (List<ITabNotation> noteSet : TabParser.parseLine(line)) {  // Go through all the parsed tokens (notes)
                         if (parsedLine.endsWith("|")) {
                                 parsedLine = parsedLine.substring(0, parsedLine.length() - 1);
@@ -310,5 +324,44 @@ public class TabParserTest {
             assertEquals(line, parsedLine);
         }
 
+    }
+    
+    @Test
+    public void testIsTitleLine() {
+        assertTrue(TabParser.isTitleLine(TITLE_LINE));
+        assertTrue(!TabParser.isTitleLine(SUBTITLE_LINE));
+        assertTrue(!TabParser.isTitleLine(SPACING_LINE));
+        assertTrue(!TabParser.isTitleLine(SCALING_LINE));
+    }
+
+    @Test
+    public void testIsSubtitleLine() {
+        assertTrue(TabParser.isSubtitleLine(SUBTITLE_LINE));
+        assertTrue(!TabParser.isSubtitleLine(TITLE_LINE));
+        assertTrue(!TabParser.isSubtitleLine(SPACING_LINE));
+        assertTrue(!TabParser.isSubtitleLine(SCALING_LINE));
+    }
+    
+    @Test
+    public void testIsSpacingLine() {
+        assertTrue(TabParser.isSpacingLine(SPACING_LINE));
+        assertTrue(!TabParser.isSpacingLine(TITLE_LINE));
+        assertTrue(!TabParser.isSpacingLine(SUBTITLE_LINE));
+        assertTrue(!TabParser.isSpacingLine(SCALING_LINE));       
+    }
+
+    @Test
+    public void testGetTitle() {
+        assertEquals(TITLE_LINE, TabParser.getTitle(Arrays.asList(LINES)).toString());
+    }
+
+    @Test
+    public void testGetSubtitle() {
+        assertEquals(SUBTITLE_LINE, TabParser.getSubtitle(Arrays.asList(LINES)).toString());
+    }
+
+    @Test
+    public void testGetSpacing() {
+        assertEquals(SPACING_LINE, TabParser.getSpacing(Arrays.asList(LINES)).toString());
     }
 }
