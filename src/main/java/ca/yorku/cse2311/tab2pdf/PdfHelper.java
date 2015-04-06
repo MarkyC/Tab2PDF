@@ -292,9 +292,9 @@ public class PdfHelper {
      */
     public void filledCircles(int staveNumber, float xCoordinate) {
 
-        int yCoordinate = determineYCoordinate(staveNumber) + 2 * lineSpace;
+        int yCoordinate = determineYCoordinate(staveNumber) + 2 * getStaveHeight();
         circle(xCoordinate, yCoordinate, 1f, true);
-        yCoordinate += lineSpace;
+        yCoordinate += getStaveHeight();
         circle(xCoordinate, yCoordinate, 1f, true);
 
     }
