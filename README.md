@@ -24,6 +24,9 @@ Part of the EECS 2311 Winter 2015 Software Project: https://wiki.eecs.yorku.ca/c
 
 * https://docs.google.com/document/d/1ijf2fZHFywkkz3NW4VkDxmZUUcPQ8mjVx3ZmMPuioZc/edit?usp=sharing
 
+# Presentation
+
+*https://docs.google.com/presentation/d/1jagAIl5_w5I1wo1Lvl1uGEFtzsgzDDf-mZSkBKod_Sk/edit?usp=sharing
 # Team
 
 * Anton Sitkovets @papaiza
