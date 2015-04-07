@@ -4,6 +4,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import ca.yorku.cse2311.tab2pdf.model.DoubleBarTest;
+import ca.yorku.cse2311.tab2pdf.model.HammerOnTest;
+import ca.yorku.cse2311.tab2pdf.model.PullOffTest;
 import ca.yorku.cse2311.tab2pdf.model.ScalingTest;
 import ca.yorku.cse2311.tab2pdf.model.SpacingTest;
 import ca.yorku.cse2311.tab2pdf.model.SubtitleTest;
@@ -22,6 +24,8 @@ import ca.yorku.cse2311.tab2pdf.parser.SquareNoteParserTest;
         , TabParserTest.class
         , DoubleBarParserTest.class
         , NoteParserTest.class
+        , HammerOnTest.class
+        , PullOffTest.class
         , SlideParserTest.class
         , SquareNoteParserTest.class
         , DashParserTest.class
