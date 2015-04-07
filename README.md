@@ -26,7 +26,10 @@ Part of the EECS 2311 Winter 2015 Software Project: https://wiki.eecs.yorku.ca/c
 
 # Presentation
 
-*https://docs.google.com/presentation/d/1jagAIl5_w5I1wo1Lvl1uGEFtzsgzDDf-mZSkBKod_Sk/edit?usp=sharing
+* https://docs.google.com/presentation/d/1jagAIl5_w5I1wo1Lvl1uGEFtzsgzDDf-mZSkBKod_Sk/edit?usp=sharing
+
+#Sequence Drawings
+* https://docs.google.com/document/d/1axGa2f3bATsPLX8j22EoIUzVxKI234hIrVeOIE2nW18/edit?usp=sharing
 # Team
 
 * Anton Sitkovets @papaiza
