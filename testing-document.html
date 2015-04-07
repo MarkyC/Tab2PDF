@@ -11,7 +11,7 @@
 
 <p>EECS 2311 <br>
 V. Tzerpos <br>
-Wednesday, February 25, 2015</p>
+Wednesday, April 7, 2015</p>
 
 <p><strong>Group 1</strong> <br>
 Atto, Brody <br>
@@ -20,8 +20,6 @@ Patel, Deep <br>
 Ragavendran, Varsha <br>
 Sitiugin, Glib <br>
 Sitkovets, Anton</p>
-
-
 
 <h2 id="testing-methodology">Testing Methodology</h2>
 
@@ -44,6 +42,8 @@ Sitkovets, Anton</p>
 <p><code>Util</code> classes are also untested, as they are simple functions.</p>
 
 <p>The PDF classes <code>PdfHelper</code> and <code>PdfCreator</code> are untested because there is difficulty in comparing PDF documents. This is because two documents can be rendered differently in different PDF viewers, so it is tough to gauge which viewer is the truly correct (ie: the <em>oracle</em>).</p>
+
+
 
 <h2 id="test-classes">Test Classes</h2>
 
@@ -151,29 +151,43 @@ Sitkovets, Anton</p>
 
 <p>This class fully tests the <code>BarLine</code> class (representing a line in a <code>Bar</code>), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
 
+
+
 <h4 id="bartestjava">BarTest.java</h4>
 
 <p>This class fully tests the <code>Bar</code> class (representing a musical <code>Bar</code>), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
+
+
 
 <h4 id="doublebartestjava">DoubleBarTest.java</h4>
 
 <p>This class fully tests the <code>DoubleBar</code> class (representing a repeating Bar), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
 
+
+
 <h4 id="hammerontestjava">HammerOnTest.java</h4>
 
 <p>This class fully tests the <code>HammerOn</code> class (representing a musical hammer on such as <code>3h5</code>), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
+
+
 
 <h4 id="pullofftestjava">PullOffTest.java</h4>
 
 <p>This class fully tests the <code>HammerOn</code> class (representing a musical pull off such as <code>5p3</code>), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
 
+
+
 <h4 id="scalingtestjava">ScalingTest.java</h4>
 
 <p>This class fully tests the <code>Scaling</code> class (representing tab vertical scaling, such as <code>SCALING=5.0</code>), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
 
+
+
 <h4 id="spacingtestjava">SpacingTest.java</h4>
 
 <p>This class fully tests the <code>Spacing</code> class (representing tab horizontal spacing, such as <code>SPACING=5.0</code>), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
+
+
 
 <h4 id="squarenotetestjava">SquareNoteTest.java</h4>
 
@@ -185,17 +199,25 @@ Sitkovets, Anton</p>
 
 <p>This class fully tests the <code>Subtitle</code> class (representing the tab’s subtitle such as <code>SUBTITLE=Ludwig van Beethoven</code>), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
 
+
+
 <h4 id="tabtestjava">TabTest.java</h4>
 
 <p>This class fully tests the <code>Tab</code> class (representing the ASCII musical tab as a whole), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
+
+
 
 <h4 id="titletestjava">TitleTest.java</h4>
 
 <p>This class fully tests the <code>Title</code> class (representing the tab’s title such as <code>TITLE=Moonlight Sonata</code>), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
 
+
+
 <h2 id="coverage-and-metrics">Coverage and Metrics</h2>
 
 <p>Code coverage is grouped by package. Our focus is on 100% method coverage in model and parser classes. We chose not to perform automated testing of the GUI, instead opting for manual testing. </p>
+
+
 
 <h3 id="cayorkucse2311tab2pdfmodel">ca.yorku.cse2311.tab2pdf.model</h3>
 
@@ -303,6 +325,8 @@ Sitkovets, Anton</p>
 </tbody></table>
 
 
+
+
 <h3 id="cayorkucse2311tab2pdfparser">ca.yorku.cse2311.tab2pdf.parser</h3>
 
 <p>This table showcases the testing coverage for our parser classes.</p>
@@ -395,6 +419,8 @@ Sitkovets, Anton</p>
   <td>85.7% (6/ 7)</td>
 </tr>
 </tbody></table>
+
+
 
 
 <h3 id="tab2pdf">Tab2Pdf</h3>
