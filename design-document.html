@@ -96,42 +96,19 @@ Sitkovets, Anton</p>
 
 <h3 id="cayorkucse2311tab2pdf">ca.yorku.cse2311.tab2pdf</h3>
 
-<p>The main package of this application. It consists of <code>Main</code> and <code>Arguments</code>. The first class is the entry point of the application. It is responsible for creating and showing the GUI, as well as parsing command line arguments. The second class is a helper class that will hold program arguments. Currently, there is command line support for setting the input (tab) and output (PDF) files via command line arguments, though this can also be easily accomplished via the GUI.</p>
-
-<table>
-<thead>
-<tr>
-  <th>Short Argument</th>
-  <th>Long Argument</th>
-  <th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-  <td><code>-i &lt;file.txt&gt;</code></td>
-  <td><code>--input &lt;file.txt&gt;</code></td>
-  <td>Sets the input (tab) file</td>
-</tr>
-<tr>
-  <td><code>-o &lt;file.pdf&gt;</code></td>
-  <td><code>--output &lt;file.pdf&gt;</code></td>
-  <td>Sets the output (pdf) file</td>
-</tr>
-</tbody></table>
-
-
-
+<p>The main package of this application. It consists of <code>Main</code>. This class is the entry point of the application. It is responsible for creating and showing the GUI.</p>
 
 <h3 id="cayorkucse2311tab2pdfmodel">ca.yorku.cse2311.tab2pdf.model</h3>
 
 <p><img src="http://i.imgur.com/pzKOyfj.png" alt="model" title=""></p>
 
-<p>This package holds the business models of this application. Most models implement <code>ITabNotation</code>, which describes a set of methods we expect all tab models to have, such as the ability to <code>draw()</code> to the PDF, the <code>size()</code> of the drawn symbol, and <code>toString()</code>, which must return the exact String that was used to create the object. This means models are reflexive and symmetric. “3” should parse into a <code>Note</code> with value 3, and calling <code>toString()</code> on this <code>Note</code> should yield “3”.</p>
+<p>This package holds the business models of this application. All models implement <code>ITabNotation</code>, which describes a set of methods we expect all tab models to have, such as the ability to <code>draw()</code> to the PDF, the <code>size()</code> of the drawn symbol, and <code>toString()</code>, which must return the exact String that was used to create the object. This means models are reflexive and symmetric. “3” should parse into a <code>Note</code> with value 3, and calling <code>toString()</code> on this <code>Note</code> should yield “3”.</p>
 
 <blockquote>
   <p><em>Technical Note:</em> This is accomplished programmatically, rather than by storing the String that was used to create the object.</p>
 </blockquote>
 
-
+<p>Special notes, such as <code>HammerOn</code>s and <code>PullOff</code>s (which use the <em>decorator pattern</em> around a <code>Note</code> object) implement <code>ILongDraw</code> so they are able to draw across musical bar boundaries.</p>
 
 <h3 id="cayorkucse2311tab2pdfparser">ca.yorku.cse2311.tab2pdf.parser</h3>
 
