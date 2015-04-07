@@ -5,6 +5,8 @@ import org.junit.Test;
 
 import java.util.Random;
 
+import ca.yorku.cse2311.tab2pdf.pdf.PdfHelper;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -68,6 +70,11 @@ public class DoubleBarTest {
     }
 
     @Test
+    public void testGetRepeat() {
+        assertEquals(1, new DoubleBar().getRepeat());
+    }
+
+    @Test
     public void testGetBeginRepeat() {
         for (int i = 0; i < testSize; i++) {
             assertEquals(doubleBarGet[i].getBeginRepeat(), getBeginG[i]);
@@ -98,9 +105,45 @@ public class DoubleBarTest {
     }
 
     @Test
-    public void testEquales() {
+    public void testEquals() {
         for (int i = 0; i < testSize; i++) {
             assertTrue(doubleBar1[i].equals(doubleBar2[i]));
         }
+
+        // Assert defaults are always the same
+        assertEquals(new DoubleBar(), new DoubleBar());
+    }
+
+    @Test
+    public void testDraw() throws Exception {
+        new DoubleBar().draw(new PdfHelper(1, 1), 1, 1, 1);
+    }
+
+    @Test
+    public void testLeftPadding() throws Exception {
+        DoubleBar p0 = new DoubleBar();
+        DoubleBar p1 = new DoubleBar(1, true, true, true);
+        assertEquals(0, p0.leftPadding());
+        assertEquals(1, p1.leftPadding());
+    }
+
+    @Test
+    public void testRightPadding() throws Exception {
+        DoubleBar p0 = new DoubleBar();
+        DoubleBar p1 = new DoubleBar(1, true, true, true);
+        DoubleBar p2 = new DoubleBar(1, false, false, false);
+        assertEquals(1, p0.rightPadding());
+        assertEquals(1, p1.rightPadding());
+        assertEquals(0, p2.rightPadding());
+    }
+
+    @Test
+    public void testSize() {
+        assertEquals(3, new DoubleBar().size());
+    }
+
+    @Test
+    public void testToString() throws Exception {
+        assertEquals("||-", new DoubleBar().toString());
     }
 }
