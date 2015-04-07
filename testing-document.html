@@ -21,6 +21,8 @@ Ragavendran, Varsha <br>
 Sitiugin, Glib <br>
 Sitkovets, Anton</p>
 
+
+
 <h2 id="testing-methodology">Testing Methodology</h2>
 
 <p>Since Tab2Pdf is built using the agile software development method, we opt to incorporate Test Driven Development into our sprints. When a group member commits code to the repository (via a pull request), the corresponding test cases are also included. This can be seen as a “bottom up” approach to testing, as the foundations of the software are tested as they are built. </p>
@@ -32,6 +34,16 @@ Sitkovets, Anton</p>
 <p>This document will detail the specific methods in our JUnit test files, their importance to the overall operation of the code, and the metrics of our testing.</p>
 
 
+
+<h2 id="testing-sufficiency">Testing Sufficiency</h2>
+
+<p>We believe fully testing the models and parsers are sufficient because they represent the business logic of this program. These classes are responsible for the bulk of what Tab2PDF does, and as such, should be thoroughly tested.</p>
+
+<p>The GUI could have been tested with Java’s <code>Robot</code> class, but we opted for manual testing, since the GUI is rather simplistic (and Sun thoroughly tests Swing code, so we know we have a solid foundation).</p>
+
+<p><code>Util</code> classes are also untested, as they are simple functions.</p>
+
+<p>The PDF classes <code>PdfHelper</code> and <code>PdfCreator</code> are untested because there is difficulty in comparing PDF documents. This is because two documents can be rendered differently in different PDF viewers, so it is tough to gauge which viewer is the truly correct (ie: the <em>oracle</em>).</p>
 
 <h2 id="test-classes">Test Classes</h2>
 
@@ -121,21 +133,69 @@ Sitkovets, Anton</p>
 
 <p>This class tests the programs ability to parse an entire tab file (Moonlight Sonata) into tab notation. The tab file includes title, subtitle, and spacing attributes as well as the entire tab.</p>
 
+
+
 <h4 id="titleparsertestjava">TitleParserTest.java</h4>
 
 <p>This class tests the programs ability to parse a title attribute (<code>TITLE=Jim Matheos</code>) in tab notation. A title signifies the title of the tab. For valid lines, we ensure the line begins with at least (case-insensitive) <code>TITLE=S</code>, where S is any string. For invalid lines, we put empty strings as the title or misspell/shorthand <code>TITLE</code>, such as <code>TITLE=</code>, <code>T=A</code>, <code>SUBTITLE=</code>, <code>Remembering Rain</code>, and <code>S=A</code>.</p>
+
+
 
 <h3 id="itabnotation-test-classes">ITabNotation Test Classes</h3>
 
 <p>These test classes test all of our model objects (those that implement <code>ITabNotation</code>). These represent each symbol that we support in tab notation. </p>
 
+
+
+<h4 id="barlinetestjava">BarLineTest.java</h4>
+
+<p>This class fully tests the <code>BarLine</code> class (representing a line in a <code>Bar</code>), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
+
+<h4 id="bartestjava">BarTest.java</h4>
+
+<p>This class fully tests the <code>Bar</code> class (representing a musical <code>Bar</code>), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
+
 <h4 id="doublebartestjava">DoubleBarTest.java</h4>
 
-<p>This class tests mutator methods (<code>getters</code> and <code>setters</code>) and the <code>equals</code> method of the DoubleBar class. The DoubleBar class represents a repeat bar.</p>
+<p>This class fully tests the <code>DoubleBar</code> class (representing a repeating Bar), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
+
+<h4 id="hammerontestjava">HammerOnTest.java</h4>
+
+<p>This class fully tests the <code>HammerOn</code> class (representing a musical hammer on such as <code>3h5</code>), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
+
+<h4 id="pullofftestjava">PullOffTest.java</h4>
+
+<p>This class fully tests the <code>HammerOn</code> class (representing a musical pull off such as <code>5p3</code>), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
+
+<h4 id="scalingtestjava">ScalingTest.java</h4>
+
+<p>This class fully tests the <code>Scaling</code> class (representing tab vertical scaling, such as <code>SCALING=5.0</code>), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
+
+<h4 id="spacingtestjava">SpacingTest.java</h4>
+
+<p>This class fully tests the <code>Spacing</code> class (representing tab horizontal spacing, such as <code>SPACING=5.0</code>), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
+
+<h4 id="squarenotetestjava">SquareNoteTest.java</h4>
+
+<p>This class fully tests the <code>SquareNote</code> class (representing a harmonic <code>Note</code>), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
+
+
+
+<h4 id="subtitletestjava">SubtitleTest.java</h4>
+
+<p>This class fully tests the <code>Subtitle</code> class (representing the tab’s subtitle such as <code>SUBTITLE=Ludwig van Beethoven</code>), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
+
+<h4 id="tabtestjava">TabTest.java</h4>
+
+<p>This class fully tests the <code>Tab</code> class (representing the ASCII musical tab as a whole), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
+
+<h4 id="titletestjava">TitleTest.java</h4>
+
+<p>This class fully tests the <code>Title</code> class (representing the tab’s title such as <code>TITLE=Moonlight Sonata</code>), including mutator methods (<code>getters</code> and <code>setters</code>) and equals.</p>
 
 <h2 id="coverage-and-metrics">Coverage and Metrics</h2>
 
-<p>Code coverage is grouped by package. Currently our focus is on 100% covering model classes and parser classes. We are very close to achieving this. Going forward, we will be focusing on covering the utility that handles drawing the PDF. We chose not to perform automated testing of the GUI, instead opting for manual testing. </p>
+<p>Code coverage is grouped by package. Our focus is on 100% method coverage in model and parser classes. We chose not to perform automated testing of the GUI, instead opting for manual testing. </p>
 
 <h3 id="cayorkucse2311tab2pdfparser">ca.yorku.cse2311.tab2pdf.parser</h3>
 
@@ -143,9 +203,9 @@ Sitkovets, Anton</p>
 <thead>
 <tr>
   <th>Class</th>
-  <th>Class, %</th>
-  <th>Method, %</th>
-  <th>Line, %</th>
+  <th>Class %</th>
+  <th>Method %</th>
+  <th>Line %</th>
 </tr>
 </thead>
 <tbody><tr>
@@ -200,31 +260,31 @@ Sitkovets, Anton</p>
   <td>SpacingParser</td>
   <td>100% (1/ 1)</td>
   <td>100% (4/ 4)</td>
-  <td>100% (7/ 7)</td>
+  <td>85.7% (6/ 7)</td>
 </tr>
 <tr>
   <td>SquareNoteParser</td>
   <td>100% (1/ 1)</td>
-  <td>50% (2/ 4)</td>
-  <td>28.6% (2/ 7)</td>
+  <td>100% (4/ 4)</td>
+  <td>100% (7/ 7)</td>
 </tr>
 <tr>
   <td>SubtitleParser</td>
   <td>100% (1/ 1)</td>
   <td>100% (4/ 4)</td>
-  <td>100% (7/ 7)</td>
+  <td>85.7% (6/ 7)</td>
 </tr>
 <tr>
   <td>TabParser</td>
   <td>100% (1/ 1)</td>
-  <td>33.3% (4/ 12)</td>
-  <td>31% (39/ 126)</td>
+  <td>100% (11/ 11)</td>
+  <td>76.8% (96/ 125)</td>
 </tr>
 <tr>
   <td>TitleParser</td>
   <td>100% (1/ 1)</td>
   <td>100% (4/ 4)</td>
-  <td>100% (7/ 7)</td>
+  <td>85.7% (6/ 7)</td>
 </tr>
 </tbody></table>
 
@@ -235,94 +295,100 @@ Sitkovets, Anton</p>
 <thead>
 <tr>
   <th>Class</th>
-  <th>Class, %</th>
-  <th>Method, %</th>
-  <th>Line, %</th>
+  <th>Class %</th>
+  <th>Method %</th>
+  <th>Line %</th>
 </tr>
 </thead>
 <tbody><tr>
   <td>Bar</td>
-  <td>0% (0/ 1)</td>
-  <td>0% (0/ 18)</td>
-  <td>0% (0/ 35)</td>
+  <td>100% (1/ 1)</td>
+  <td>100% (18/ 18)</td>
+  <td>92.9% (39/ 42)</td>
 </tr>
 <tr>
   <td>BarLine</td>
-  <td>0% (0/ 1)</td>
-  <td>0% (0/ 7)</td>
-  <td>0% (0/ 12)</td>
+  <td>100% (1/ 1)</td>
+  <td>100% (7/ 7)</td>
+  <td>100% (15/ 15)</td>
 </tr>
 <tr>
   <td>Dash</td>
   <td>100% (1/ 1)</td>
-  <td>87.5% (7/ 8)</td>
-  <td>92.3% (12/ 13)</td>
+  <td>100% (8/ 8)</td>
+  <td>100% (13/ 13)</td>
 </tr>
 <tr>
   <td>DoubleBar</td>
   <td>100% (1/ 1)</td>
-  <td>53.8% (7/ 13)</td>
-  <td>42.3% (22/ 52)</td>
+  <td>100% (13/ 13)</td>
+  <td>84.6% (44/ 52)</td>
 </tr>
 <tr>
   <td>HammerOn</td>
   <td>100% (1/ 1)</td>
-  <td>53.8% (7/ 13)</td>
-  <td>39.3% (11/ 28)</td>
+  <td>100% (13/ 13)</td>
+  <td>92.9% (26/ 28)</td>
 </tr>
 <tr>
   <td>Note</td>
   <td>100% (1/ 1)</td>
-  <td>80% (8/ 10)</td>
-  <td>71.4% (15/ 21)</td>
+  <td>100% (10/ 10)</td>
+  <td>90.5% (19/ 21)</td>
 </tr>
 <tr>
   <td>Pipe</td>
   <td>100% (1/ 1)</td>
-  <td>85.7% (6/ 7)</td>
-  <td>75% (6/ 8)</td>
+  <td>100% (7/ 7)</td>
+  <td>100% (8/ 8)</td>
 </tr>
 <tr>
   <td>PullOff</td>
   <td>100% (1/ 1)</td>
-  <td>53.8% (7/ 13)</td>
-  <td>39.3% (11/ 28)</td>
+  <td>100% (13/ 13)</td>
+  <td>92.9% (26/ 28)</td>
+</tr>
+<tr>
+  <td>Scaling</td>
+  <td>100% (1/ 1)</td>
+  <td>100% (10/ 10)</td>
+  <td>100% (18/ 18)</td>
 </tr>
 <tr>
   <td>Slide</td>
   <td>100% (1/ 1)</td>
-  <td>83.3% (10/ 12)</td>
-  <td>72.7% (24/ 33)</td>
+  <td>100% (12/ 12)</td>
+  <td>93.9% (31/ 33)</td>
 </tr>
 <tr>
   <td>Spacing</td>
   <td>100% (1/ 1)</td>
-  <td>60% (6/ 10)</td>
-  <td>44.4% (8/ 18)</td>
+  <td>100% (10/ 10)</td>
+  <td>100% (18/ 18)</td>
 </tr>
 <tr>
   <td>SquareNote</td>
-  <td>0% (0/ 1)</td>
-  <td>0% (0/ 9)</td>
-  <td>0% (0/ 17)</td>
+  <td>100% (1/ 1)</td>
+  <td>100% (9/ 9)</td>
+  <td>89.5% (17/ 19)</td>
 </tr>
 <tr>
   <td>Subtitle</td>
   <td>100% (1/ 1)</td>
-  <td>60% (6/ 10)</td>
-  <td>47.1% (8/ 17)</td>
+  <td>100% (10/ 10)</td>
+  <td>100% (17/ 17)</td>
 </tr>
 <tr>
   <td>Tab</td>
-  <td>0% (0/ 1)</td>
-  <td>0% (0/ 11)</td>
-  <td>0% (0/ 15)</td>
+  <td>100% (1/ 1)</td>
+  <td>100% (17/ 17)</td>
+  <td>100% (33/ 33)</td>
 </tr>
 <tr>
   <td>Title</td>
   <td>100% (1/ 1)</td>
-  <td>60% (6/ 10)</td>
-  <td>47.1% (8/ 17)</td>
+  <td>100% (10/ 10)</td>
+  <td>100% (17/ 17)</td>
 </tr>
 </tbody></table></div></body>
 </html>
