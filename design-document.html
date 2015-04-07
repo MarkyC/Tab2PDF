@@ -51,17 +51,44 @@ Sitkovets, Anton</p>
 <li>Iterator Pattern, to traverse collections of <code>ITabNotation</code> Objects</li>
 <li>Factory Pattern: our <code>IParser</code> Objects are factories that create <code>ITabNotation</code> Objects</li>
 <li>Visitor Pattern: our <code>PDFCreator</code> visits each <code>ITabNotation</code> Object to construct the PDF.</li>
+<li>Decorator Pattern: Some models decorate other models. An example of this is the <code>HammerOn</code> and <code>PullOff</code> classes, which decorate a <code>Note</code> with a hammer-on or pull-off.</li>
 </ul>
 
+<h2 id="high-level-class-diagram">High-Level Class Diagram</h2>
+
+<p><img src="http://i.imgur.com/0zVLudQ.png" alt="simple" title=""></p>
+
+<p>The class diagram shows how objects in the system interact with each other. The program begins from the <code>Main.java</code> file, from which it constructs the UI. The UI handles user interaction, including handling input (parsing the tab and creating objects for each symbol), and output (exporting the tab to a PDF document).</p>
 
 
-<h2 id="simple-class-diagram">Simple Class Diagram</h2>
 
-<p><img src="http://i.imgur.com/fb1ScK9.png" alt="simple" title=""></p>
+<h2 id="maintenance-scenarios">Maintenance Scenarios</h2>
 
-<h2 id="complete-class-diagram">Complete Class Diagram</h2>
+<p>The code is designed to be very maintainable, by being organized in to logical packages (see <em>Package Overview</em> below) that implement certain features. We tried to ensure high cohesion and low coupling when designing our packages and classes. A few typical maintenance scenarios will be described below.</p>
 
-<p><img src="http://i.imgur.com/Sg3EDht.png" alt="Imgur" title=""></p>
+
+
+<h3 id="adding-a-new-symbol">Adding a New Symbol</h3>
+
+<p>If a new tab symbol needs to be added, all a developer has to do is implement a new <code>ITabNotation</code> class to model the symbol, and a new <code>IParser</code> class to parse the symbol out of a tab. All that is needed to do to wire up the new parser is to add it to the <code>List&lt;IParser&gt;</code> in the <code>TabParser</code>. This list represents all parsers that the <code>TabParser</code> may use when parsing a tab file. </p>
+
+<blockquote>
+  <p><em>Technical Note</em>: the new <code>IParser</code> will return the new <code>ITabNotation</code> model that represents the new symbol.</p>
+</blockquote>
+
+<p>This functionality can be expanded in the future by exposing an API that allows the <code>TabParser</code> to add new parsers programmatically (ie: if someone wanted to use Tab2Pdf as a library in another project)</p>
+
+
+
+<h3 id="adding-a-new-tab-to-the-gui">Adding a New Tab to the GUI</h3>
+
+<p>To add a new tab to the GUI (beside the <code>Editor</code> and <code>Preview</code> tabs), a developer would have to first construct their new GUI tab as a <code>JPanel</code> object. Then, they can add their new <code>JPanel</code> as a tab by fetching the exposed <code>JTabbedPane</code> in <code>MainJFrame.getTabbedPane()</code> and calling <code>JTabbedPane.addTab()</code> on the object.</p>
+
+
+
+<h3 id="adding-more-output-options">Adding More Output Options</h3>
+
+<p>If a developer wishes to output something other than a PDF from Tab2PDF, they can do so by creating a Java class that can take the <code>Tab</code> object as an input. One of the benefits to our design is that we parse the text into the tab file into an object representation (similar to an <em>Abstract Syntax Tree</em> in compiler design). This allows us to transform the output into any format, since we only need to concern ourselves with converting from an object format, to the desired output format (as opposed to having a separate parser for each format we wish to output to). It is recommended that running this new Java class is done on a separate thread so as to not freeze up the GUI, so the output code should be wrapped in a <code>Runnable</code> object.</p>
 
 <h2 id="package-overview">Package Overview</h2>
 
@@ -96,6 +123,8 @@ Sitkovets, Anton</p>
 
 <h3 id="cayorkucse2311tab2pdfmodel">ca.yorku.cse2311.tab2pdf.model</h3>
 
+<p><img src="http://i.imgur.com/pzKOyfj.png" alt="model" title=""></p>
+
 <p>This package holds the business models of this application. Most models implement <code>ITabNotation</code>, which describes a set of methods we expect all tab models to have, such as the ability to <code>draw()</code> to the PDF, the <code>size()</code> of the drawn symbol, and <code>toString()</code>, which must return the exact String that was used to create the object. This means models are reflexive and symmetric. “3” should parse into a <code>Note</code> with value 3, and calling <code>toString()</code> on this <code>Note</code> should yield “3”.</p>
 
 <blockquote>
@@ -106,19 +135,43 @@ Sitkovets, Anton</p>
 
 <h3 id="cayorkucse2311tab2pdfparser">ca.yorku.cse2311.tab2pdf.parser</h3>
 
+<p><img src="http://i.imgur.com/zw4eHB8.png" alt="parser" title=""></p>
+
 <p>This package holds parsers capable of creating our models. All parsers implement <code>IParser</code>, which requires parsers to have a <code>getPattern()</code> method which returns the <code>Pattern</code> (Java’s Regular Expression class) the parser will use internally to create the model object, a <code>canParse()</code> method, signifying the parser can indeed construct a model out of a specified String token, and <code>parse()</code>, which actually parses the token into the model.</p>
 
 <p><code>TabParser</code> holds all <code>IParser</code> objects, and is concerned with parsing the entirety of the tab using these objects. If a new symbol is needed, one must write a model, implementing <code>ITabNotation</code>; a parser, implementing <code>IParser</code>; and finally they must add the parser to <code>TabParser</code>, making it aware of the new symbol.</p>
 
 
 
+<h3 id="cayorkucse2311tab2pdfpdf">ca.yorku.cse2311.tab2pdf.pdf</h3>
+
+<p>This package holds PDF-related utilities. <code>PdfHelper</code> is a wrapper around the iText PDF library, which allows drawing to a PDF document. <code>PdfCreator</code> is a <code>Runnable</code> that allows us to create the PDF on a separate thread (so as to not freeze up the GUI if the PDF takes a while to create).</p>
+
+
+
 <h3 id="cayorkucse2311tab2pdfui">ca.yorku.cse2311.tab2pdf.ui</h3>
 
-<p>This package holds the GUI of the program, in one file <code>MainJFrame</code>. Controllers are simple for our GUI, so they are implemented as final member variables (typically <code>ActionListener</code>s) that can be easily tested, and extracted out if they grow too large. </p>
+<p>This package holds the GUI of the program, in one file <code>MainJFrame</code>. The <code>MainJFrame</code> is made up of individual components, such as the <code>Toolbar</code>, the <code>Menubar</code>, or the <code>EditorTab</code>. Each component has a reference back to its parent (<code>MainJFrame</code>) to allow the component to use its parents exposed methods. Additionally, the <code>MainJFrame</code> has that represent user actions, such as clicking the <code>Save Tab</code> button, which calls the <code>SaveFileListener</code>, which ultimately saves the tab file the user is working on. Listeners, like components, also take a reference back to its parent, to use its exposed methods.</p>
+
+
+
+<h4 id="components">Components</h4>
+
+<p><img src="http://i.imgur.com/47uzYwt.png" alt="components" title=""></p>
+
+<p>This diagram shows the two-way relationship between components and the <code>MainJFrame</code>. The <code>MainJFrame</code> creates each component, which in turn has a reference the the <code>MainJFrame</code> that created it.</p>
+
+
+
+<h4 id="listeners">Listeners</h4>
+
+<p><img src="http://i.imgur.com/o2anEL5.png" alt="listeners" title=""></p>
+
+<p>This diagram shows the two-way relationship between listeners and the <code>MainJFrame</code>. The <code>MainJFrame</code> creates each listener, which in turn has a reference the the <code>MainJFrame</code> that created it.</p>
 
 
 
 <h3 id="cayorkucse2311tab2pdfutil">ca.yorku.cse2311.tab2pdf.util</h3>
 
-<p>This package holds small utilities that contain helper methods to aid in development. <code>FileUtils</code> contains utilities to help with <code>File</code>s, such as reading a <code>File</code> and returning a <code>List&lt;String&gt;</code> consisting of each line in the <code>File</code>. <code>TabRepair</code> is used to repair malformed tabs, and <code>PDFCreator</code> is used to create the final, formatted PDF.</p></div></body>
+<p>This package holds small utilities that contain helper methods to aid in development. <code>FileUtils</code> contains utilities to help with <code>File</code>s, such as reading a <code>File</code> and returning a <code>List&lt;String&gt;</code> consisting of each line in the <code>File</code>. </p></div></body>
 </html>
