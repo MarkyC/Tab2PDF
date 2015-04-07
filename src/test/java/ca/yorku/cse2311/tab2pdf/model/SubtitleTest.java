@@ -10,37 +10,37 @@ import ca.yorku.cse2311.tab2pdf.pdf.PdfHelper;
 
 import static org.junit.Assert.assertEquals;
 
-public class TitleTest {
+public class SubtitleTest {
 
-    public static final String TITLE_LINE = "TITLE=Moonlight Sonata";
-    
-    private final static String RAW_TITLE = "Moonlight Sonata";
+    public static final String SUBTITLE_LINE = "SUBTITLE=Ludwig van Beethoven";
 
-    private final static Title TITLE = new Title(RAW_TITLE);
+    private final static String RAW_SUBTITLE = "Ludwig van Beethoven";
+
+    private final static Subtitle SUBTITLE = new Subtitle(RAW_SUBTITLE);
 
     @Test
     public void testGetValue() throws Exception {
-        assertEquals(RAW_TITLE, TITLE.getValue());
+        assertEquals(RAW_SUBTITLE, SUBTITLE.getValue());
     }
 
     @Test
     public void testDraw() throws Exception {
-        TITLE.draw(new PdfHelper(1, 1), 1, 1, 1);
+        SUBTITLE.draw(new PdfHelper(1, 1), 1, 1, 1);
     }
 
     @Test
     public void testLeftPadding() throws Exception {
-        assertEquals(0, TITLE.leftPadding());
+        assertEquals(0, SUBTITLE.leftPadding());
     }
 
     @Test
     public void testRightPadding() throws Exception {
-        assertEquals(0, TITLE.rightPadding());
+        assertEquals(0, SUBTITLE.rightPadding());
     }
 
     @Test
     public void testSize() throws Exception {
-        assertEquals(TITLE.toString().length(), TITLE.size());
+        assertEquals(SUBTITLE.toString().length(), SUBTITLE.size());
     }
 
     @Test
@@ -48,20 +48,21 @@ public class TitleTest {
 
         // Assert our test title is the same as the one given by TabParser
         List<String> l = new ArrayList<>();
-        l.add(TITLE_LINE);
-        assertEquals(TabParser.getTitle(l), TITLE);
-        
+        l.add(SUBTITLE_LINE);
+        assertEquals(TabParser.getSubtitle(l), SUBTITLE);
+
         // Assert default titles are always the same
-        assertEquals(new Title(), new Title());
+        assertEquals(new Subtitle(), new Subtitle());
     }
-    
+
     @Test
     public void testHashCode() {
-        assertEquals(new Title(RAW_TITLE).hashCode(), TITLE.hashCode());
+        assertEquals(new Subtitle(RAW_SUBTITLE).hashCode(), SUBTITLE.hashCode());
     }
 
     @Test
     public void testToString() throws Exception {
-        assertEquals(TITLE_LINE, TITLE.toString());
+        assertEquals(SUBTITLE_LINE, SUBTITLE.toString());
     }
+
 }

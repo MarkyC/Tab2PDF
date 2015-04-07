@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import ca.yorku.cse2311.tab2pdf.model.DoubleBarTest;
+import ca.yorku.cse2311.tab2pdf.model.SubtitleTest;
 import ca.yorku.cse2311.tab2pdf.model.TabParserTest;
 import ca.yorku.cse2311.tab2pdf.model.TitleTest;
 import ca.yorku.cse2311.tab2pdf.parser.DashParserTest;
@@ -24,6 +25,7 @@ import ca.yorku.cse2311.tab2pdf.parser.SquareNoteParserTest;
         , DashParserTest.class
         , PipeParserTest.class
         , TitleTest.class
+        , SubtitleTest.class
         , MainTest.class
 })
 public class AllTests {
