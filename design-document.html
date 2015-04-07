@@ -21,6 +21,8 @@ Ragavendran, Varsha <br>
 Sitiugin, Glib <br>
 Sitkovets, Anton</p>
 
+
+
 <h2 id="overview">Overview</h2>
 
 <p>The program operates by being given a plain text guitar tab file as input from the user and converting it to a pretty-printed PDF. A Graphical User Interface is used to select the tab, as well as where to save the PDF. When the conversion process is complete, the final PDF is opened for the user to view.</p>
@@ -52,13 +54,37 @@ Sitkovets, Anton</p>
 <li>Decorator Pattern: Some models decorate other models. An example of this is the <code>HammerOn</code> and <code>PullOff</code> classes, which decorate a <code>Note</code> with a hammer-on or pull-off.</li>
 </ul>
 
+
+
 <h2 id="high-level-class-diagram">High-Level Class Diagram</h2>
 
-<p><img src="http://i.imgur.com/0zVLudQ.png" alt="simple" title=""></p>
+<p><img src="http://i.imgur.com/xnpjKWV.png" alt="diagram" title=""></p>
 
 <p>The class diagram shows how objects in the system interact with each other. The program begins from the <code>Main.java</code> file, from which it constructs the UI. The UI handles user interaction, including handling input (parsing the tab and creating objects for each symbol), and output (exporting the tab to a PDF document).</p>
 
 
+
+<h2 id="sequence-diagram">Sequence Diagram</h2>
+
+
+
+<h3 id="program-start">Program Start</h3>
+
+<p>This sequence diagram describes what happens when the program starts up.</p>
+
+<p><img src="http://i.imgur.com/J1kydU0.png" alt="start" title=""></p>
+
+<h3 id="opening-a-file">Opening a File</h3>
+
+<p>This sequence diagram describes what happens when the user opens a (tab) file in the program.</p>
+
+<p><img src="http://i.imgur.com/RAzq8Mv.png" alt="open" title=""></p>
+
+<h3 id="exporting-a-pdf">Exporting a PDF</h3>
+
+<p>This sequence diagram describes what happens when the user exports a tab file to a PDF file.</p>
+
+<p><img src="http://i.imgur.com/JSpl6Wm.png" alt="export" title=""></p>
 
 <h2 id="maintenance-scenarios">Maintenance Scenarios</h2>
 
@@ -88,6 +114,8 @@ Sitkovets, Anton</p>
 
 <p>If a developer wishes to output something other than a PDF from Tab2PDF, they can do so by creating a Java class that can take the <code>Tab</code> object as an input. One of the benefits to our design is that we parse the text into the tab file into an object representation (similar to an <em>Abstract Syntax Tree</em> in compiler design). This allows us to transform the output into any format, since we only need to concern ourselves with converting from an object format, to the desired output format (as opposed to having a separate parser for each format we wish to output to). It is recommended that running this new Java class is done on a separate thread so as to not freeze up the GUI, so the output code should be wrapped in a <code>Runnable</code> object.</p>
 
+
+
 <h2 id="package-overview">Package Overview</h2>
 
 
@@ -95,6 +123,8 @@ Sitkovets, Anton</p>
 <h3 id="cayorkucse2311tab2pdf">ca.yorku.cse2311.tab2pdf</h3>
 
 <p>The main package of this application. It consists of <code>Main</code>. This class is the entry point of the application. It is responsible for creating and showing the GUI.</p>
+
+
 
 <h3 id="cayorkucse2311tab2pdfmodel">ca.yorku.cse2311.tab2pdf.model</h3>
 
@@ -107,6 +137,8 @@ Sitkovets, Anton</p>
 </blockquote>
 
 <p>Special notes, such as <code>HammerOn</code>s and <code>PullOff</code>s (which use the <em>decorator pattern</em> around a <code>Note</code> object) implement <code>ILongDraw</code> so they are able to draw across musical bar boundaries.</p>
+
+
 
 <h3 id="cayorkucse2311tab2pdfparser">ca.yorku.cse2311.tab2pdf.parser</h3>
 
