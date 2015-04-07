@@ -1,38 +1,18 @@
 package ca.yorku.cse2311.tab2pdf.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
+import ca.yorku.cse2311.tab2pdf.model.Tab;
+import ca.yorku.cse2311.tab2pdf.parser.TabParser;
+import ca.yorku.cse2311.tab2pdf.ui.component.*;
+import ca.yorku.cse2311.tab2pdf.ui.component.MenuBar;
+import ca.yorku.cse2311.tab2pdf.ui.listener.*;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
-import javax.swing.event.ChangeEvent;
-
-import ca.yorku.cse2311.tab2pdf.Arguments;
-import ca.yorku.cse2311.tab2pdf.model.Tab;
-import ca.yorku.cse2311.tab2pdf.parser.TabParser;
-import ca.yorku.cse2311.tab2pdf.ui.component.EditorTab;
-import ca.yorku.cse2311.tab2pdf.ui.component.MenuBar;
-import ca.yorku.cse2311.tab2pdf.ui.component.PreviewTab;
-import ca.yorku.cse2311.tab2pdf.ui.component.StatusBar;
-import ca.yorku.cse2311.tab2pdf.ui.component.ToolBar;
-import ca.yorku.cse2311.tab2pdf.ui.listener.AboutListener;
-import ca.yorku.cse2311.tab2pdf.ui.listener.ExitListener;
-import ca.yorku.cse2311.tab2pdf.ui.listener.ExportPdfListener;
-import ca.yorku.cse2311.tab2pdf.ui.listener.HelpListener;
-import ca.yorku.cse2311.tab2pdf.ui.listener.OpenFileListener;
-import ca.yorku.cse2311.tab2pdf.ui.listener.PreviewTabListener;
-import ca.yorku.cse2311.tab2pdf.ui.listener.SampleInput1Listener;
-import ca.yorku.cse2311.tab2pdf.ui.listener.SampleInput2Listener;
-import ca.yorku.cse2311.tab2pdf.ui.listener.SaveFileAsListener;
-import ca.yorku.cse2311.tab2pdf.ui.listener.SaveFileListener;
 
 
 /**
@@ -85,16 +65,12 @@ public class MainJFrame extends JFrame {
     private File file;
 
     /**
-     * Main frame constructor
+     * Main JFrame constructor
      *
-     * @param title the window title
      */
-    private MainJFrame(String title) {
+    private MainJFrame() {
 
-        super(title);
-
-        // setup location and make its size fixed
-        this.setLocation(0, 0);
+        super(WINDOW_TITLE);
 
         // makes the frame look native to your computer (ie: Windows, or Mac looking)
         try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); }
@@ -124,43 +100,14 @@ public class MainJFrame extends JFrame {
     }
 
     /**
-     * Main frame constructor which is used when command line arguments are supplied
-     *
-     * @param title the window title
-     * @param args command line arguments
-     */
-    private MainJFrame(String title, Arguments args) {
-
-        this(title);
-    }
-
-    /**
      * Creates and shows the main window of our application
      */
-    public static void createAndShow() {createAndShow(WINDOW_TITLE, new Arguments());}
-
-    public static void createAndShow(String title, Arguments args) {
-
-        MainJFrame window = new MainJFrame(title, args); // create the window that holds our application
-        window.pack(); // compress contents
+    public static void createAndShow() {
+        JFrame window = new MainJFrame(); // create the window that holds our application
+        window.setSize(800, 600);
+        window.setLocationRelativeTo(null); // center window
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // exit the app when the JFrame closes
-        window.setTitle(title);
         window.setVisible(true);                // Show the window
-
-    }
-
-    /**
-     * Temporary piece of code to test GUI
-     * @param args program arguments
-     */
-    public static void main(String[] args) {
-
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-
-                MainJFrame.createAndShow();
-            }
-        });
     }
 
     /**
@@ -306,7 +253,7 @@ public class MainJFrame extends JFrame {
         );
     }
 
-    public String getTitle() {
+    public String getTabTitle() {
         return EDITOR_TAB.getTitle();
     }
 
@@ -328,10 +275,24 @@ public class MainJFrame extends JFrame {
     public Tab getTab() {
 
         Tab tab = TabParser.parse(getEditorTab().getTextAsList());
-        tab.setTitle(getTitle());
+        tab.setTitle(getTabTitle());
         tab.setSubtitle(getSubtitle());
         tab.setSpacing(getSpacingValue());
         tab.setScaling(getScalingValue());
         return tab;
+    }
+
+    /**
+     * Temporary piece of code to test GUI
+     * @param args program arguments
+     */
+    public static void main(String[] args) {
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+
+                MainJFrame.createAndShow();
+            }
+        });
     }
 }

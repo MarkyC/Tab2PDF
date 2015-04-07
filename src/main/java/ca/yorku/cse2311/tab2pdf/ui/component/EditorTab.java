@@ -68,7 +68,7 @@ import java.util.logging.Logger;
 
     private static final String SAVE_PANEL_NAME = "Save Panel";
 
-    public static final Dimension TAB_SIZE = new Dimension(500, 500);
+    public static final Dimension TAB_SIZE = new Dimension(600, 600);
 
     /**
      * Tab components
@@ -82,6 +82,24 @@ import java.util.logging.Logger;
     private final JSlider SCALING_SLIDER = new JSlider(JSlider.HORIZONTAL, SCALING_SLIDER_MIN, SCALING_SLIDER_MAX, SCALING_SLIDER_INIT);
 
     private final JSlider SPACING_SLIDER = new JSlider(JSlider.HORIZONTAL, SPACING_SLIDER_MIN, SPACING_SLIDER_MAX, SPACING_SLIDER_INIT);
+
+    /**
+     * Constructs a new Editor tab composed of control panel and input editor
+     */
+    public EditorTab() {
+
+        super();
+
+        // setup layout
+        this.setLayout(new BorderLayout());
+
+        // add components to the tab
+        this.add(controlPanel(), BorderLayout.WEST);
+        this.add(editorPanel(), BorderLayout.CENTER);
+
+        // set size
+        this.setPreferredSize(TAB_SIZE);
+    }
 
     public JTextPane getEditor() {
 
@@ -203,60 +221,6 @@ import java.util.logging.Logger;
         }
 
         return builder.toString();
-    }
-
-    /**
-     * Depending on input line either puts it to control panel or into editor
-     * @param builder String Builder we are working with
-     * @param line String from the input file
-     */
-    private void removeMetaInformation(StringBuilder builder, String line) {
-
-
-
-        // if the line is subtitle line set subtitle
-        if (line.contains(SUBTITLE_PATTERN)) {
-            String subtitle = line.replace(SUBTITLE_PATTERN, "");
-            this.SUBTITLE.setText(subtitle);
-        }
-        // if the line is title line set title
-        else if (line.contains(TITLE_PATTERN)) {
-            String title = line.replace(TITLE_PATTERN, "");
-            this.TITLE.setText(title);
-        }
-        // if the line is spacing line set spacing
-        else if (line.contains(SPACING_PATTERN)) {
-            String spacing = line.replace(SPACING_PATTERN, "");
-            this.SPACING_SLIDER.setValue(((int) Double.parseDouble(spacing)));
-        }
-        // if the line is scaling line set scaling
-        else if (line.contains(SCALING_PATTERN)) {
-            String scaling = line.replace(SCALING_PATTERN, "");
-            this.SCALING_SLIDER.setValue(Integer.parseInt(scaling));
-        }
-        // otherwise put the line into editor
-        else {
-            builder.append(line);
-            builder.append(System.lineSeparator());
-        }
-    }
-
-    /**
-     * Constructs a new Editor tab composed of control panel and input editor
-     */
-    public EditorTab() {
-
-        super();
-
-        // setup layout
-        this.setLayout(new BorderLayout());
-
-        // add components to the tab
-        this.add(controlPanel(), BorderLayout.WEST);
-        this.add(editorPanel(), BorderLayout.CENTER);
-
-        // set size
-        this.setPreferredSize(TAB_SIZE);
     }
 
     /**
