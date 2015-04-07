@@ -1,11 +1,16 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
-import ca.yorku.cse2311.tab2pdf.model.Note;
-import ca.yorku.cse2311.tab2pdf.parser.exception.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import ca.yorku.cse2311.tab2pdf.model.Note;
+import ca.yorku.cse2311.tab2pdf.parser.exception.ParseException;
+import ca.yorku.cse2311.tab2pdf.pdf.PdfHelper;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class NoteParserTest {
 
@@ -107,4 +112,10 @@ public class NoteParserTest {
         }
     }
 
+    @Test
+    public void testDraw() throws Exception {
+        PdfHelper h = new PdfHelper(1, 1);
+        h.getDocument().open();
+        new Note().draw(h, 1, 1, 1);
+    }
 }
