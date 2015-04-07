@@ -1,11 +1,16 @@
 package ca.yorku.cse2311.tab2pdf.parser;
 
-import ca.yorku.cse2311.tab2pdf.model.Dash;
-import ca.yorku.cse2311.tab2pdf.parser.exception.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import ca.yorku.cse2311.tab2pdf.model.Dash;
+import ca.yorku.cse2311.tab2pdf.parser.exception.ParseException;
+import ca.yorku.cse2311.tab2pdf.pdf.PdfHelper;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class DashParserTest {
 
@@ -82,5 +87,10 @@ public class DashParserTest {
 
             assertTrue(parser.canParse(line)); // NoteParser should be able to parse all valid lines
         }
+    }
+
+    @Test
+    public void testDraw() throws Exception {
+        new Dash().draw(new PdfHelper(1, 1), 1, 1, 1);
     }
 }

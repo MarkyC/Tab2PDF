@@ -24,7 +24,7 @@ public class Scaling implements ITabNotation {
         this.scaling = scaling;
     }
 
-    public float getSpacing() {
+    public float getScaling() {
 
         return scaling;
     }
