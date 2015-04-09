@@ -33,6 +33,19 @@ public class OpenFileListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
+        if (null != window.getFile() && window.getEditorTab().isDirty()) {
+
+            // there is an open file with unsaved changes
+            if (JOptionPane.YES_OPTION ==  JOptionPane.showConfirmDialog(
+                    window,
+                    "You have unsaved changes. Do you want to save them?",
+                    "Unsaved Changes",
+                    JOptionPane.YES_NO_OPTION
+            )) {    // The user asked to save their work, so we save it before opening the new tab
+                new SaveFileListener(window).actionPerformed(new ActionEvent(window, 0, "save"));
+            }
+        }
+
         JFileChooser fc = new JFileChooser();
 
         // Adds supported file types

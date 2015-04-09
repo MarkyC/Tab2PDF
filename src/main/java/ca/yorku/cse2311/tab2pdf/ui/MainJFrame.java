@@ -55,6 +55,8 @@ public class MainJFrame extends JFrame {
 
     private final AboutListener ABOUT_LISTENER = new AboutListener(this);
 
+    private final ExitListener EXIT_LISTENER = new ExitListener(this);
+
     private final SampleInput1Listener SAMPLE_1_LISTENER = new SampleInput1Listener(this);
 
     private final SampleInput2Listener SAMPLE_2_LISTENER = new SampleInput2Listener(this);
@@ -174,7 +176,8 @@ public class MainJFrame extends JFrame {
 
         getMenubar().getAboutMenuItem().addActionListener(ABOUT_LISTENER);
 
-        getMenubar().getExitMenuItem().addActionListener(new ExitListener(this));
+        getMenubar().getExitMenuItem().addActionListener(EXIT_LISTENER);
+        addWindowListener(EXIT_LISTENER);
 
         getTabbedPane().addChangeListener(new PreviewTabListener(this));
     }
