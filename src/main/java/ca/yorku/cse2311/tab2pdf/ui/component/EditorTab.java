@@ -4,6 +4,8 @@ import ca.yorku.cse2311.tab2pdf.util.FileUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -39,6 +41,11 @@ import java.util.logging.Logger;
     //private final int MINOR_TRICK_SPACING = 1;
     private final String SLIDER_LEFT_INDEX = "Narrow";
     private final String SLIDER_RIGHT_INDEX = "Wide";
+
+    /**
+     * Whether or not this EditorTab has unsaved changes
+     */
+    private boolean isDirty = false;
 
     /**
      * Input elements data
@@ -156,6 +163,22 @@ import java.util.logging.Logger;
 
     public List<String> getTextAsList() {
         return Arrays.asList(getTextAsArray());
+    }
+
+    /**
+     * @return  true if the editor has unsaved changes, false otherwise
+     */
+    public boolean isDirty() {
+
+        return isDirty;
+    }
+
+    /**
+     * @param isDirty true if the editor has unsaved changes, false otherwise
+     */
+    public void setIsDirty(boolean isDirty) {
+
+        this.isDirty = isDirty;
     }
 
     /**
@@ -297,8 +320,19 @@ import java.util.logging.Logger;
         panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), EDITOR_PANEL_NAME));
 
         panel.add(EDITOR);
+
         // setup input editor
         EDITOR.setFont(EDITOR_FONT);
+        EDITOR.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+                // This listener sets the editor as dirty so the user is aware they might lose their changes
+                setIsDirty(true);
+            }
+        });
+
+        // Add editor to scroll pane
         JScrollPane scrollPane = new JScrollPane(EDITOR);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         panel.add(scrollPane);
