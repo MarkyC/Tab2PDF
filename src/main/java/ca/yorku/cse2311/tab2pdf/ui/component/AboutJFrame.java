@@ -42,15 +42,23 @@ public class AboutJFrame extends JFrame implements MouseListener {
     public static final GridBagConstraints EMAIL_CONSTRAINTS = new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0);
 
     public static final Dimension PICTURE_SIZE = new Dimension(150, 150);
+    
+    private boolean isStoic = false;
 
     public AboutJFrame() throws HeadlessException {
 
         super("About Tab2Pdf");
+        
+        String[] smilePictures = new String[CONTRIBUTORS[3].length];
 
         getContentPane().setLayout(new GridLayout(3, 2));
-
+        
         for (String[] row : CONTRIBUTORS) {
-            getContentPane().add(createRow(row[0], row[1], row[2]));
+            getContentPane().add(createRow(row[0], row[1], row[2])); 
+            this.isStoic = false;
+        }
+        for (int i = 0; i < CONTRIBUTORS[3].length ; i++){
+        	smilePictures[i] = CONTRIBUTORS[3][i];
         }
     }
 
@@ -59,9 +67,9 @@ public class AboutJFrame extends JFrame implements MouseListener {
 
         result.setLayout(new GridBagLayout());
 
-        JLabel pic = new JLabel("Failed to load image");
+        JButton pic = new JButton("Failed to load image");
         try {   // attempt to load the image of this contributor
-            pic = new JLabel(new ImageIcon(ImageIO.read(ClassLoader.getSystemResource(image))));
+            pic = new JButton(new ImageIcon(ImageIO.read(ClassLoader.getSystemResource(image))));
         } catch (IOException e) {
             LOG.log(Level.WARNING, "Could not set about picture "+image, e);
         }
@@ -90,9 +98,9 @@ public class AboutJFrame extends JFrame implements MouseListener {
 //        		
 //        	}
 //        };
-		result.addMouseListener(new MouseAdapter() { 
+		pic.addMouseListener(new MouseAdapter() { 
 	          public void mousePressed(MouseEvent e) { 
-	              System.out.println(e); 
+	             
 	            } 
 	          });
         return result;
@@ -100,7 +108,7 @@ public class AboutJFrame extends JFrame implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
