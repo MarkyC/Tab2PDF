@@ -2,7 +2,15 @@ package ca.yorku.cse2311.tab2pdf.ui.component;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import ca.yorku.cse2311.tab2pdf.ui.listener.AboutListener;
+
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,18 +21,18 @@ import java.util.logging.Logger;
  * @author Marco
  * @since 2015-04-04
  */
-public class AboutJFrame extends JFrame {
+public class AboutJFrame extends JFrame implements MouseListener {
 
     private final static Logger LOG = Logger.getLogger(AboutJFrame.class.getName());
 
     private static final String[][] CONTRIBUTORS = {
-            // Name                          Email                       Picture
-            {"Brody Atto",              "brodyatto@gmail.com",          "about/brody.jpg"},
-            {"Marco Pietro Cirillo",    "cirillom@my.yorku.ca",         "about/marco.jpeg"},
-            {"Deep Patel",              "deep0410@my.yorku.ca",         "about/Deep.jpg"},
-            {"Varsha Ragavendran",      "varsha_raghav@hotmail.com",    "about/Varsha.jpg"},
-            {"Glib Sitiguin",           "situgin@yorku.ca",             "about/glib.jpg"},
-            {"Anton Sitkovets",         "antosi@my.yorku.ca",           "about/anton.jpg"},
+            // Name                          Email                       Picture1				Picture2
+            {"Brody Atto",              "brodyatto@gmail.com",          "about/brody.jpg"		, ""},
+            {"Marco Pietro Cirillo",    "cirillom@my.yorku.ca",         "about/marco1.png"		, "about/marco2.png"},
+            {"Deep Patel",              "deep0410@my.yorku.ca",         "about/deep1.png"		, "about/deep2.png"},
+            {"Varsha Ragavendran",      "varsha_raghav@hotmail.com",    "about/varsha1.JPG"		, "about/varsha2.JPG"},
+            {"Glib Sitiguin",           "situgin@yorku.ca",             "about/glib1.jpg"		, "about/glib2.jpg"},
+            {"Anton Sitkovets",         "antosi@my.yorku.ca",           "about/anton1.png"		, "about/anton2.png"},
     };
 
     public static final GridBagConstraints PIC_CONSTRAINTS = new GridBagConstraints(0, 0, 1, 2, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0);
@@ -74,7 +82,49 @@ public class AboutJFrame extends JFrame {
         JLabel emailLabel = new JLabel(email);
         emailLabel.setVerticalAlignment(SwingConstants.TOP);
         result.add(emailLabel, EMAIL_CONSTRAINTS);
-
+        
+//        MouseListener mouseClicked = new MouseListener{
+//        	@Override
+//        	public void mouseClicked(MouseEvent e) {
+//        		// TODO Auto-generated method stub
+//        		
+//        	}
+//        };
+		result.addMouseListener(new MouseAdapter() { 
+	          public void mousePressed(MouseEvent e) { 
+	              System.out.println(e); 
+	            } 
+	          });
         return result;
     }
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 }
