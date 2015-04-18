@@ -3,12 +3,8 @@ package ca.yorku.cse2311.tab2pdf.ui.component;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import ca.yorku.cse2311.tab2pdf.ui.listener.AboutListener;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
@@ -21,13 +17,13 @@ import java.util.logging.Logger;
  * @author Marco
  * @since 2015-04-04
  */
-public class AboutJFrame extends JFrame implements MouseListener {
+public class AboutJFrame extends JFrame {
 
     private final static Logger LOG = Logger.getLogger(AboutJFrame.class.getName());
 
     private static final String[][] CONTRIBUTORS = {
             // Name                          Email                       Picture1				Picture2
-            {"Brody Atto",              "brodyatto@gmail.com",          "about/brody.jpg"		, ""},
+            {"Brody Atto",              "brodyatto@gmail.com",          "about/brody.jpg"		, "about/brody2.jpg"},
             {"Marco Pietro Cirillo",    "cirillom@my.yorku.ca",         "about/marco1.png"		, "about/marco2.png"},
             {"Deep Patel",              "deep0410@my.yorku.ca",         "about/deep1.png"		, "about/deep2.png"},
             {"Varsha Ragavendran",      "varsha_raghav@hotmail.com",    "about/varsha1.JPG"		, "about/varsha2.JPG"},
@@ -43,43 +39,42 @@ public class AboutJFrame extends JFrame implements MouseListener {
 
     public static final Dimension PICTURE_SIZE = new Dimension(150, 150);
     
-    private boolean isStoic = false;
 
     public AboutJFrame() throws HeadlessException {
 
         super("About Tab2Pdf");
-        
-        String[] smilePictures = new String[CONTRIBUTORS[3].length];
 
         getContentPane().setLayout(new GridLayout(3, 2));
         
         for (String[] row : CONTRIBUTORS) {
-            getContentPane().add(createRow(row[0], row[1], row[2])); 
-            this.isStoic = false;
+            getContentPane().add(createRow(row[0], row[1], row[2], row[3])); 
+            
         }
-        for (int i = 0; i < CONTRIBUTORS[3].length ; i++){
-        	smilePictures[i] = CONTRIBUTORS[3][i];
-        }
+     
     }
 
-    private static JPanel createRow(String name, String email, String image) {
+    private static JPanel createRow(String name, String email, String image1, String image2) {
         JPanel result = new JPanel();
+        final JLabel j;
+        final String firstImage = image1;
+        final String secondImage = image2;
 
         result.setLayout(new GridBagLayout());
 
-        JButton pic = new JButton("Failed to load image");
+        JLabel stoicFace = new JLabel("Failed to load image");
+        //JLabel happyFace = new JLabel("Failed to laod image");
         try {   // attempt to load the image of this contributor
-            pic = new JButton(new ImageIcon(ImageIO.read(ClassLoader.getSystemResource(image))));
+            stoicFace = new JLabel(new ImageIcon(ImageIO.read(ClassLoader.getSystemResource(image1))));
+            //happyFace = new JLabel(new ImageIcon(ImageIO.read(ClassLoader.getSystemResource(image2))));
         } catch (IOException e) {
-            LOG.log(Level.WARNING, "Could not set about picture "+image, e);
+            LOG.log(Level.WARNING, "Could not set about picture "+image1, e);
+            //LOG.log(Level.WARNING, "Could not set about picture "+image2, e);
+
         }
-
+        
         // Set size of picture, so they look uniform
-        pic.setMinimumSize(PICTURE_SIZE);
-        pic.setPreferredSize(PICTURE_SIZE);
-
-        // Add picture
-        result.add(pic, PIC_CONSTRAINTS);
+        stoicFace.setMinimumSize(PICTURE_SIZE);
+        stoicFace.setPreferredSize(PICTURE_SIZE);
 
         // Add name
         JLabel nameLabel = new JLabel(name);
@@ -91,48 +86,39 @@ public class AboutJFrame extends JFrame implements MouseListener {
         emailLabel.setVerticalAlignment(SwingConstants.TOP);
         result.add(emailLabel, EMAIL_CONSTRAINTS);
         
-//        MouseListener mouseClicked = new MouseListener{
-//        	@Override
-//        	public void mouseClicked(MouseEvent e) {
-//        		// TODO Auto-generated method stub
-//        		
-//        	}
-//        };
-		pic.addMouseListener(new MouseAdapter() { 
-	          public void mousePressed(MouseEvent e) { 
-	             
-	            } 
-	          });
-        return result;
+        j = stoicFace;
+        
+		j.addMouseListener(new MouseListener() { 
+			
+            public void mouseReleased(MouseEvent arg0) {}           
+            
+            public void mousePressed(MouseEvent arg0) {}            
+            
+            public void mouseExited(MouseEvent arg0) { 
+            	try {   // attempt to load the image of this contributor
+                    j.setIcon(new ImageIcon(ImageIO.read(ClassLoader.getSystemResource(firstImage))));
+                } catch (IOException e) {
+                    LOG.log(Level.WARNING, "Could not set about picture "+firstImage, e);
+                }
+            }           
+            
+            public void mouseEntered(MouseEvent arg0) {
+                
+                try {   // attempt to load the image of this contributor
+                    j.setIcon(new ImageIcon(ImageIO.read(ClassLoader.getSystemResource(secondImage))));
+                } catch (IOException e) {
+                    LOG.log(Level.WARNING, "Could not set about picture "+secondImage, e);
+                }
+                
+            	
+            }           
+           
+            public void mouseClicked(MouseEvent arg0) {} } 
+			  
+		);
+		// Add picture
+        result.add(stoicFace, PIC_CONSTRAINTS);
+        
+		return result;
     }
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 }
