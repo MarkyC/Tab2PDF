@@ -18,7 +18,8 @@ There is no installation necessary. To run this app, double click `Tab2Pdf.jar` 
 * [Requirements Document](http://markyc.github.io/Tab2PDF/requirements-document) ([PDF](http://markyc.github.io/Tab2PDF/requirements-document.pdf)) ([Google Drive](https://docs.google.com/document/d/1TDBEyf4FYKvIm4NSlOwEWVIEy37Uyaxl9jFRpc_21cs/edit?usp=sharing))
 * [Testing Document](http://markyc.github.io/Tab2PDF/testing-document.html) ([PDF](http://markyc.github.io/Tab2PDF/testing-document.pdf)) ([Google Drive](https://drive.google.com/a/yorku.ca/file/d/0BxH8iJq_zZmKYlVXbWJabml5bTQ/view?usp=sharing))
 * [Design Document](http://markyc.github.io/Tab2PDF/design-document.html) ([PDF](http://markyc.github.io/Tab2PDF/design-document.pdf))
-* [User Manual](http://markyc.github.io/Tab2PDF/user-manual) ([PDF](http://markyc.github.io/Tab2PDF/user-manual.pdf))
+* [User Manual](http://markyc.github.io/Tab2PDF/user-manual) ([PDF](http://markyc.github.io/Tab2PDF/user-manual.pdf)) ([Google Drive](https://docs.google.com/document/d/1ijf2fZHFywkkz3NW4VkDxmZUUcPQ8mjVx3ZmMPuioZc/edit?usp=sharing
+))
 * [Presentation](https://docs.google.com/presentation/d/1jagAIl5_w5I1wo1Lvl1uGEFtzsgzDDf-mZSkBKod_Sk/edit?usp=sharing)
 * [Sequence Drawings](https://docs.google.com/document/d/1axGa2f3bATsPLX8j22EoIUzVxKI234hIrVeOIE2nW18/edit?usp=sharing)
 
